@@ -1,0 +1,52 @@
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
+
+config_version=4
+
+_global_script_classes=[ {
+"base": "Node",
+"class": "GameManager",
+"language": "GDScript",
+"path": "res://global/game_manager.gd"
+}, {
+"base": "Area2D",
+"class": "MapNode",
+"language": "GDScript",
+"path": "res://screens/ingame/game_objects/map_node/map_node.gd"
+}, {
+"base": "Node2D",
+"class": "MapNodeController",
+"language": "GDScript",
+"path": "res://screens/ingame/game_objects/map_node_controller/map_node_controller.gd"
+} ]
+_global_script_class_icons={
+"GameManager": "",
+"MapNode": "",
+"MapNodeController": ""
+}
+
+[application]
+
+config/name="Fantasy Metro"
+run/main_scene="res://screens/ingame/ingame.tscn"
+
+[autoload]
+
+GameManager="*res://global/game_manager.gd"
+
+[gui]
+
+common/drop_mouse_on_gui_input_disabled=true
+
+[physics]
+
+common/enable_pause_aware_picking=true
+
+[rendering]
+
+environment/default_environment="res://default_env.tres"
