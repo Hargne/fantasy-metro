@@ -2,7 +2,7 @@
 
 [ext_resource path="res://screens/ingame/game_objects/map_node_controller/map_node_controller.gd" type="Script" id=1]
 [ext_resource path="res://screens/ingame/game_objects/map_node/map_node.tscn" type="PackedScene" id=2]
-[ext_resource path="res://screens/ingame/game_objects/map/resources/map-tileset.tres" type="TileSet" id=3]
+[ext_resource path="res://screens/ingame/game_objects/map/assets/map-tileset.tres" type="TileSet" id=3]
 
 [node name="Ingame" type="Node2D"]
 

@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=2]
 
 [ext_resource path="res://screens/ingame/game_objects/map_node/map_node.gd" type="Script" id=1]
-[ext_resource path="res://screens/ingame/game_objects/map_node/resources/map_node_spritesheet.png" type="Texture" id=2]
+[ext_resource path="res://screens/ingame/game_objects/map_node/assets/map_node_spritesheet.png" type="Texture" id=2]
 
 [sub_resource type="RectangleShape2D" id=1]
 extents = Vector2( 6, 6 )
