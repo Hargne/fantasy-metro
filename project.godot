@@ -39,7 +39,7 @@ _global_script_class_icons={
 [application]
 
 config/name="Fantasy Metro"
-run/main_scene="res://screens/gameplay/gameplay.tscn"
+run/main_scene="res://screens/main_menu/main_menu.tscn"
 
 [autoload]
 
