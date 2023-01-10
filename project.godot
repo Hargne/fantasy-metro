@@ -28,12 +28,18 @@ _global_script_classes=[ {
 "class": "VillageNode",
 "language": "GDScript",
 "path": "res://screens/gameplay/game_objects/map_node/village_node/village_node.gd"
+}, {
+"base": "MapNode",
+"class": "WarehouseNode",
+"language": "GDScript",
+"path": "res://screens/gameplay/game_objects/map_node/warehouse_node/warehouse_node.gd"
 } ]
 _global_script_class_icons={
 "MapNode": "",
 "MapNodeController": "",
 "ResourceNode": "",
-"VillageNode": ""
+"VillageNode": "",
+"WarehouseNode": ""
 }
 
 [application]
