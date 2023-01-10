@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/map_spritesheet.png-d84cc8b442f26fd3d38e5382e05fddbe.stex"
+path="res://.import/map_spritesheet.png-b2df16ff5df3921cf2adcdfe513acf50.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://screens/ingame/game_objects/map/assets/map_spritesheet.png"
-dest_files=[ "res://.import/map_spritesheet.png-d84cc8b442f26fd3d38e5382e05fddbe.stex" ]
+source_file="res://screens/gameplay/game_objects/map/assets/map_spritesheet.png"
+dest_files=[ "res://.import/map_spritesheet.png-b2df16ff5df3921cf2adcdfe513acf50.stex" ]
 
 [params]
 

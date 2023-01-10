@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/map_node_spritesheet.png-f649a1776316132e2bbc84f4ecbb587b.stex"
+path="res://.import/map_node_spritesheet.png-61fc9cff17c9d13c58e6da7bc9c02ee9.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://screens/ingame/game_objects/map_node/assets/map_node_spritesheet.png"
-dest_files=[ "res://.import/map_node_spritesheet.png-f649a1776316132e2bbc84f4ecbb587b.stex" ]
+source_file="res://screens/gameplay/game_objects/map_node/assets/map_node_spritesheet.png"
+dest_files=[ "res://.import/map_node_spritesheet.png-61fc9cff17c9d13c58e6da7bc9c02ee9.stex" ]
 
 [params]
 

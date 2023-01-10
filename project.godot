@@ -9,31 +9,37 @@
 config_version=4
 
 _global_script_classes=[ {
-"base": "Node",
-"class": "GameManager",
-"language": "GDScript",
-"path": "res://global/game_manager.gd"
-}, {
 "base": "Area2D",
 "class": "MapNode",
 "language": "GDScript",
-"path": "res://screens/ingame/game_objects/map_node/map_node.gd"
+"path": "res://screens/gameplay/game_objects/map_node/map_node.gd"
 }, {
 "base": "Node2D",
 "class": "MapNodeController",
 "language": "GDScript",
-"path": "res://screens/ingame/game_objects/map_node_controller/map_node_controller.gd"
+"path": "res://screens/gameplay/game_objects/map_node_controller/map_node_controller.gd"
+}, {
+"base": "MapNode",
+"class": "ResourceNode",
+"language": "GDScript",
+"path": "res://screens/gameplay/game_objects/map_node/resource_node/resource_node.gd"
+}, {
+"base": "MapNode",
+"class": "VillageNode",
+"language": "GDScript",
+"path": "res://screens/gameplay/game_objects/map_node/village_node/village_node.gd"
 } ]
 _global_script_class_icons={
-"GameManager": "",
 "MapNode": "",
-"MapNodeController": ""
+"MapNodeController": "",
+"ResourceNode": "",
+"VillageNode": ""
 }
 
 [application]
 
 config/name="Fantasy Metro"
-run/main_scene="res://screens/ingame/ingame.tscn"
+run/main_scene="res://screens/gameplay/gameplay.tscn"
 
 [autoload]
 

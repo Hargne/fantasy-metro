@@ -28,6 +28,20 @@ func _input(event):
         yield(get_tree().create_timer(0.1), "timeout")
         hide_drag_connection_line()
 
+func get_village_nodes() -> Array:
+  var nodes = []
+  for child in get_children():
+    if child is VillageNode:
+      nodes.append(child)
+  return nodes
+
+func get_resource_nodes() -> Array:
+  var nodes = []
+  for child in get_children():
+    if child is ResourceNode:
+      nodes.append(child)
+  return nodes
+
 func spawn_connection_line2D(from: Vector2, to: Vector2) -> Line2D:
   var connectionLine = Line2D.new()
   connectionContainer.add_child(connectionLine)
