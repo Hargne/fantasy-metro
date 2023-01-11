@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://screens/gameplay/game_objects/map_node/resource_node/resource_node.tscn" type="PackedScene" id=1]
 [ext_resource path="res://screens/gameplay/game_objects/map_node/village_node/village_node.tscn" type="PackedScene" id=2]
@@ -6,6 +6,7 @@
 [ext_resource path="res://screens/gameplay/game_objects/map_node_controller/map_node_controller.gd" type="Script" id=4]
 [ext_resource path="res://screens/gameplay/gameplay.gd" type="Script" id=5]
 [ext_resource path="res://screens/gameplay/game_objects/map_node/warehouse_node/warehouse_node.tscn" type="PackedScene" id=6]
+[ext_resource path="res://screens/gameplay/camera/main_camera.gd" type="Script" id=7]
 
 [node name="Gameplay" type="Node2D"]
 script = ExtResource( 5 )
@@ -13,10 +14,12 @@ script = ExtResource( 5 )
 [node name="Camera2D" type="Camera2D" parent="."]
 current = true
 zoom = Vector2( 0.5, 0.5 )
+script = ExtResource( 7 )
 
 [node name="Map" type="Node2D" parent="."]
 
 [node name="Water" type="Polygon2D" parent="Map"]
+visible = false
 position = Vector2( -983, -535 )
 color = Color( 0.388235, 0.607843, 1, 1 )
 polygon = PoolVector2Array( 0, 0, 1920, 0, 1920, 1080, 0, 1080 )
@@ -42,4 +45,3 @@ resourceType = 2
 position = Vector2( -44, 5 )
 
 [node name="WarehouseNode" parent="MapNodeController" instance=ExtResource( 6 )]
-position = Vector2( 2, 29 )
