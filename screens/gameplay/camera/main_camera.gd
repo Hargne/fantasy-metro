@@ -4,8 +4,10 @@ extends Camera2D
 # Declare member variables here. Examples:
 var pan_speed = 100
 
-var _previousPosition: Vector2 = Vector2(0, 0);
+var _previous_position: Vector2 = Vector2(0, 0);
 var _moveCamera: bool = false;
+
+var _keyboard_zoom_factor = .05
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -35,14 +37,23 @@ func _process(delta):
 func _input(event):
 	if event is InputEventMouseButton && event.button_index == BUTTON_RIGHT:
 		if event.is_pressed():
-			_previousPosition = event.position;
+			_previous_position = event.position;
 			_moveCamera = true;
 		else:
 			_moveCamera = false;
 	elif event is InputEventMouseMotion && _moveCamera:
-		position += (_previousPosition - event.position);
-		_previousPosition = event.position;
+		position += (_previous_position - event.position);
+		_previous_position = event.position;
 
+		
 
+func zoom():
+	if Input.is_action_just_released('zoom_in'):
+		set_zoom(get_zoom() - Vector2(_keyboard_zoom_factor, _keyboard_zoom_factor))
+	if Input.is_action_just_released('zoom_out'): #and get_zoom() > Vector2.ONE:
+		set_zoom(get_zoom() + Vector2(_keyboard_zoom_factor, _keyboard_zoom_factor))
+
+func _physics_process(delta):
+	zoom()
 
 
