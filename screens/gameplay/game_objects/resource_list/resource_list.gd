@@ -25,11 +25,11 @@ func add_resource(resourceType) -> void:
   # Grab texture
   var textureFile
   match resourceType:
-    ResourceNode.ResourceType.STONE:
+    GameplayEnums.Resource.STONE:
       textureFile = "stone_icon.tres"
-    ResourceNode.ResourceType.WATER:
+    GameplayEnums.Resource.WATER:
       textureFile = "water_icon.tres"
-    ResourceNode.ResourceType.WOOD:
+    GameplayEnums.Resource.WOOD:
       textureFile = "wood_icon.tres"
   # Make sure that the file exist
   if !textureFile:

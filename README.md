@@ -2,6 +2,12 @@
 
 ## Development Guidelines
 
+### Kanban
+
+#### This project uses Trello: [Link to Project Board](https://trello.com/b/G4HCqAmn/fantasy-metro-game)
+
+Ideas, new feature or bugs should be added as cards and labelled as such. This allows us to know what is available to work on and who is doing what.
+
 ### Code
 
 #### Indentation
