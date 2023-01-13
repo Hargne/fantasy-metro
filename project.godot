@@ -9,6 +9,21 @@
 config_version=4
 
 _global_script_classes=[ {
+"base": "CanvasLayer",
+"class": "ActionPanel",
+"language": "GDScript",
+"path": "res://screens/gameplay/game_objects/map_node_controller/action_panel/action_panel.gd"
+}, {
+"base": "Node2D",
+"class": "Gameplay",
+"language": "GDScript",
+"path": "res://screens/gameplay/gameplay.gd"
+}, {
+"base": "Node",
+"class": "GameplayEnums",
+"language": "GDScript",
+"path": "res://screens/gameplay/gameplay_enums.gd"
+}, {
 "base": "Area2D",
 "class": "MapNode",
 "language": "GDScript",
@@ -35,6 +50,9 @@ _global_script_classes=[ {
 "path": "res://screens/gameplay/game_objects/map_node/warehouse_node/warehouse_node.gd"
 } ]
 _global_script_class_icons={
+"ActionPanel": "",
+"Gameplay": "",
+"GameplayEnums": "",
 "MapNode": "",
 "MapNodeController": "",
 "ResourceNode": "",
@@ -50,6 +68,16 @@ run/main_scene="res://screens/main_menu/main_menu.tscn"
 [autoload]
 
 GameManager="*res://global/game_manager.gd"
+Utils="*res://global/utils.gd"
+
+[display]
+
+window/size/width=1920
+window/size/height=1080
+window/size/test_width=960
+window/size/test_height=540
+window/stretch/mode="viewport"
+window/stretch/aspect="keep_width"
 
 [gui]
 

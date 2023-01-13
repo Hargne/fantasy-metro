@@ -1,4 +1,5 @@
 extends Node2D
+class_name Gameplay
 
 var rng = RandomNumberGenerator.new()
 onready var mapNodeController: MapNodeController = $MapNodeController
@@ -20,7 +21,7 @@ func setup_demand_increment_timer() -> void:
   demandIncrementTimer = Timer.new()
   add_child(demandIncrementTimer)
   demandIncrementTimer.name = "DemandIncrementTimer"
-  demandIncrementTimer.connect("timeout", self, "on_demand_increment_timer_timeout")
+  Utils.connect_signal(demandIncrementTimer, "timeout", self, "on_demand_increment_timer_timeout")
   start_demand_increment_timer(2)
 
 func start_demand_increment_timer(time: int) -> void:
@@ -32,7 +33,7 @@ func on_demand_increment_timer_timeout() -> void:
   if villageNodes.size() > 0:
     for villageNode in villageNodes:
       if villageNode.can_add_resource_demand():
-        var demandedResource = ResourceNode.ResourceType.values()[rng.randi() % ResourceNode.ResourceType.size()]
+        var demandedResource = GameplayEnums.Resource.values()[rng.randi() % GameplayEnums.Resource.size()]
         villageNode.add_resource_demand(demandedResource)
   # Restart the timer
   start_demand_increment_timer(secondsBetweenDemandIncrement)

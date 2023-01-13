@@ -1,18 +1,28 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=13 format=2]
 
 [ext_resource path="res://screens/gameplay/game_objects/map_node/resource_node/resource_node.tscn" type="PackedScene" id=1]
 [ext_resource path="res://screens/gameplay/game_objects/map_node/village_node/village_node.tscn" type="PackedScene" id=2]
 [ext_resource path="res://screens/gameplay/game_objects/map/assets/map-tileset.tres" type="TileSet" id=3]
 [ext_resource path="res://screens/gameplay/game_objects/map_node_controller/map_node_controller.gd" type="Script" id=4]
 [ext_resource path="res://screens/gameplay/gameplay.gd" type="Script" id=5]
-[ext_resource path="res://screens/gameplay/game_objects/map_node/warehouse_node/warehouse_node.tscn" type="PackedScene" id=6]
+[ext_resource path="res://screens/gameplay/game_objects/map_node_controller/action_panel/assets/warehouse_menu_icon.tres" type="Texture" id=7]
+[ext_resource path="res://screens/gameplay/game_objects/map_node_controller/action_panel/assets/horsecart_menu_icon.tres" type="Texture" id=8]
+[ext_resource path="res://screens/gameplay/game_objects/map_node_controller/action_panel/assets/route_menu_icon.tres" type="Texture" id=9]
+[ext_resource path="res://fonts/resource/m5x7.ttf" type="DynamicFontData" id=10]
+[ext_resource path="res://screens/gameplay/game_objects/map_node_controller/action_panel/action_panel.gd" type="Script" id=11]
+
+[sub_resource type="StyleBoxFlat" id=1]
+bg_color = Color( 0.231373, 0.231373, 0.231373, 1 )
+
+[sub_resource type="DynamicFont" id=2]
+font_data = ExtResource( 10 )
 
 [node name="Gameplay" type="Node2D"]
 script = ExtResource( 5 )
 
 [node name="Camera2D" type="Camera2D" parent="."]
 current = true
-zoom = Vector2( 0.5, 0.5 )
+zoom = Vector2( 0.25, 0.25 )
 
 [node name="Map" type="Node2D" parent="."]
 
@@ -31,6 +41,106 @@ tile_data = PoolIntArray( -327682, 26, 0, -327681, 10, 0, -393216, 7, 0, -393215
 [node name="MapNodeController" type="Node2D" parent="."]
 script = ExtResource( 4 )
 
+[node name="ActionPanel" type="CanvasLayer" parent="MapNodeController"]
+script = ExtResource( 11 )
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MapNodeController/ActionPanel"]
+margin_left = -1.0
+margin_top = 1.0
+margin_right = 1920.0
+margin_bottom = 1081.0
+mouse_filter = 2
+alignment = 2
+
+[node name="Panel" type="Panel" parent="MapNodeController/ActionPanel/VBoxContainer"]
+margin_top = 980.0
+margin_right = 1921.0
+margin_bottom = 1080.0
+rect_min_size = Vector2( 0, 100 )
+mouse_filter = 1
+custom_styles/panel = SubResource( 1 )
+
+[node name="CenterContainer" type="CenterContainer" parent="MapNodeController/ActionPanel/VBoxContainer/Panel"]
+margin_right = 480.0
+margin_bottom = 25.0
+rect_min_size = Vector2( 0, 25 )
+rect_scale = Vector2( 4, 4 )
+
+[node name="MarginContainer" type="MarginContainer" parent="MapNodeController/ActionPanel/VBoxContainer/Panel/CenterContainer"]
+margin_top = 4.0
+margin_right = 500.0
+margin_bottom = 20.0
+mouse_filter = 1
+custom_constants/margin_right = 10
+custom_constants/margin_left = 10
+
+[node name="GridContainer" type="GridContainer" parent="MapNodeController/ActionPanel/VBoxContainer/Panel/CenterContainer/MarginContainer"]
+margin_left = 10.0
+margin_right = 490.0
+margin_bottom = 16.0
+rect_min_size = Vector2( 480, 0 )
+custom_constants/hseparation = 20
+columns = 20
+
+[node name="Routes" type="HSplitContainer" parent="MapNodeController/ActionPanel/VBoxContainer/Panel/CenterContainer/MarginContainer/GridContainer"]
+margin_right = 36.0
+margin_bottom = 16.0
+mouse_filter = 1
+custom_constants/separation = 0
+
+[node name="Button" type="TextureButton" parent="MapNodeController/ActionPanel/VBoxContainer/Panel/CenterContainer/MarginContainer/GridContainer/Routes"]
+margin_right = 16.0
+margin_bottom = 16.0
+texture_normal = ExtResource( 9 )
+
+[node name="Label" type="Label" parent="MapNodeController/ActionPanel/VBoxContainer/Panel/CenterContainer/MarginContainer/GridContainer/Routes"]
+margin_left = 24.0
+margin_top = 1.0
+margin_right = 36.0
+margin_bottom = 14.0
+custom_fonts/font = SubResource( 2 )
+text = "x2"
+
+[node name="Warehouses" type="HSplitContainer" parent="MapNodeController/ActionPanel/VBoxContainer/Panel/CenterContainer/MarginContainer/GridContainer"]
+margin_left = 56.0
+margin_right = 92.0
+margin_bottom = 16.0
+mouse_filter = 1
+custom_constants/separation = 0
+
+[node name="Button" type="TextureButton" parent="MapNodeController/ActionPanel/VBoxContainer/Panel/CenterContainer/MarginContainer/GridContainer/Warehouses"]
+margin_right = 16.0
+margin_bottom = 16.0
+texture_normal = ExtResource( 7 )
+
+[node name="Label" type="Label" parent="MapNodeController/ActionPanel/VBoxContainer/Panel/CenterContainer/MarginContainer/GridContainer/Warehouses"]
+margin_left = 24.0
+margin_top = 1.0
+margin_right = 36.0
+margin_bottom = 14.0
+custom_fonts/font = SubResource( 2 )
+text = "x2"
+
+[node name="Carts" type="HSplitContainer" parent="MapNodeController/ActionPanel/VBoxContainer/Panel/CenterContainer/MarginContainer/GridContainer"]
+margin_left = 112.0
+margin_right = 148.0
+margin_bottom = 16.0
+mouse_filter = 1
+custom_constants/separation = 0
+
+[node name="Button" type="TextureButton" parent="MapNodeController/ActionPanel/VBoxContainer/Panel/CenterContainer/MarginContainer/GridContainer/Carts"]
+margin_right = 16.0
+margin_bottom = 16.0
+texture_normal = ExtResource( 8 )
+
+[node name="Label" type="Label" parent="MapNodeController/ActionPanel/VBoxContainer/Panel/CenterContainer/MarginContainer/GridContainer/Carts"]
+margin_left = 24.0
+margin_top = 1.0
+margin_right = 36.0
+margin_bottom = 14.0
+custom_fonts/font = SubResource( 2 )
+text = "x2"
+
 [node name="VillageNode" parent="MapNodeController" instance=ExtResource( 2 )]
 position = Vector2( 23, -36 )
 
@@ -41,5 +151,4 @@ resourceType = 2
 [node name="ResourceNode2" parent="MapNodeController" instance=ExtResource( 1 )]
 position = Vector2( -44, 5 )
 
-[node name="WarehouseNode" parent="MapNodeController" instance=ExtResource( 6 )]
-position = Vector2( 2, 29 )
+[connection signal="button_down" from="MapNodeController/ActionPanel/VBoxContainer/Panel/CenterContainer/MarginContainer/GridContainer/Warehouses/Button" to="MapNodeController/ActionPanel" method="initiate_dragging_warehouse"]
