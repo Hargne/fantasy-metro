@@ -4,7 +4,7 @@ class_name Gameplay
 var rng = RandomNumberGenerator.new()
 # Refs
 onready var mapNodeController: MapNodeController = $MapNodeController
-onready var actionPanel: ActionPanel = $ActionPanel
+onready var buildPanel: BuildPanel = $BuildPanel
 onready var map: Map = $Map
 
 var isInteractBeingHeldDown = false
@@ -24,11 +24,11 @@ var _defaultCollisionLayer = 2147483647
 func _ready():
   rng.randomize()
   setup_demand_increment_timer()
-  # Connect Action Panel
-  Utils.connect_signal(actionPanel, "started_dragging_object", self, "on_new_object_drag_start")
+  # Connect Build Panel
+  Utils.connect_signal(buildPanel, "started_dragging_object", self, "on_new_object_drag_start")
   # Allow for nodes to get initialized
   yield(get_tree().create_timer(0.1), "timeout")
-  actionPanel.update_stock(buildStock)
+  buildPanel.update_stock(buildStock)
 
 func _input(event):
   if event.is_action_pressed("interact"):
@@ -90,7 +90,7 @@ func on_interact_drag_end() -> void:
   
   interactTarget = null
 
-# Gets called when the player starts dragging an object from the action bar
+# Gets called when the player starts dragging an object from the build panel
 func on_new_object_drag_start(objectToBeSpawned) -> void:
   # Check if there's enough in stock
   if buildStock[objectToBeSpawned] > 0:
@@ -102,11 +102,11 @@ func on_new_object_drag_start(objectToBeSpawned) -> void:
 
 func increase_stock_item(item, amount = 1) -> void:
   buildStock[item] += amount
-  actionPanel.set_build_option_amount(item, buildStock[item])
+  buildPanel.set_build_option_amount(item, buildStock[item])
 
 func decrease_stock_item(item, amount = 1) -> void:
   buildStock[item] -= amount
-  actionPanel.set_build_option_amount(item, buildStock[item])
+  buildPanel.set_build_option_amount(item, buildStock[item])
 
 func can_build_route() -> bool:
   return buildStock[GameplayEnums.BuildOption.ROUTE] > 0

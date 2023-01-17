@@ -1,5 +1,5 @@
 extends CanvasLayer
-class_name ActionPanel
+class_name BuildPanel
 
 signal started_dragging_object(buildOption)
 # Refs

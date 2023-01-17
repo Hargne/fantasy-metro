@@ -10,9 +10,9 @@ config_version=4
 
 _global_script_classes=[ {
 "base": "CanvasLayer",
-"class": "ActionPanel",
+"class": "BuildPanel",
 "language": "GDScript",
-"path": "res://screens/gameplay/game_objects/map_node_controller/action_panel/action_panel.gd"
+"path": "res://screens/gameplay/game_objects/build_panel/build_panel.gd"
 }, {
 "base": "Node2D",
 "class": "Gameplay",
@@ -55,7 +55,7 @@ _global_script_classes=[ {
 "path": "res://screens/gameplay/game_objects/map_node/warehouse_node/warehouse_node.gd"
 } ]
 _global_script_class_icons={
-"ActionPanel": "",
+"BuildPanel": "",
 "Gameplay": "",
 "GameplayEnums": "",
 "Map": "",

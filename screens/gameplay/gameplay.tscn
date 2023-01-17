@@ -5,12 +5,12 @@
 [ext_resource path="res://screens/gameplay/game_objects/map/assets/map-tileset.tres" type="TileSet" id=3]
 [ext_resource path="res://screens/gameplay/game_objects/map_node_controller/map_node_controller.gd" type="Script" id=4]
 [ext_resource path="res://screens/gameplay/gameplay.gd" type="Script" id=5]
-[ext_resource path="res://screens/gameplay/game_objects/map_node_controller/action_panel/assets/warehouse_menu_icon.tres" type="Texture" id=6]
+[ext_resource path="res://screens/gameplay/game_objects/build_panel/assets/warehouse_menu_icon.tres" type="Texture" id=6]
 [ext_resource path="res://screens/gameplay/camera/main_camera.gd" type="Script" id=7]
-[ext_resource path="res://screens/gameplay/game_objects/map_node_controller/action_panel/assets/horsecart_menu_icon.tres" type="Texture" id=8]
-[ext_resource path="res://screens/gameplay/game_objects/map_node_controller/action_panel/assets/route_menu_icon.tres" type="Texture" id=9]
+[ext_resource path="res://screens/gameplay/game_objects/build_panel/assets/horsecart_menu_icon.tres" type="Texture" id=8]
+[ext_resource path="res://screens/gameplay/game_objects/build_panel/assets/route_menu_icon.tres" type="Texture" id=9]
 [ext_resource path="res://fonts/resource/m5x7.ttf" type="DynamicFontData" id=10]
-[ext_resource path="res://screens/gameplay/game_objects/map_node_controller/action_panel/action_panel.gd" type="Script" id=11]
+[ext_resource path="res://screens/gameplay/game_objects/build_panel/build_panel.gd" type="Script" id=11]
 [ext_resource path="res://screens/gameplay/game_objects/map/map.gd" type="Script" id=12]
 
 [sub_resource type="StyleBoxFlat" id=1]
@@ -55,10 +55,10 @@ position = Vector2( 63, -1 )
 position = Vector2( -66, 21 )
 resourceType = 1
 
-[node name="ActionPanel" type="CanvasLayer" parent="."]
+[node name="BuildPanel" type="CanvasLayer" parent="."]
 script = ExtResource( 11 )
 
-[node name="VBoxContainer" type="VBoxContainer" parent="ActionPanel"]
+[node name="VBoxContainer" type="VBoxContainer" parent="BuildPanel"]
 margin_left = -1.0
 margin_top = 1.0
 margin_right = 1920.0
@@ -66,7 +66,7 @@ margin_bottom = 1081.0
 mouse_filter = 2
 alignment = 2
 
-[node name="Panel" type="Panel" parent="ActionPanel/VBoxContainer"]
+[node name="Panel" type="Panel" parent="BuildPanel/VBoxContainer"]
 margin_top = 980.0
 margin_right = 1921.0
 margin_bottom = 1080.0
@@ -74,13 +74,13 @@ rect_min_size = Vector2( 0, 100 )
 mouse_filter = 1
 custom_styles/panel = SubResource( 1 )
 
-[node name="CenterContainer" type="CenterContainer" parent="ActionPanel/VBoxContainer/Panel"]
+[node name="CenterContainer" type="CenterContainer" parent="BuildPanel/VBoxContainer/Panel"]
 margin_right = 480.0
 margin_bottom = 25.0
 rect_min_size = Vector2( 0, 25 )
 rect_scale = Vector2( 4, 4 )
 
-[node name="MarginContainer" type="MarginContainer" parent="ActionPanel/VBoxContainer/Panel/CenterContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="BuildPanel/VBoxContainer/Panel/CenterContainer"]
 margin_top = 4.0
 margin_right = 500.0
 margin_bottom = 20.0
@@ -88,7 +88,7 @@ mouse_filter = 1
 custom_constants/margin_right = 10
 custom_constants/margin_left = 10
 
-[node name="GridContainer" type="GridContainer" parent="ActionPanel/VBoxContainer/Panel/CenterContainer/MarginContainer"]
+[node name="GridContainer" type="GridContainer" parent="BuildPanel/VBoxContainer/Panel/CenterContainer/MarginContainer"]
 margin_left = 10.0
 margin_right = 490.0
 margin_bottom = 16.0
@@ -96,18 +96,18 @@ rect_min_size = Vector2( 480, 0 )
 custom_constants/hseparation = 20
 columns = 20
 
-[node name="Routes" type="HSplitContainer" parent="ActionPanel/VBoxContainer/Panel/CenterContainer/MarginContainer/GridContainer"]
+[node name="Routes" type="HSplitContainer" parent="BuildPanel/VBoxContainer/Panel/CenterContainer/MarginContainer/GridContainer"]
 margin_right = 36.0
 margin_bottom = 16.0
 mouse_filter = 1
 custom_constants/separation = 0
 
-[node name="Button" type="TextureButton" parent="ActionPanel/VBoxContainer/Panel/CenterContainer/MarginContainer/GridContainer/Routes"]
+[node name="Button" type="TextureButton" parent="BuildPanel/VBoxContainer/Panel/CenterContainer/MarginContainer/GridContainer/Routes"]
 margin_right = 16.0
 margin_bottom = 16.0
 texture_normal = ExtResource( 9 )
 
-[node name="Label" type="Label" parent="ActionPanel/VBoxContainer/Panel/CenterContainer/MarginContainer/GridContainer/Routes"]
+[node name="Label" type="Label" parent="BuildPanel/VBoxContainer/Panel/CenterContainer/MarginContainer/GridContainer/Routes"]
 margin_left = 24.0
 margin_top = 1.0
 margin_right = 36.0
@@ -115,19 +115,19 @@ margin_bottom = 14.0
 custom_fonts/font = SubResource( 2 )
 text = "x2"
 
-[node name="Warehouses" type="HSplitContainer" parent="ActionPanel/VBoxContainer/Panel/CenterContainer/MarginContainer/GridContainer"]
+[node name="Warehouses" type="HSplitContainer" parent="BuildPanel/VBoxContainer/Panel/CenterContainer/MarginContainer/GridContainer"]
 margin_left = 56.0
 margin_right = 92.0
 margin_bottom = 16.0
 mouse_filter = 1
 custom_constants/separation = 0
 
-[node name="Button" type="TextureButton" parent="ActionPanel/VBoxContainer/Panel/CenterContainer/MarginContainer/GridContainer/Warehouses"]
+[node name="Button" type="TextureButton" parent="BuildPanel/VBoxContainer/Panel/CenterContainer/MarginContainer/GridContainer/Warehouses"]
 margin_right = 16.0
 margin_bottom = 16.0
 texture_normal = ExtResource( 6 )
 
-[node name="Label" type="Label" parent="ActionPanel/VBoxContainer/Panel/CenterContainer/MarginContainer/GridContainer/Warehouses"]
+[node name="Label" type="Label" parent="BuildPanel/VBoxContainer/Panel/CenterContainer/MarginContainer/GridContainer/Warehouses"]
 margin_left = 24.0
 margin_top = 1.0
 margin_right = 36.0
@@ -135,19 +135,19 @@ margin_bottom = 14.0
 custom_fonts/font = SubResource( 2 )
 text = "x2"
 
-[node name="Carts" type="HSplitContainer" parent="ActionPanel/VBoxContainer/Panel/CenterContainer/MarginContainer/GridContainer"]
+[node name="Carts" type="HSplitContainer" parent="BuildPanel/VBoxContainer/Panel/CenterContainer/MarginContainer/GridContainer"]
 margin_left = 112.0
 margin_right = 148.0
 margin_bottom = 16.0
 mouse_filter = 1
 custom_constants/separation = 0
 
-[node name="Button" type="TextureButton" parent="ActionPanel/VBoxContainer/Panel/CenterContainer/MarginContainer/GridContainer/Carts"]
+[node name="Button" type="TextureButton" parent="BuildPanel/VBoxContainer/Panel/CenterContainer/MarginContainer/GridContainer/Carts"]
 margin_right = 16.0
 margin_bottom = 16.0
 texture_normal = ExtResource( 8 )
 
-[node name="Label" type="Label" parent="ActionPanel/VBoxContainer/Panel/CenterContainer/MarginContainer/GridContainer/Carts"]
+[node name="Label" type="Label" parent="BuildPanel/VBoxContainer/Panel/CenterContainer/MarginContainer/GridContainer/Carts"]
 margin_left = 24.0
 margin_top = 1.0
 margin_right = 36.0
@@ -155,4 +155,4 @@ margin_bottom = 14.0
 custom_fonts/font = SubResource( 2 )
 text = "x2"
 
-[connection signal="button_down" from="ActionPanel/VBoxContainer/Panel/CenterContainer/MarginContainer/GridContainer/Warehouses/Button" to="ActionPanel" method="initiate_dragging_warehouse"]
+[connection signal="button_down" from="BuildPanel/VBoxContainer/Panel/CenterContainer/MarginContainer/GridContainer/Warehouses/Button" to="BuildPanel" method="initiate_dragging_warehouse"]
