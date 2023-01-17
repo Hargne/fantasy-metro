@@ -1,22 +1,64 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://screens/gameplay/game_objects/map_node/warehouse_node/warehouse_node.gd" type="Script" id=1]
 [ext_resource path="res://screens/gameplay/game_objects/map_node/assets/map_node_spritesheet.png" type="Texture" id=2]
 [ext_resource path="res://screens/gameplay/game_objects/resource_list/resource_list.tscn" type="PackedScene" id=3]
+
+[sub_resource type="Curve" id=2]
+_data = [ Vector2( 0.00808081, 0.233129 ), 0.0, 0.0, 0, 0, Vector2( 1, 1 ), 0.0, 0.0, 0, 0 ]
+
+[sub_resource type="Gradient" id=3]
+colors = PoolColorArray( 1, 1, 1, 1, 1, 1, 1, 0 )
 
 [sub_resource type="RectangleShape2D" id=1]
 extents = Vector2( 6, 5 )
 
 [node name="WarehouseNode" type="Area2D"]
 script = ExtResource( 1 )
+nodeType = null
+resourceType = null
 
 [node name="Sprite" type="Sprite" parent="."]
 texture = ExtResource( 2 )
 region_enabled = true
 region_rect = Rect2( 0, 16, 16, 16 )
 
+[node name="ChimneySmokeL2" type="CPUParticles2D" parent="."]
+position = Vector2( 2, -6.5 )
+amount = 7
+lifetime = 5.0
+explosiveness = 0.1
+direction = Vector2( 0, 0 )
+spread = 90.0
+gravity = Vector2( 0, -1.5 )
+angular_velocity = 10.0
+angular_velocity_random = 1.0
+damping = 0.5
+angle = 320.4
+angle_random = 1.0
+scale_amount = 4.0
+scale_amount_curve = SubResource( 2 )
+color_ramp = SubResource( 3 )
+
+[node name="ChimneySmokeL" type="CPUParticles2D" parent="."]
+position = Vector2( -2, -6.5 )
+amount = 7
+lifetime = 5.0
+explosiveness = 0.1
+direction = Vector2( 0, 0 )
+spread = 90.0
+gravity = Vector2( 0, -1.5 )
+angular_velocity = 10.0
+angular_velocity_random = 1.0
+damping = 0.5
+angle = 320.4
+angle_random = 1.0
+scale_amount = 4.0
+scale_amount_curve = SubResource( 2 )
+color_ramp = SubResource( 3 )
+
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2( 0, 2 )
+position = Vector2( 0, 1 )
 shape = SubResource( 1 )
 
 [node name="ResourceList" parent="." instance=ExtResource( 3 )]
