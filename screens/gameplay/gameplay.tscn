@@ -31,7 +31,7 @@ script = ExtResource( 7 )
 script = ExtResource( 12 )
 
 [node name="Water" type="Polygon2D" parent="Map"]
-position = Vector2( -983, -535 )
+position = Vector2( -931, -477 )
 color = Color( 0.388235, 0.607843, 1, 1 )
 polygon = PoolVector2Array( 0, 0, 1920, 0, 1920, 1080, 0, 1080 )
 
@@ -46,14 +46,14 @@ tile_data = PoolIntArray( -327682, 26, 0, -327681, 10, 0, -393216, 7, 0, -393215
 script = ExtResource( 4 )
 
 [node name="VillageNode" parent="MapNodeController" instance=ExtResource( 2 )]
-position = Vector2( 23, -36 )
+position = Vector2( -32, -19 )
 
 [node name="ResourceNode" parent="MapNodeController" instance=ExtResource( 1 )]
-position = Vector2( 54, 10 )
-resourceType = 2
+position = Vector2( 63, -1 )
 
 [node name="ResourceNode2" parent="MapNodeController" instance=ExtResource( 1 )]
-position = Vector2( -44, 5 )
+position = Vector2( -66, 21 )
+resourceType = 1
 
 [node name="ActionPanel" type="CanvasLayer" parent="."]
 script = ExtResource( 11 )
