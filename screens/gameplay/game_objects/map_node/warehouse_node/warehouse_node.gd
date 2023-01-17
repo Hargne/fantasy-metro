@@ -2,7 +2,6 @@ extends MapNode
 class_name WarehouseNode
 func get_class(): return "WarehouseNode"
 
-onready var collision = $CollisionShape2D
 onready var storedResources = $ResourceList
 
 export var capacity = 6

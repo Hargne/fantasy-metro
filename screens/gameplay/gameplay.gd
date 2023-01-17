@@ -10,6 +10,7 @@ onready var map: Map = $Map
 var isInteractBeingHeldDown = false
 var interactDuration = 0
 var interactHoldDownThreshold = 9
+var interactPosition: Vector2
 var interactTarget: Node
 var demandIncrementTimer: Timer
 var secondsBetweenDemandIncrement = 20
@@ -33,6 +34,7 @@ func _input(event):
   if event.is_action_pressed("interact"):
     isInteractBeingHeldDown = true
     interactDuration = 0
+    interactPosition = get_global_mouse_position()
     interactTarget = get_object_at_cursor_location()
   elif event.is_action_released("interact"):
     isInteractBeingHeldDown = false
@@ -64,7 +66,7 @@ func on_interact_click_handler() -> void:
 
 func on_interact_drag() -> void:
   # Routes
-  if !mapNodeController.is_placing_new_object() && interactTarget && interactTarget && interactTarget is MapNode && can_build_route():
+  if !mapNodeController.is_placing_new_object() && interactTarget && interactTarget is MapNode && can_build_route():
     mapNodeController.update_drag_new_route_points(interactTarget.get_connection_point(), get_global_mouse_position())
   elif mapNodeController.is_placing_new_object():
     mapNodeController.objectBeingPlaced.position = map.get_tile_position_in_world(get_global_mouse_position())
@@ -75,9 +77,9 @@ func on_interact_drag() -> void:
 func on_interact_drag_end() -> void:
   # Routes
   if mapNodeController.is_dragging_new_route():
-    var endNode = get_object_at_cursor_location()
-    if interactTarget && interactTarget is MapNode && endNode && endNode is MapNode && interactTarget != endNode && can_build_route():
-      mapNodeController.create_route_between_nodes(interactTarget, endNode)
+    var objectAtEndOfDrag = get_object_at_cursor_location()
+    if interactTarget && interactTarget is MapNode && objectAtEndOfDrag && objectAtEndOfDrag is MapNode && interactTarget != objectAtEndOfDrag && can_build_route():
+      mapNodeController.create_route_between_nodes(interactTarget, objectAtEndOfDrag)
       decrease_stock_item(GameplayEnums.BuildOption.ROUTE)
     mapNodeController.hide_drag_new_route()
   # Placing Objects
