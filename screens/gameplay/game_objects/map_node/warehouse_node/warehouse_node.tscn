@@ -2,7 +2,7 @@
 
 [ext_resource path="res://screens/gameplay/game_objects/map_node/warehouse_node/warehouse_node.gd" type="Script" id=1]
 [ext_resource path="res://screens/gameplay/game_objects/map_node/assets/map_node_spritesheet.png" type="Texture" id=2]
-[ext_resource path="res://screens/gameplay/game_objects/resource_list/resource_list.tscn" type="PackedScene" id=3]
+[ext_resource path="res://screens/gameplay/ui/resource_list/resource_list.tscn" type="PackedScene" id=3]
 
 [sub_resource type="Curve" id=2]
 _data = [ Vector2( 0.00808081, 0.233129 ), 0.0, 0.0, 0, 0, Vector2( 1, 1 ), 0.0, 0.0, 0, 0 ]

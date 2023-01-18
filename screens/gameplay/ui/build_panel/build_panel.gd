@@ -1,20 +1,26 @@
-extends CanvasLayer
+extends PanelContainer
 class_name BuildPanel
 
 signal started_dragging_object(buildOption)
 # Refs
-onready var warehouseButton = $VBoxContainer/Panel/CenterContainer/MarginContainer/GridContainer/Warehouses
-onready var routeButton = $VBoxContainer/Panel/CenterContainer/MarginContainer/GridContainer/Routes
-onready var cartButton = $VBoxContainer/Panel/CenterContainer/MarginContainer/GridContainer/Carts
+onready var warehouseButtonContainer = $GridContainer/Warehouses
+onready var warehouseButton = $GridContainer/Warehouses/Button
+onready var routeButtonContainer = $GridContainer/Routes
+onready var routeButton = $GridContainer/Routes/Button
+onready var cartButtonContainer = $GridContainer/Carts
+onready var cartButton = $GridContainer/Carts/Button
+
+func _ready():
+  Utils.connect_signal(warehouseButton, "button_down", self, "initiate_dragging_warehouse")
 
 func get_buttoncontainer_by_type(buildOption) -> Node2D:
   match buildOption:
     GameplayEnums.BuildOption.WAREHOUSE:
-      return warehouseButton
+      return warehouseButtonContainer
     GameplayEnums.BuildOption.ROUTE:
-      return routeButton
+      return routeButtonContainer
     GameplayEnums.BuildOption.CART:
-       return cartButton
+       return cartButtonContainer
   return null
 
 func hide_build_option(buildOption) -> void:

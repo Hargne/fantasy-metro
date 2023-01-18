@@ -4,8 +4,8 @@ export var maxResources = 99
 export var columns = 6
 var resources = []
 onready var centerContainer = $CenterContainer
-onready var gridContainer = $CenterContainer/GridContainer
-var textureBasePath = "res://screens/gameplay/game_objects/resource_list/assets"
+onready var gridContainer = $CenterContainer/PanelContainer/GridContainer
+var textureBasePath = "res://screens/gameplay/ui/resource_list/assets"
 var iconSize = 16
 
 func _ready():

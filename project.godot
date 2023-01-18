@@ -9,10 +9,10 @@
 config_version=4
 
 _global_script_classes=[ {
-"base": "CanvasLayer",
+"base": "PanelContainer",
 "class": "BuildPanel",
 "language": "GDScript",
-"path": "res://screens/gameplay/game_objects/build_panel/build_panel.gd"
+"path": "res://screens/gameplay/ui/build_panel/build_panel.gd"
 }, {
 "base": "Node2D",
 "class": "Gameplay",
@@ -23,6 +23,11 @@ _global_script_classes=[ {
 "class": "GameplayEnums",
 "language": "GDScript",
 "path": "res://screens/gameplay/gameplay_enums.gd"
+}, {
+"base": "CanvasLayer",
+"class": "GameplayUIController",
+"language": "GDScript",
+"path": "res://screens/gameplay/ui/gameplay_ui_controller.gd"
 }, {
 "base": "Node2D",
 "class": "Map",
@@ -58,6 +63,7 @@ _global_script_class_icons={
 "BuildPanel": "",
 "Gameplay": "",
 "GameplayEnums": "",
+"GameplayUIController": "",
 "Map": "",
 "MapNode": "",
 "MapNodeController": "",
