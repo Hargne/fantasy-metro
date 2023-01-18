@@ -1,0 +1,21 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://screens/gameplay/game_objects/resource_list/resource_list.tscn" type="PackedScene" id=1]
+[ext_resource path="res://screens/gameplay/game_objects/map_node/assets/map_node_spritesheet.png" type="Texture" id=2]
+[ext_resource path="res://screens/gameplay/game_objects/map_node/cart/cart.gd" type="Script" id=3]
+
+[sub_resource type="RectangleShape2D" id=1]
+extents = Vector2( 6, 6 )
+
+[node name="Cart" type="Area2D"]
+script = ExtResource( 3 )
+
+[node name="Sprite" type="Sprite" parent="."]
+texture = ExtResource( 2 )
+region_enabled = true
+region_rect = Rect2( 16, 16, 16, 16 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource( 1 )
+
+[node name="ResourceList" parent="." instance=ExtResource( 1 )]

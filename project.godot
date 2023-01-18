@@ -14,6 +14,11 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://screens/gameplay/game_objects/map_node_controller/action_panel/action_panel.gd"
 }, {
+"base": "Area2D",
+"class": "Cart",
+"language": "GDScript",
+"path": "res://screens/gameplay/game_objects/map_node/cart/cart.gd"
+}, {
 "base": "Node2D",
 "class": "Gameplay",
 "language": "GDScript",
@@ -56,6 +61,7 @@ _global_script_classes=[ {
 } ]
 _global_script_class_icons={
 "ActionPanel": "",
+"Cart": "",
 "Gameplay": "",
 "GameplayEnums": "",
 "Map": "",
