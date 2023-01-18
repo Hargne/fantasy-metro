@@ -9,13 +9,12 @@ var objectBeingPlaced: Node
 var canPlaceObject = false
 var typeOfObjectBeingPlaced
 var warehouseNodePrefab = preload("res://screens/gameplay/game_objects/map_node/warehouse_node/warehouse_node.tscn")
-var cartNodePrefab = preload("res://screens/gameplay/game_objects/map_node/cart_node/cart_node.tscn")
+var cartPrefab = preload("res://screens/gameplay/game_objects/map_node/cart/cart.tscn")
 
 var normalRouteColor = "#cccccc"
 var availableRouteColor = "#ffffff"
 var highlightedRouteColor = "#0000ff"
 
-var cartSpeed = 1.0
 var roadWidth = 3.0
 
 var route_id: int = 100
@@ -128,7 +127,7 @@ func initiate_place_new_object(objectTypeToBePlaced, startPosition: Vector2) -> 
 			add_child(warehouse)
 			objectBeingPlaced = warehouse
 		GameplayEnums.BuildOption.CART:
-			var cart = cartNodePrefab.instance()
+			var cart = cartPrefab.instance()
 			add_child(cart)
 			objectBeingPlaced = cart	
 	if objectBeingPlaced:
@@ -137,8 +136,10 @@ func initiate_place_new_object(objectTypeToBePlaced, startPosition: Vector2) -> 
 func end_place_new_object() -> int:
 	if canPlaceObject:
 		if typeOfObjectBeingPlaced == GameplayEnums.BuildOption.CART:
-			var routeData = get_route_data_from_point(objectBeingPlaced.position)					
-			add_cart_to_route(objectBeingPlaced, routeData)
+			var routeData = get_route_data_from_point(objectBeingPlaced.position)		
+
+			objectBeingPlaced.place_on_route(routeData)
+			carts.append(objectBeingPlaced)
 	else:
 		# Cancel placement by removing the new object
 		if objectBeingPlaced:
@@ -185,47 +186,3 @@ func highlight_available_route(routeData) -> void:
 func unhighlight_available_routes() -> void:
 	for routeData in routes:
 		routeData.route.default_color = Color(normalRouteColor)
-
-func add_cart_to_route(cartNode, routeData) -> void:
-	# first, normalize the placement so it is on the line
-	var pt1 = routeData.fromPt 
-	var pt2 = routeData.toPt
-
-	var pts = Utils.get_line_segments(pt1, pt2, 4)
-	var closestDist = 99999999
-	var closestPt = Vector2(0, 0)
-
-	# we place the cart in one of 5 junction points, depending on which it is closest to, facing the direction of the map node it's closest to
-	for pt in pts:
-		var d = pt.distance_to(cartNode.position)
-		if d < closestDist:
-			closestPt = pt
-			closestDist = d		
-
-	cartNode.position = closestPt	
-
-	var destinationPt = pt1 if closestPt.distance_to(pt1) < closestPt.distance_to(pt2) else pt2
-
-	var cartData = {
-		"cart" : cartNode,
-		"routeID": routeData.routeID,
-		"destinationPt" : destinationPt,
-		"speed": cartSpeed,
-	};
-
-	carts.append(cartData)
-
-	rotate_cart_for_route(cartData)
-
-# this function rotates the cart to be the right angle for the drawn route
-func rotate_cart_for_route(cartData) -> void:	
-	var routeData = get_route_by_id(cartData.routeID)
-
-	# if cart is facing straight left, we reverse the 
-	if cartData.destinationPt == routeData.fromPt:
-		cartData.cart.look_at(routeData.toPt)
-	else:
-		cartData.cart.look_at(routeData.fromPt)
-
-
-
