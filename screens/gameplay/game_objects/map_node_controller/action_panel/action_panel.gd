@@ -49,3 +49,6 @@ func update_stock(stock) -> void:
 
 func initiate_dragging_warehouse() -> void:
   emit_signal("started_dragging_object", GameplayEnums.BuildOption.WAREHOUSE)
+
+func initiate_dragging_cart() -> void: 
+  emit_signal("started_dragging_object", GameplayEnums.BuildOption.CART)

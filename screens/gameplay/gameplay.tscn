@@ -156,3 +156,4 @@ custom_fonts/font = SubResource( 2 )
 text = "x2"
 
 [connection signal="button_down" from="ActionPanel/VBoxContainer/Panel/CenterContainer/MarginContainer/GridContainer/Warehouses/Button" to="ActionPanel" method="initiate_dragging_warehouse"]
+[connection signal="button_down" from="ActionPanel/VBoxContainer/Panel/CenterContainer/MarginContainer/GridContainer/Carts/Button" to="ActionPanel" method="initiate_dragging_cart"]
