@@ -26,10 +26,17 @@ func display(inputPosition: Vector2, buttonTypesToShow: Array) -> void:
     set_global_position(inputPosition)
     for type in buttonTypesToShow:
       for button in buttonContainer.get_children():
-        button.visible = button.name.to_upper() == ButtonType.keys()[type]
+        if button.name.to_upper() == ButtonType.keys()[type]:
+          button.visible = true
+          button.disabled = false
+        else:
+          button.visible = false
+          button.disabled = true
         rect_size = rect_min_size
     isVisible = true
 
 func hide() -> void:
   if isVisible:
     isVisible = false
+    for button in buttonContainer.get_children():
+      button.disabled = true

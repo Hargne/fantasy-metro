@@ -165,7 +165,7 @@ func hide_drag_new_route() -> void:
 func is_dragging_new_route() -> bool:
   return dragNewRouteVisual && dragNewRouteVisual.points.size() > 1 && dragNewRouteVisual.points[0] != Vector2.ZERO && dragNewRouteVisual.points[1] != Vector2.ZERO
 
-func blur_all_routes() -> void:
+func blur_all_routes(except: Route = null) -> void:
   for connection in nodeConnections:
-    if "route" in connection && is_instance_valid(connection.route):
+    if "route" in connection && is_instance_valid(connection.route) && connection.route != except:
       connection.route.blur()

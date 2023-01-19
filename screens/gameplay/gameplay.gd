@@ -71,6 +71,7 @@ func get_object_at_cursor_location() -> Node:
 
 func on_interact_click_handler() -> void:
   var clickedRoute = mapNodeController.get_route_from_point(interactPosition)
+  mapNodeController.blur_all_routes(clickedRoute)
   if clickedRoute:
     selectedObjects.append(clickedRoute)
     clickedRoute.highlight(true)
