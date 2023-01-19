@@ -2,7 +2,7 @@
 
 [ext_resource path="res://screens/gameplay/game_objects/map_node/village_node/village_node.gd" type="Script" id=1]
 [ext_resource path="res://screens/gameplay/game_objects/map_node/assets/map_node_spritesheet.png" type="Texture" id=2]
-[ext_resource path="res://screens/gameplay/game_objects/resource_list/resource_list.tscn" type="PackedScene" id=3]
+[ext_resource path="res://screens/gameplay/ui/resource_list/resource_list.tscn" type="PackedScene" id=3]
 [ext_resource path="res://shaders/waving_flag/waving_flag_shader.tres" type="Shader" id=4]
 
 [sub_resource type="ShaderMaterial" id=2]

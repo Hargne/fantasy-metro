@@ -9,10 +9,15 @@
 config_version=4
 
 _global_script_classes=[ {
-"base": "CanvasLayer",
-"class": "ActionPanel",
+"base": "PanelContainer",
+"class": "ActionPrompt",
 "language": "GDScript",
-"path": "res://screens/gameplay/game_objects/map_node_controller/action_panel/action_panel.gd"
+"path": "res://screens/gameplay/ui/action_prompt/action_prompt.gd"
+}, {
+"base": "PanelContainer",
+"class": "BuildPanel",
+"language": "GDScript",
+"path": "res://screens/gameplay/ui/build_panel/build_panel.gd"
 }, {
 "base": "Area2D",
 "class": "Cart",
@@ -34,6 +39,11 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://screens/gameplay/gameplay_enums.gd"
 }, {
+"base": "CanvasLayer",
+"class": "GameplayUIController",
+"language": "GDScript",
+"path": "res://screens/gameplay/ui/gameplay_ui_controller.gd"
+}, {
 "base": "Node2D",
 "class": "Map",
 "language": "GDScript",
@@ -54,6 +64,16 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://screens/gameplay/game_objects/map_node/resource_node/resource_node.gd"
 }, {
+"base": "Node2D",
+"class": "Route",
+"language": "GDScript",
+"path": "res://screens/gameplay/game_objects/route/route.gd"
+}, {
+"base": "Control",
+"class": "StockButton",
+"language": "GDScript",
+"path": "res://screens/gameplay/ui/stock_button/stock_button.gd"
+}, {
 "base": "MapNode",
 "class": "VillageNode",
 "language": "GDScript",
@@ -65,15 +85,19 @@ _global_script_classes=[ {
 "path": "res://screens/gameplay/game_objects/map_node/warehouse_node/warehouse_node.gd"
 } ]
 _global_script_class_icons={
-"ActionPanel": "",
+"ActionPrompt": "",
+"BuildPanel": "",
 "Cart": "",
 "CartController": "",
 "Gameplay": "",
 "GameplayEnums": "",
+"GameplayUIController": "",
 "Map": "",
 "MapNode": "",
 "MapNodeController": "",
 "ResourceNode": "",
+"Route": "",
+"StockButton": "",
 "VillageNode": "",
 "WarehouseNode": ""
 }
@@ -92,6 +116,7 @@ Utils="*res://global/utils.gd"
 
 window/size/width=1920
 window/size/height=1080
+window/size/resizable=false
 window/size/test_width=960
 window/size/test_height=540
 window/stretch/mode="viewport"

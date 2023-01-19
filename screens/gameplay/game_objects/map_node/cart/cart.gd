@@ -6,10 +6,10 @@ onready var storedResources = $ResourceList
 var defaultCartSpeed = 1.0
 
 export var capacity = 1
-export var routeID = 0
 export var destinationPt = Vector2(0,0)
 export var cartSpeed = 1
 export var startPt = Vector2(0,0)
+var currentRoute: Route
 
 func has_capacity() -> bool:
   return storedResources.resources.size() < capacity
@@ -22,10 +22,11 @@ func remove_resource(resourceType) -> void:
   if storedResources.resources.size() > 0:
     storedResources.remove_resource(resourceType)
 
-func place_on_route(routeData) -> void:
+func place_on_route(route: Route) -> void:
   # first, normalize the placement so it is on the line
-  var pt1 = routeData.fromPt 
-  var pt2 = routeData.toPt
+  var pt1 = route.get_start_point() 
+  var pt2 = route.get_end_point()
+  currentRoute = route
 
   var pts = Utils.get_line_segments(pt1, pt2, 4)
   var closestDist = 99999999
@@ -40,10 +41,9 @@ func place_on_route(routeData) -> void:
 
   position = closestPt	
 
-  routeID = routeData.routeID
   startPt = pt2 if closestPt.distance_to(pt1) < closestPt.distance_to(pt2) else pt1
   destinationPt = pt1 if closestPt.distance_to(pt1) < closestPt.distance_to(pt2) else pt2
   cartSpeed = defaultCartSpeed
 
   look_at(destinationPt)
-
+  

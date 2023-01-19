@@ -5,18 +5,19 @@ var rng = RandomNumberGenerator.new()
 # Refs
 onready var mapNodeController: MapNodeController = $MapNodeController
 onready var cartController: CartController = $CartController
-onready var actionPanel: ActionPanel = $ActionPanel
+onready var uiController: GameplayUIController = $UI
 onready var map: Map = $Map
 
 var isInteractBeingHeldDown = false
 var interactDuration = 0
-var interactHoldDownThreshold = 9
+var interactHoldDownThreshold = 15
 var interactPosition: Vector2
 var interactTarget: Node
+var selectedObjects = []
 var demandIncrementTimer: Timer
 var secondsBetweenDemandIncrement = 20
 
-var typeOfObjectBeingPlaced = 0
+var typeOfObjectBeingPlaced
 
 var buildStock = {
   GameplayEnums.BuildOption.WAREHOUSE: 1,
@@ -28,12 +29,14 @@ var _defaultCollisionLayer = 2147483647
 func _ready():
   rng.randomize()
   setup_demand_increment_timer()
-  # Connect Action Panel
-  Utils.connect_signal(actionPanel, "started_dragging_object", self, "on_new_object_drag_start")
-  Utils.connect_signal(actionPanel, "debug_refresh_stock", self, "debug_refresh_stock")
+  # Connect Build Panel
+  Utils.connect_signal(uiController.buildPanel, "started_dragging_object", self, "on_new_object_drag_start")
+  # Connect Map Node Controller events
+  Utils.connect_signal(mapNodeController, "on_increase_stock", self, "increase_stock_item")
+  Utils.connect_signal(mapNodeController, "on_decrease_stock", self, "decrease_stock_item")
   # Allow for nodes to get initialized
   yield(get_tree().create_timer(0.1), "timeout")
-  actionPanel.update_stock(buildStock)
+  uiController.buildPanel.update_stock(buildStock)
 
 func _input(event):
   if event.is_action_pressed("interact"):
@@ -67,56 +70,58 @@ func get_object_at_cursor_location() -> Node:
   return null
 
 func on_interact_click_handler() -> void:
-  pass
+  var clickedRoute = mapNodeController.get_route_from_point(interactPosition)
+  if clickedRoute:
+    selectedObjects.append(clickedRoute)
+    clickedRoute.highlight(true)
 
 func on_interact_drag() -> void:
   var mpos = get_global_mouse_position()
 
-  # Routes
+  # Carts
   if typeOfObjectBeingPlaced ==  GameplayEnums.BuildOption.CART:
-    cartController.objectBeingPlaced.position = map.get_tile_position_in_world(mpos)
-    var routeData = mapNodeController.get_route_data_from_point(mpos)
-    if !routeData.empty():
+    cartController.objectBeingPlaced.position = mpos
+    var route = mapNodeController.get_route_from_point(mpos)
+    if route:
+      route.highlight()
       cartController.canPlaceObject = true			
-      mapNodeController.highlight_available_route(routeData)
     else:
       cartController.canPlaceObject = false
-      mapNodeController.unhighlight_available_routes()			
+      mapNodeController.blur_all_routes()			
   else:
-    if !mapNodeController.is_placing_new_object() && interactTarget && interactTarget is MapNode && can_build_route():
+    # Routes
+    if can_build_route() && !mapNodeController.is_placing_new_object() && interactTarget && interactTarget is MapNode:
       mapNodeController.update_drag_new_route_points(interactTarget.get_connection_point(), mpos)
+    # Other Objects
     elif mapNodeController.is_placing_new_object():
       mapNodeController.objectBeingPlaced.position = map.get_tile_position_in_world(mpos)
       mapNodeController.canPlaceObject = map.is_tile_buildable(mpos)
       if mapNodeController.canPlaceObject && mapNodeController.objectBeingPlaced is Area2D && mapNodeController.objectBeingPlaced.get_overlapping_areas().size() > 0:
           mapNodeController.canPlaceObject = false
-        
 
 func on_interact_drag_end() -> void:
-  if typeOfObjectBeingPlaced ==  GameplayEnums.BuildOption.CART:
-    var routeData = mapNodeController.get_route_data_from_point(cartController.objectBeingPlaced.position)		
-    if cartController.end_place_new_object(routeData):
-      decrease_stock_item(typeOfObjectBeingPlaced)
+  if typeOfObjectBeingPlaced == GameplayEnums.BuildOption.CART:
+    var route = mapNodeController.get_route_from_point(cartController.objectBeingPlaced.position)		
+    if cartController.end_place_new_object(route):
+      decrease_stock_item(GameplayEnums.BuildOption.CART)
     cartController.stop_placing_object()
-    mapNodeController.unhighlight_available_routes()
+    mapNodeController.blur_all_routes()
   else:
     # Routes
     if mapNodeController.is_dragging_new_route():
       var objectAtEndOfDrag = get_object_at_cursor_location()
       if interactTarget && interactTarget is MapNode && objectAtEndOfDrag && objectAtEndOfDrag is MapNode && interactTarget != objectAtEndOfDrag && can_build_route():
-        mapNodeController.create_route_between_nodes(interactTarget, objectAtEndOfDrag)
-        decrease_stock_item(GameplayEnums.BuildOption.ROUTE)
+        mapNodeController.connect_map_nodes(interactTarget, objectAtEndOfDrag)
       mapNodeController.hide_drag_new_route()
     # Placing Objects
     elif mapNodeController.is_placing_new_object():
-      if mapNodeController.end_place_new_object():
-        decrease_stock_item(typeOfObjectBeingPlaced)
-      mapNodeController.stop_placing_object()
+      mapNodeController.end_place_new_object()
+      mapNodeController.blur_all_routes()
     
   interactTarget = null
   typeOfObjectBeingPlaced = null
 
-# Gets called when the player starts dragging an object from the action bar
+# Gets called when the player starts dragging an object from the build panel
 func on_new_object_drag_start(objectToBeSpawned) -> void:
   # Check if there's enough in stock
   if buildStock[objectToBeSpawned] > 0:
@@ -126,17 +131,23 @@ func on_new_object_drag_start(objectToBeSpawned) -> void:
     else:
       mapNodeController.initiate_place_new_object(objectToBeSpawned, get_global_mouse_position())
 
+func deselect_objects() -> void:
+  for obj in selectedObjects:
+    if obj.has_method("blur"):
+      obj.blur()
+  selectedObjects.clear()
+
 #
 # Stock
 #
 
 func increase_stock_item(item, amount = 1) -> void:
   buildStock[item] += amount
-  actionPanel.set_build_option_amount(item, buildStock[item])
+  uiController.buildPanel.set_build_option_amount(item, buildStock[item])
 
 func decrease_stock_item(item, amount = 1) -> void:
   buildStock[item] -= amount
-  actionPanel.set_build_option_amount(item, buildStock[item])
+  uiController.buildPanel.set_build_option_amount(item, buildStock[item])
 
 func can_build_route() -> bool:
   return buildStock[GameplayEnums.BuildOption.ROUTE] > 0
@@ -167,8 +178,3 @@ func on_demand_increment_timer_timeout() -> void:
         villageNode.add_resource_demand(demandedResource)
   # Restart the timer
   start_demand_increment_timer(secondsBetweenDemandIncrement)
-
-func debug_refresh_stock() -> void:
-  increase_stock_item(GameplayEnums.BuildOption.ROUTE)
-  increase_stock_item(GameplayEnums.BuildOption.WAREHOUSE)
-  increase_stock_item(GameplayEnums.BuildOption.CART)

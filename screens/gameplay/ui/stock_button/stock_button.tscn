@@ -1,0 +1,62 @@
+[gd_scene load_steps=6 format=2]
+
+[ext_resource path="res://screens/gameplay/ui/build_panel/assets/button_background.tres" type="StyleBox" id=1]
+[ext_resource path="res://fonts/resource/m5x7.ttf" type="DynamicFontData" id=2]
+[ext_resource path="res://screens/gameplay/ui/stock_button/stock_button.gd" type="Script" id=4]
+
+[sub_resource type="StyleBoxFlat" id=4]
+content_margin_left = 8.0
+content_margin_right = 8.0
+content_margin_top = 8.0
+content_margin_bottom = 8.0
+bg_color = Color( 0.133333, 0.133333, 0.133333, 1 )
+corner_radius_top_left = 100
+corner_radius_top_right = 100
+corner_radius_bottom_right = 100
+corner_radius_bottom_left = 100
+
+[sub_resource type="DynamicFont" id=2]
+size = 32
+extra_spacing_top = -5
+font_data = ExtResource( 2 )
+
+[node name="StockButton" type="Control"]
+margin_right = 100.0
+margin_bottom = 100.0
+rect_min_size = Vector2( 100, 100 )
+script = ExtResource( 4 )
+
+[node name="Button" type="Button" parent="."]
+margin_right = 84.0
+margin_bottom = 84.0
+custom_styles/hover = ExtResource( 1 )
+custom_styles/pressed = ExtResource( 1 )
+custom_styles/focus = ExtResource( 1 )
+custom_styles/disabled = ExtResource( 1 )
+custom_styles/normal = ExtResource( 1 )
+icon_align = 1
+expand_icon = true
+
+[node name="TextureRect" type="TextureRect" parent="."]
+modulate = Color( 0, 0, 0, 1 )
+margin_right = 84.0
+margin_bottom = 84.0
+expand = true
+
+[node name="AmountContainer" type="PanelContainer" parent="."]
+margin_left = 65.0
+margin_top = 50.0
+margin_right = 91.0
+margin_bottom = 81.0
+custom_styles/panel = SubResource( 4 )
+
+[node name="Label" type="Label" parent="AmountContainer"]
+margin_left = 8.0
+margin_top = 8.0
+margin_right = 32.0
+margin_bottom = 29.0
+custom_colors/font_color = Color( 1, 1, 1, 1 )
+custom_fonts/font = SubResource( 2 )
+text = "x2"
+align = 1
+valign = 1
