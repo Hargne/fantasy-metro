@@ -8,6 +8,7 @@ onready var rightContainer = $HBoxContainer/Right
 
 func _ready():
   Utils.connect_signal(get_stockbutton_by_type(GameplayEnums.BuildOption.WAREHOUSE).button, "button_down", self, "initiate_dragging_warehouse")
+  Utils.connect_signal(get_stockbutton_by_type(GameplayEnums.BuildOption.CART).button, "button_down", self, "initiate_dragging_cart")
 
 func get_stockbutton_by_type(buildOptionType) -> StockButton:
   for container in [leftContainer, rightContainer]:
@@ -39,3 +40,6 @@ func update_stock(stock) -> void:
 
 func initiate_dragging_warehouse() -> void:
   emit_signal("started_dragging_object", GameplayEnums.BuildOption.WAREHOUSE)
+
+func initiate_dragging_cart() -> void: 
+  emit_signal("started_dragging_object", GameplayEnums.BuildOption.CART)
