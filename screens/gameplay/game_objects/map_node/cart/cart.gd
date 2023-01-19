@@ -9,6 +9,7 @@ export var capacity = 1
 export var routeID = 0
 export var destinationPt = Vector2(0,0)
 export var cartSpeed = 1
+export var startPt = Vector2(0,0)
 
 func has_capacity() -> bool:
 	return storedResources.resources.size() < capacity
@@ -40,6 +41,7 @@ func place_on_route(routeData) -> void:
 	position = closestPt	
 
 	routeID = routeData.routeID
+	startPt = pt2 if closestPt.distance_to(pt1) < closestPt.distance_to(pt2) else pt1
 	destinationPt = pt1 if closestPt.distance_to(pt1) < closestPt.distance_to(pt2) else pt2
 	cartSpeed = defaultCartSpeed
 

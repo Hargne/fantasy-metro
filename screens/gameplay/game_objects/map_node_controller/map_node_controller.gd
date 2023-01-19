@@ -4,12 +4,10 @@ class_name MapNodeController
 var routeContainer: Node2D
 var dragNewRouteVisual: Line2D
 var routes = []
-var carts = []
 var objectBeingPlaced: Node
 var canPlaceObject = false
 var typeOfObjectBeingPlaced
 var warehouseNodePrefab = preload("res://screens/gameplay/game_objects/map_node/warehouse_node/warehouse_node.tscn")
-var cartPrefab = preload("res://screens/gameplay/game_objects/map_node/cart/cart.tscn")
 
 var normalRouteColor = "#cccccc"
 var availableRouteColor = "#ffffff"
@@ -125,22 +123,12 @@ func initiate_place_new_object(objectTypeToBePlaced, startPosition: Vector2) -> 
 		GameplayEnums.BuildOption.WAREHOUSE:
 			var warehouse = warehouseNodePrefab.instance()
 			add_child(warehouse)
-			objectBeingPlaced = warehouse
-		GameplayEnums.BuildOption.CART:
-			var cart = cartPrefab.instance()
-			add_child(cart)
-			objectBeingPlaced = cart	
+			objectBeingPlaced = warehouse		
 	if objectBeingPlaced:
 		objectBeingPlaced.position = startPosition
 
 func end_place_new_object() -> int:
-	if canPlaceObject:
-		if typeOfObjectBeingPlaced == GameplayEnums.BuildOption.CART:
-			var routeData = get_route_data_from_point(objectBeingPlaced.position)		
-
-			objectBeingPlaced.place_on_route(routeData)
-			carts.append(objectBeingPlaced)
-	else:
+	if !canPlaceObject:
 		# Cancel placement by removing the new object
 		if objectBeingPlaced:
 			objectBeingPlaced.queue_free()

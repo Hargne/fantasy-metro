@@ -2,6 +2,8 @@ extends CanvasLayer
 class_name ActionPanel
 
 signal started_dragging_object(buildOption)
+signal debug_refresh_stock()
+
 # Refs
 onready var warehouseButton = $VBoxContainer/Panel/CenterContainer/MarginContainer/GridContainer/Warehouses
 onready var routeButton = $VBoxContainer/Panel/CenterContainer/MarginContainer/GridContainer/Routes
@@ -52,3 +54,6 @@ func initiate_dragging_warehouse() -> void:
 
 func initiate_dragging_cart() -> void: 
   emit_signal("started_dragging_object", GameplayEnums.BuildOption.CART)
+
+func debug_refresh_stock() -> void:
+  emit_signal("debug_refresh_stock")
