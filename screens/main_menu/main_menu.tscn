@@ -13,19 +13,33 @@ current = true
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
 [node name="ColorRect" type="ColorRect" parent="CanvasLayer"]
-margin_right = 1024.0
-margin_bottom = 600.0
+anchor_left = 0.266
+anchor_top = 0.279
+anchor_right = 0.266
+anchor_bottom = 0.279
+margin_left = -969.72
+margin_top = -542.32
+margin_right = 969.28
+margin_bottom = 542.68
+grow_horizontal = 2
+grow_vertical = 2
 color = Color( 0.184314, 0.156863, 0.156863, 1 )
 
 [node name="CenterContainer" type="CenterContainer" parent="CanvasLayer"]
-margin_right = 1024.0
-margin_bottom = 600.0
+anchor_left = 0.266
+anchor_top = 0.279
+anchor_right = 0.266
+anchor_bottom = 0.279
+margin_left = -970.72
+margin_top = -545.32
+margin_right = 973.28
+margin_bottom = 544.68
 
 [node name="VBoxContainer2" type="VBoxContainer" parent="CanvasLayer/CenterContainer"]
-margin_left = 426.0
-margin_top = 252.0
-margin_right = 597.0
-margin_bottom = 348.0
+margin_left = 886.0
+margin_top = 497.0
+margin_right = 1057.0
+margin_bottom = 593.0
 custom_constants/separation = 50
 
 [node name="Label" type="Label" parent="CanvasLayer/CenterContainer/VBoxContainer2"]
