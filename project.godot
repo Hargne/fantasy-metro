@@ -10,6 +10,11 @@ config_version=4
 
 _global_script_classes=[ {
 "base": "PanelContainer",
+"class": "ActionPrompt",
+"language": "GDScript",
+"path": "res://screens/gameplay/ui/action_prompt/action_prompt.gd"
+}, {
+"base": "PanelContainer",
 "class": "BuildPanel",
 "language": "GDScript",
 "path": "res://screens/gameplay/ui/build_panel/build_panel.gd"
@@ -54,6 +59,11 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://screens/gameplay/game_objects/map_node/resource_node/resource_node.gd"
 }, {
+"base": "Node2D",
+"class": "Route",
+"language": "GDScript",
+"path": "res://screens/gameplay/game_objects/route/route.gd"
+}, {
 "base": "Control",
 "class": "StockButton",
 "language": "GDScript",
@@ -70,6 +80,7 @@ _global_script_classes=[ {
 "path": "res://screens/gameplay/game_objects/map_node/warehouse_node/warehouse_node.gd"
 } ]
 _global_script_class_icons={
+"ActionPrompt": "",
 "BuildPanel": "",
 "Cart": "",
 "Gameplay": "",
@@ -79,6 +90,7 @@ _global_script_class_icons={
 "MapNode": "",
 "MapNodeController": "",
 "ResourceNode": "",
+"Route": "",
 "StockButton": "",
 "VillageNode": "",
 "WarehouseNode": ""

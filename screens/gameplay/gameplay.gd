@@ -9,9 +9,10 @@ onready var map: Map = $Map
 
 var isInteractBeingHeldDown = false
 var interactDuration = 0
-var interactHoldDownThreshold = 9
+var interactHoldDownThreshold = 15
 var interactPosition: Vector2
 var interactTarget: Node
+var selectedObjects = []
 var demandIncrementTimer: Timer
 var secondsBetweenDemandIncrement = 20
 
@@ -27,6 +28,9 @@ func _ready():
   setup_demand_increment_timer()
   # Connect Build Panel
   Utils.connect_signal(uiController.buildPanel, "started_dragging_object", self, "on_new_object_drag_start")
+  # Connect Map Node Controller events
+  Utils.connect_signal(mapNodeController, "on_increase_stock", self, "increase_stock_item")
+  Utils.connect_signal(mapNodeController, "on_decrease_stock", self, "decrease_stock_item")
   # Allow for nodes to get initialized
   yield(get_tree().create_timer(0.1), "timeout")
   uiController.buildPanel.update_stock(buildStock)
@@ -63,26 +67,29 @@ func get_object_at_cursor_location() -> Node:
   return null
 
 func on_interact_click_handler() -> void:
-  # uiController.display_action_prompt(get_viewport_transform() * (get_global_transform() * get_global_mouse_position()))
-  pass
+  var clickedRoute = mapNodeController.get_route_from_point(interactPosition)
+  if clickedRoute:
+    selectedObjects.append(clickedRoute)
+    clickedRoute.highlight()
 
 func on_interact_drag() -> void:
   var mpos = get_global_mouse_position()
 
   # Routes
-  if !mapNodeController.is_placing_new_object() && interactTarget && interactTarget is MapNode && can_build_route():
+  if interactTarget && interactTarget is MapNode && can_build_route() && !mapNodeController.is_placing_new_object():
     mapNodeController.update_drag_new_route_points(interactTarget.get_connection_point(), mpos)
   elif mapNodeController.is_placing_new_object():
-    mapNodeController.objectBeingPlaced.position = map.get_tile_position_in_world(mpos)
     if mapNodeController.typeOfObjectBeingPlaced == GameplayEnums.BuildOption.CART:
-      var routeData = mapNodeController.get_route_data_from_point(mpos)
-      if !routeData.empty():
-        mapNodeController.canPlaceObject = true			
-        mapNodeController.highlight_available_route(routeData)
+      mapNodeController.objectBeingPlaced.position = mpos
+      var route = mapNodeController.get_route_from_point(mpos)
+      if route:
+        route.highlight()
+        mapNodeController.canPlaceObject = true
       else:
         mapNodeController.canPlaceObject = false
-        mapNodeController.unhighlight_available_routes()
+        mapNodeController.blur_all_routes()
     else:
+      mapNodeController.objectBeingPlaced.position = map.get_tile_position_in_world(mpos)
       mapNodeController.canPlaceObject = map.is_tile_buildable(mpos)
       if mapNodeController.canPlaceObject && mapNodeController.objectBeingPlaced is Area2D && mapNodeController.objectBeingPlaced.get_overlapping_areas().size() > 0:
         mapNodeController.canPlaceObject = false
@@ -92,15 +99,12 @@ func on_interact_drag_end() -> void:
   if mapNodeController.is_dragging_new_route():
     var objectAtEndOfDrag = get_object_at_cursor_location()
     if interactTarget && interactTarget is MapNode && objectAtEndOfDrag && objectAtEndOfDrag is MapNode && interactTarget != objectAtEndOfDrag && can_build_route():
-      mapNodeController.create_route_between_nodes(interactTarget, objectAtEndOfDrag)
-      decrease_stock_item(GameplayEnums.BuildOption.ROUTE)
+      mapNodeController.connect_map_nodes(interactTarget, objectAtEndOfDrag)
     mapNodeController.hide_drag_new_route()
   # Placing Objects
   elif mapNodeController.is_placing_new_object():
-    if mapNodeController.end_place_new_object():
-      decrease_stock_item(mapNodeController.typeOfObjectBeingPlaced)
-    mapNodeController.stop_placing_object()
-  
+    mapNodeController.end_place_new_object()
+    mapNodeController.blur_all_routes()
   interactTarget = null
 
 # Gets called when the player starts dragging an object from the build panel
@@ -108,6 +112,12 @@ func on_new_object_drag_start(objectToBeSpawned) -> void:
   # Check if there's enough in stock
   if buildStock[objectToBeSpawned] > 0:
     mapNodeController.initiate_place_new_object(objectToBeSpawned, get_global_mouse_position())
+
+func deselect_objects() -> void:
+  for obj in selectedObjects:
+    if obj.has_method("blur"):
+      obj.blur()
+  selectedObjects.clear()
 
 #
 # Stock

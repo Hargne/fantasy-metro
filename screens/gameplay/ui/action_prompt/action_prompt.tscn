@@ -10,35 +10,33 @@ content_margin_left = 10.0
 content_margin_right = 10.0
 content_margin_top = 5.0
 content_margin_bottom = 5.0
-bg_color = Color( 0, 0, 0, 0.505882 )
-corner_radius_top_left = 30
-corner_radius_top_right = 30
-corner_radius_bottom_right = 30
-corner_radius_bottom_left = 30
+bg_color = Color( 0, 0, 0, 0.741176 )
+corner_radius_top_left = 100
+corner_radius_top_right = 100
+corner_radius_bottom_right = 100
+corner_radius_bottom_left = 100
 
 [node name="ActionPrompt" type="PanelContainer"]
-margin_right = 204.0
+margin_right = 68.0
 margin_bottom = 58.0
 custom_styles/panel = SubResource( 3 )
 script = ExtResource( 2 )
 
-[node name="GridContainer" type="GridContainer" parent="."]
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
 margin_left = 10.0
 margin_top = 5.0
 margin_right = 194.0
 margin_bottom = 53.0
-custom_constants/vseparation = 20
-custom_constants/hseparation = 20
-columns = 4
+custom_constants/separation = 20
 
-[node name="Delete" type="TextureButton" parent="GridContainer"]
+[node name="DELETE" type="TextureButton" parent="HBoxContainer"]
 margin_right = 48.0
 margin_bottom = 48.0
 rect_min_size = Vector2( 48, 48 )
 texture_normal = ExtResource( 3 )
 expand = true
 
-[node name="Move" type="TextureButton" parent="GridContainer"]
+[node name="MOVE" type="TextureButton" parent="HBoxContainer"]
 margin_left = 68.0
 margin_right = 116.0
 margin_bottom = 48.0
@@ -46,7 +44,7 @@ rect_min_size = Vector2( 48, 48 )
 texture_normal = ExtResource( 6 )
 expand = true
 
-[node name="Upgrade" type="TextureButton" parent="GridContainer"]
+[node name="UPGRADE" type="TextureButton" parent="HBoxContainer"]
 margin_left = 136.0
 margin_right = 184.0
 margin_bottom = 48.0

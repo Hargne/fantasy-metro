@@ -15,8 +15,6 @@ extents = Vector2( 6, 5 )
 
 [node name="WarehouseNode" type="Area2D"]
 script = ExtResource( 1 )
-nodeType = null
-resourceType = null
 
 [node name="Sprite" type="Sprite" parent="."]
 texture = ExtResource( 2 )

@@ -21,10 +21,10 @@ func remove_resource(resourceType) -> void:
   if storedResources.resources.size() > 0:
     storedResources.remove_resource(resourceType)
 
-func place_on_route(routeData) -> void:
+func place_on_route(route: Route) -> void:
   # first, normalize the placement so it is on the line
-  var pt1 = routeData.fromPt 
-  var pt2 = routeData.toPt
+  var pt1 = route.get_start_point() 
+  var pt2 = route.get_end_point()
 
   var pts = Utils.get_line_segments(pt1, pt2, 4)
   var closestDist = 99999999
@@ -37,9 +37,8 @@ func place_on_route(routeData) -> void:
       closestPt = pt
       closestDist = d		
 
-  position = closestPt	
+  position = closestPt
 
-  routeID = routeData.routeID
   destinationPt = pt1 if closestPt.distance_to(pt1) < closestPt.distance_to(pt2) else pt2
   cartSpeed = defaultCartSpeed
 
