@@ -49,6 +49,11 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://screens/gameplay/game_objects/map_node/resource_node/resource_node.gd"
 }, {
+"base": "Control",
+"class": "StockButton",
+"language": "GDScript",
+"path": "res://screens/gameplay/ui/stock_button/stock_button.gd"
+}, {
 "base": "MapNode",
 "class": "VillageNode",
 "language": "GDScript",
@@ -68,6 +73,7 @@ _global_script_class_icons={
 "MapNode": "",
 "MapNodeController": "",
 "ResourceNode": "",
+"StockButton": "",
 "VillageNode": "",
 "WarehouseNode": ""
 }
