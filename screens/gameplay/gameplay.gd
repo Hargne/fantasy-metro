@@ -62,6 +62,7 @@ func get_object_at_cursor_location() -> Node:
   return null
 
 func on_interact_click_handler() -> void:
+  # uiController.display_action_prompt(get_viewport_transform() * (get_global_transform() * get_global_mouse_position()))
   pass
 
 func on_interact_drag() -> void:
