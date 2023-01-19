@@ -73,7 +73,7 @@ func on_interact_click_handler() -> void:
   var clickedRoute = mapNodeController.get_route_from_point(interactPosition)
   if clickedRoute:
     selectedObjects.append(clickedRoute)
-    clickedRoute.highlight()
+    clickedRoute.highlight(true)
 
 func on_interact_drag() -> void:
   var mpos = get_global_mouse_position()
@@ -100,25 +100,23 @@ func on_interact_drag() -> void:
           mapNodeController.canPlaceObject = false
 
 func on_interact_drag_end() -> void:
-  if typeOfObjectBeingPlaced ==  GameplayEnums.BuildOption.CART:
-    var routeData = mapNodeController.get_route_data_from_point(cartController.objectBeingPlaced.position)		
-    if cartController.end_place_new_object(routeData):
-      decrease_stock_item(typeOfObjectBeingPlaced)
+  if typeOfObjectBeingPlaced == GameplayEnums.BuildOption.CART:
+    var route = mapNodeController.get_route_from_point(cartController.objectBeingPlaced.position)		
+    if cartController.end_place_new_object(route):
+      decrease_stock_item(GameplayEnums.BuildOption.CART)
     cartController.stop_placing_object()
-    mapNodeController.unhighlight_available_routes()
+    mapNodeController.blur_all_routes()
   else:
     # Routes
     if mapNodeController.is_dragging_new_route():
       var objectAtEndOfDrag = get_object_at_cursor_location()
       if interactTarget && interactTarget is MapNode && objectAtEndOfDrag && objectAtEndOfDrag is MapNode && interactTarget != objectAtEndOfDrag && can_build_route():
-        mapNodeController.create_route_between_nodes(interactTarget, objectAtEndOfDrag)
-        decrease_stock_item(GameplayEnums.BuildOption.ROUTE)
+        mapNodeController.connect_map_nodes(interactTarget, objectAtEndOfDrag)
       mapNodeController.hide_drag_new_route()
     # Placing Objects
     elif mapNodeController.is_placing_new_object():
-      if mapNodeController.end_place_new_object():
-        decrease_stock_item(typeOfObjectBeingPlaced)
-      mapNodeController.stop_placing_object()
+      mapNodeController.end_place_new_object()
+      mapNodeController.blur_all_routes()
     
   interactTarget = null
   typeOfObjectBeingPlaced = null

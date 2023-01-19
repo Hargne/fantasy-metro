@@ -6,10 +6,10 @@ onready var storedResources = $ResourceList
 var defaultCartSpeed = 1.0
 
 export var capacity = 1
-export var currentRoute: Route
 export var destinationPt = Vector2(0,0)
 export var cartSpeed = 1
 export var startPt = Vector2(0,0)
+var currentRoute: Route
 
 func has_capacity() -> bool:
   return storedResources.resources.size() < capacity

@@ -23,10 +23,10 @@ func initiate_place_new_object(objectTypeToBePlaced, startPosition: Vector2) -> 
   if objectBeingPlaced:
     objectBeingPlaced.position = startPosition
 
-func end_place_new_object(routeData) -> int:
+func end_place_new_object(route: Route) -> int:
   if canPlaceObject:
     if typeOfObjectBeingPlaced == GameplayEnums.BuildOption.CART:
-      objectBeingPlaced.place_on_route(routeData)
+      objectBeingPlaced.place_on_route(route)
       carts.append(objectBeingPlaced)
   else:
     # Cancel placement by removing the new object

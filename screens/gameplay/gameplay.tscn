@@ -63,6 +63,9 @@ position = Vector2( 63, -1 )
 position = Vector2( -66, 21 )
 resourceType = 1
 
+[node name="CartController" type="Node2D" parent="."]
+script = ExtResource( 13 )
+
 [node name="UI" type="CanvasLayer" parent="."]
 script = ExtResource( 14 )
 

@@ -30,9 +30,10 @@ func setup_visuals() -> void:
   line.begin_cap_mode = Line2D.LINE_CAP_ROUND
   line.end_cap_mode = Line2D.LINE_CAP_ROUND 
 
-func highlight() -> void:
+func highlight(showPrompt = false) -> void:
   _targetHighlightAmount = 1
-  actionPrompt.display(get_center_point(), [ActionPrompt.ButtonType.DELETE])
+  if showPrompt:
+    actionPrompt.display(get_center_point(), [ActionPrompt.ButtonType.DELETE])
 
 func blur() -> void:
   _targetHighlightAmount = 0
