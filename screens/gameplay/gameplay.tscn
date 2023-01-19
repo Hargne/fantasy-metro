@@ -1,11 +1,11 @@
-[gd_scene load_steps=17 format=2]
+[gd_scene load_steps=19 format=2]
 
 [ext_resource path="res://screens/gameplay/game_objects/map_node/resource_node/resource_node.tscn" type="PackedScene" id=1]
 [ext_resource path="res://screens/gameplay/game_objects/map_node/village_node/village_node.tscn" type="PackedScene" id=2]
 [ext_resource path="res://screens/gameplay/game_objects/map/assets/map-tileset.tres" type="TileSet" id=3]
 [ext_resource path="res://screens/gameplay/game_objects/map_node_controller/map_node_controller.gd" type="Script" id=4]
 [ext_resource path="res://screens/gameplay/gameplay.gd" type="Script" id=5]
-[ext_resource path="res://screens/gameplay/ui/assets/Warehouse.png" type="Texture" id=6]
+[ext_resource path="res://screens/gameplay/ui/build_panel/assets/button_background.tres" type="StyleBox" id=6]
 [ext_resource path="res://screens/gameplay/camera/main_camera.gd" type="Script" id=7]
 [ext_resource path="res://screens/gameplay/ui/assets/Cart.png" type="Texture" id=8]
 [ext_resource path="res://screens/gameplay/ui/assets/Route.png" type="Texture" id=9]
@@ -14,6 +14,7 @@
 [ext_resource path="res://screens/gameplay/game_objects/map/map.gd" type="Script" id=12]
 [ext_resource path="res://screens/gameplay/ui/action_prompt/action_prompt.tscn" type="PackedScene" id=13]
 [ext_resource path="res://screens/gameplay/ui/gameplay_ui_controller.gd" type="Script" id=14]
+[ext_resource path="res://screens/gameplay/ui/assets/Warehouse.png" type="Texture" id=15]
 
 [sub_resource type="StyleBoxFlat" id=3]
 content_margin_left = 5.0
@@ -21,10 +22,21 @@ content_margin_right = 5.0
 content_margin_top = 5.0
 content_margin_bottom = 5.0
 bg_color = Color( 1, 1, 1, 0.780392 )
+draw_center = false
 corner_radius_top_left = 15
 corner_radius_top_right = 15
 corner_radius_bottom_right = 15
 corner_radius_bottom_left = 15
+
+[sub_resource type="StyleBoxFlat" id=4]
+content_margin_left = 1.0
+content_margin_right = 1.0
+content_margin_bottom = 5.0
+bg_color = Color( 0.133333, 0.133333, 0.133333, 1 )
+corner_radius_top_left = 30
+corner_radius_top_right = 30
+corner_radius_bottom_right = 30
+corner_radius_bottom_left = 30
 
 [sub_resource type="DynamicFont" id=2]
 size = 32
@@ -67,101 +79,161 @@ position = Vector2( -66, 21 )
 resourceType = 1
 
 [node name="UI" type="CanvasLayer" parent="."]
-scale = Vector2( 2, 2 )
-transform = Transform2D( 2, 0, 0, 2, 0, 0 )
 script = ExtResource( 14 )
 
 [node name="ActionPrompt" parent="UI" instance=ExtResource( 13 )]
 
 [node name="VBoxContainer" type="VBoxContainer" parent="UI"]
-margin_left = -1.0
-margin_top = 1.0
-margin_right = 959.0
-margin_bottom = 521.0
+margin_left = 30.0
+margin_right = 1919.0
+margin_bottom = 1080.0
 mouse_filter = 2
 alignment = 2
 
-[node name="CenterContainer" type="CenterContainer" parent="UI/VBoxContainer"]
-margin_top = 478.0
-margin_right = 960.0
-margin_bottom = 520.0
-
-[node name="BuildPanel" type="PanelContainer" parent="UI/VBoxContainer/CenterContainer"]
-margin_left = 349.0
-margin_right = 611.0
-margin_bottom = 42.0
+[node name="BuildPanel" type="PanelContainer" parent="UI/VBoxContainer"]
+margin_top = 970.0
+margin_right = 1889.0
+margin_bottom = 1080.0
 custom_styles/panel = SubResource( 3 )
 script = ExtResource( 11 )
 
-[node name="GridContainer" type="GridContainer" parent="UI/VBoxContainer/CenterContainer/BuildPanel"]
+[node name="GridContainer" type="GridContainer" parent="UI/VBoxContainer/BuildPanel"]
 margin_left = 5.0
 margin_top = 5.0
-margin_right = 257.0
-margin_bottom = 37.0
+margin_right = 1884.0
+margin_bottom = 105.0
 custom_constants/hseparation = 30
 columns = 20
 
-[node name="Routes" type="HSplitContainer" parent="UI/VBoxContainer/CenterContainer/BuildPanel/GridContainer"]
-margin_right = 64.0
-margin_bottom = 32.0
-mouse_filter = 1
-custom_constants/separation = 0
+[node name="Routes" type="Control" parent="UI/VBoxContainer/BuildPanel/GridContainer"]
+margin_right = 100.0
+margin_bottom = 100.0
+rect_min_size = Vector2( 100, 100 )
 
-[node name="Button" type="TextureButton" parent="UI/VBoxContainer/CenterContainer/BuildPanel/GridContainer/Routes"]
-modulate = Color( 0, 0, 0, 1 )
-margin_right = 32.0
-margin_bottom = 32.0
+[node name="ButtonContainer" type="PanelContainer" parent="UI/VBoxContainer/BuildPanel/GridContainer/Routes"]
+margin_right = 84.0
+margin_bottom = 74.0
+custom_styles/panel = ExtResource( 6 )
+
+[node name="Button" type="TextureButton" parent="UI/VBoxContainer/BuildPanel/GridContainer/Routes/ButtonContainer"]
+margin_left = 10.0
+margin_top = 5.0
+margin_right = 74.0
+margin_bottom = 69.0
+rect_min_size = Vector2( 64, 64 )
 texture_normal = ExtResource( 9 )
+expand = true
 
-[node name="Label" type="Label" parent="UI/VBoxContainer/CenterContainer/BuildPanel/GridContainer/Routes"]
-margin_left = 40.0
-margin_top = 3.0
-margin_right = 64.0
-margin_bottom = 29.0
-custom_colors/font_color = Color( 0.4, 0.4, 0.4, 1 )
+[node name="AmountContainer" type="PanelContainer" parent="UI/VBoxContainer/BuildPanel/GridContainer/Routes"]
+margin_left = 65.0
+margin_top = 50.0
+margin_right = 107.0
+margin_bottom = 92.0
+rect_min_size = Vector2( 42, 42 )
+custom_styles/panel = SubResource( 4 )
+
+[node name="CenterContainer" type="CenterContainer" parent="UI/VBoxContainer/BuildPanel/GridContainer/Routes/AmountContainer"]
+margin_left = 1.0
+margin_right = 41.0
+margin_bottom = 37.0
+
+[node name="Label" type="Label" parent="UI/VBoxContainer/BuildPanel/GridContainer/Routes/AmountContainer/CenterContainer"]
+margin_left = 8.0
+margin_top = 5.0
+margin_right = 32.0
+margin_bottom = 31.0
+custom_colors/font_color = Color( 1, 1, 1, 1 )
 custom_fonts/font = SubResource( 2 )
 text = "x2"
+align = 1
+valign = 1
 
-[node name="Warehouses" type="HSplitContainer" parent="UI/VBoxContainer/CenterContainer/BuildPanel/GridContainer"]
-margin_left = 94.0
-margin_right = 158.0
-margin_bottom = 32.0
-mouse_filter = 1
-custom_constants/separation = 0
+[node name="Warehouses" type="Control" parent="UI/VBoxContainer/BuildPanel/GridContainer"]
+margin_left = 130.0
+margin_right = 230.0
+margin_bottom = 100.0
+rect_min_size = Vector2( 100, 100 )
 
-[node name="Button" type="TextureButton" parent="UI/VBoxContainer/CenterContainer/BuildPanel/GridContainer/Warehouses"]
-modulate = Color( 0, 0, 0, 1 )
+[node name="ButtonContainer" type="PanelContainer" parent="UI/VBoxContainer/BuildPanel/GridContainer/Warehouses"]
+margin_right = 84.0
+margin_bottom = 74.0
+rect_min_size = Vector2( 84, 74 )
+custom_styles/panel = ExtResource( 6 )
+
+[node name="Button" type="TextureButton" parent="UI/VBoxContainer/BuildPanel/GridContainer/Warehouses/ButtonContainer"]
+margin_left = 10.0
+margin_top = 5.0
+margin_right = 74.0
+margin_bottom = 69.0
+rect_min_size = Vector2( 64, 64 )
+texture_normal = ExtResource( 15 )
+expand = true
+
+[node name="AmountContainer" type="PanelContainer" parent="UI/VBoxContainer/BuildPanel/GridContainer/Warehouses"]
+margin_left = 65.0
+margin_top = 50.0
+margin_right = 107.0
+margin_bottom = 92.0
+rect_min_size = Vector2( 42, 42 )
+custom_styles/panel = SubResource( 4 )
+
+[node name="CenterContainer" type="CenterContainer" parent="UI/VBoxContainer/BuildPanel/GridContainer/Warehouses/AmountContainer"]
+margin_left = 1.0
+margin_right = 41.0
+margin_bottom = 37.0
+
+[node name="Label" type="Label" parent="UI/VBoxContainer/BuildPanel/GridContainer/Warehouses/AmountContainer/CenterContainer"]
+margin_left = 8.0
+margin_top = 5.0
 margin_right = 32.0
-margin_bottom = 32.0
-texture_normal = ExtResource( 6 )
-
-[node name="Label" type="Label" parent="UI/VBoxContainer/CenterContainer/BuildPanel/GridContainer/Warehouses"]
-margin_left = 40.0
-margin_top = 3.0
-margin_right = 64.0
-margin_bottom = 29.0
-custom_colors/font_color = Color( 0.4, 0.4, 0.4, 1 )
+margin_bottom = 31.0
+custom_colors/font_color = Color( 1, 1, 1, 1 )
 custom_fonts/font = SubResource( 2 )
 text = "x2"
+align = 1
+valign = 1
 
-[node name="Carts" type="HSplitContainer" parent="UI/VBoxContainer/CenterContainer/BuildPanel/GridContainer"]
-margin_left = 188.0
-margin_right = 252.0
-margin_bottom = 32.0
-mouse_filter = 1
-custom_constants/separation = 0
+[node name="Carts" type="Control" parent="UI/VBoxContainer/BuildPanel/GridContainer"]
+margin_left = 260.0
+margin_right = 360.0
+margin_bottom = 100.0
+rect_min_size = Vector2( 100, 100 )
 
-[node name="Button" type="TextureButton" parent="UI/VBoxContainer/CenterContainer/BuildPanel/GridContainer/Carts"]
-modulate = Color( 0, 0, 0, 1 )
-margin_right = 32.0
-margin_bottom = 32.0
+[node name="ButtonContainer" type="PanelContainer" parent="UI/VBoxContainer/BuildPanel/GridContainer/Carts"]
+margin_right = 84.0
+margin_bottom = 74.0
+rect_min_size = Vector2( 84, 74 )
+custom_styles/panel = ExtResource( 6 )
+
+[node name="Button" type="TextureButton" parent="UI/VBoxContainer/BuildPanel/GridContainer/Carts/ButtonContainer"]
+margin_left = 10.0
+margin_top = 5.0
+margin_right = 74.0
+margin_bottom = 69.0
+rect_min_size = Vector2( 64, 64 )
 texture_normal = ExtResource( 8 )
+expand = true
 
-[node name="Label" type="Label" parent="UI/VBoxContainer/CenterContainer/BuildPanel/GridContainer/Carts"]
-margin_left = 40.0
-margin_top = 3.0
-margin_right = 64.0
-margin_bottom = 29.0
-custom_colors/font_color = Color( 0.4, 0.4, 0.4, 1 )
+[node name="AmountContainer" type="PanelContainer" parent="UI/VBoxContainer/BuildPanel/GridContainer/Carts"]
+margin_left = 65.0
+margin_top = 50.0
+margin_right = 107.0
+margin_bottom = 92.0
+rect_min_size = Vector2( 42, 42 )
+custom_styles/panel = SubResource( 4 )
+
+[node name="CenterContainer" type="CenterContainer" parent="UI/VBoxContainer/BuildPanel/GridContainer/Carts/AmountContainer"]
+margin_left = 1.0
+margin_right = 41.0
+margin_bottom = 37.0
+
+[node name="Label" type="Label" parent="UI/VBoxContainer/BuildPanel/GridContainer/Carts/AmountContainer/CenterContainer"]
+margin_left = 8.0
+margin_top = 5.0
+margin_right = 32.0
+margin_bottom = 31.0
+custom_colors/font_color = Color( 1, 1, 1, 1 )
 custom_fonts/font = SubResource( 2 )
 text = "x2"
+align = 1
+valign = 1
