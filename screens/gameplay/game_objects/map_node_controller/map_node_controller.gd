@@ -1,12 +1,10 @@
 extends Node2D
 class_name MapNodeController
 
-var carts = []
 var objectBeingPlaced: Node
 var canPlaceObject = false
 var typeOfObjectBeingPlaced
 var warehouseNodePrefab = preload("res://screens/gameplay/game_objects/map_node/warehouse_node/warehouse_node.tscn")
-var cartPrefab = preload("res://screens/gameplay/game_objects/map_node/cart/cart.tscn")
 # Connections / Routes
 var nodeConnections = []
 var routeContainer: Node2D
@@ -49,21 +47,11 @@ func initiate_place_new_object(objectTypeToBePlaced, startPosition: Vector2) -> 
     GameplayEnums.BuildOption.WAREHOUSE:
       var warehouse = warehouseNodePrefab.instance()
       add_child(warehouse)
-      objectBeingPlaced = warehouse
-    GameplayEnums.BuildOption.CART:
-      var cart = cartPrefab.instance()
-      add_child(cart)
-      objectBeingPlaced = cart	
   if objectBeingPlaced:
     objectBeingPlaced.position = startPosition
 
 func end_place_new_object() -> void:
   if canPlaceObject:
-    if typeOfObjectBeingPlaced == GameplayEnums.BuildOption.CART:
-      var route = get_route_from_point(objectBeingPlaced.position)
-      if route:		
-        objectBeingPlaced.place_on_route(route)
-        carts.append(objectBeingPlaced)
     emit_signal("on_decrease_stock", typeOfObjectBeingPlaced)
   else:
     # Cancel placement by removing the new object
@@ -74,6 +62,7 @@ func end_place_new_object() -> void:
 func stop_placing_object() -> void:
   objectBeingPlaced = null
   typeOfObjectBeingPlaced = null
+  blur_all_routes()
 
 func is_placing_new_object() -> bool:
   return objectBeingPlaced != null && is_instance_valid(objectBeingPlaced)

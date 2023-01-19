@@ -4,6 +4,7 @@ class_name Gameplay
 var rng = RandomNumberGenerator.new()
 # Refs
 onready var mapNodeController: MapNodeController = $MapNodeController
+onready var cartController: CartController = $CartController
 onready var uiController: GameplayUIController = $UI
 onready var map: Map = $Map
 
@@ -15,6 +16,8 @@ var interactTarget: Node
 var selectedObjects = []
 var demandIncrementTimer: Timer
 var secondsBetweenDemandIncrement = 20
+
+var typeOfObjectBeingPlaced
 
 var buildStock = {
   GameplayEnums.BuildOption.WAREHOUSE: 1,
@@ -75,43 +78,60 @@ func on_interact_click_handler() -> void:
 func on_interact_drag() -> void:
   var mpos = get_global_mouse_position()
 
-  # Routes
-  if interactTarget && interactTarget is MapNode && can_build_route() && !mapNodeController.is_placing_new_object():
-    mapNodeController.update_drag_new_route_points(interactTarget.get_connection_point(), mpos)
-  elif mapNodeController.is_placing_new_object():
-    if mapNodeController.typeOfObjectBeingPlaced == GameplayEnums.BuildOption.CART:
-      mapNodeController.objectBeingPlaced.position = mpos
-      var route = mapNodeController.get_route_from_point(mpos)
-      if route:
-        route.highlight()
-        mapNodeController.canPlaceObject = true
-      else:
-        mapNodeController.canPlaceObject = false
-        mapNodeController.blur_all_routes()
+  # Carts
+  if typeOfObjectBeingPlaced ==  GameplayEnums.BuildOption.CART:
+    cartController.objectBeingPlaced.position = mpos
+    var route = mapNodeController.get_route_from_point(mpos)
+    if route:
+      route.highlight()
+      cartController.canPlaceObject = true			
     else:
+      cartController.canPlaceObject = false
+      mapNodeController.blur_all_routes()			
+  else:
+    # Routes
+    if can_build_route() && !mapNodeController.is_placing_new_object() && interactTarget && interactTarget is MapNode:
+      mapNodeController.update_drag_new_route_points(interactTarget.get_connection_point(), mpos)
+    # Other Objects
+    elif mapNodeController.is_placing_new_object():
       mapNodeController.objectBeingPlaced.position = map.get_tile_position_in_world(mpos)
       mapNodeController.canPlaceObject = map.is_tile_buildable(mpos)
       if mapNodeController.canPlaceObject && mapNodeController.objectBeingPlaced is Area2D && mapNodeController.objectBeingPlaced.get_overlapping_areas().size() > 0:
-        mapNodeController.canPlaceObject = false
+          mapNodeController.canPlaceObject = false
 
 func on_interact_drag_end() -> void:
-  # Routes
-  if mapNodeController.is_dragging_new_route():
-    var objectAtEndOfDrag = get_object_at_cursor_location()
-    if interactTarget && interactTarget is MapNode && objectAtEndOfDrag && objectAtEndOfDrag is MapNode && interactTarget != objectAtEndOfDrag && can_build_route():
-      mapNodeController.connect_map_nodes(interactTarget, objectAtEndOfDrag)
-    mapNodeController.hide_drag_new_route()
-  # Placing Objects
-  elif mapNodeController.is_placing_new_object():
-    mapNodeController.end_place_new_object()
-    mapNodeController.blur_all_routes()
+  if typeOfObjectBeingPlaced ==  GameplayEnums.BuildOption.CART:
+    var routeData = mapNodeController.get_route_data_from_point(cartController.objectBeingPlaced.position)		
+    if cartController.end_place_new_object(routeData):
+      decrease_stock_item(typeOfObjectBeingPlaced)
+    cartController.stop_placing_object()
+    mapNodeController.unhighlight_available_routes()
+  else:
+    # Routes
+    if mapNodeController.is_dragging_new_route():
+      var objectAtEndOfDrag = get_object_at_cursor_location()
+      if interactTarget && interactTarget is MapNode && objectAtEndOfDrag && objectAtEndOfDrag is MapNode && interactTarget != objectAtEndOfDrag && can_build_route():
+        mapNodeController.create_route_between_nodes(interactTarget, objectAtEndOfDrag)
+        decrease_stock_item(GameplayEnums.BuildOption.ROUTE)
+      mapNodeController.hide_drag_new_route()
+    # Placing Objects
+    elif mapNodeController.is_placing_new_object():
+      if mapNodeController.end_place_new_object():
+        decrease_stock_item(typeOfObjectBeingPlaced)
+      mapNodeController.stop_placing_object()
+    
   interactTarget = null
+  typeOfObjectBeingPlaced = null
 
 # Gets called when the player starts dragging an object from the build panel
 func on_new_object_drag_start(objectToBeSpawned) -> void:
   # Check if there's enough in stock
   if buildStock[objectToBeSpawned] > 0:
-    mapNodeController.initiate_place_new_object(objectToBeSpawned, get_global_mouse_position())
+    typeOfObjectBeingPlaced = objectToBeSpawned
+    if objectToBeSpawned == GameplayEnums.BuildOption.CART:
+      cartController.initiate_place_new_object(objectToBeSpawned, get_global_mouse_position())
+    else:
+      mapNodeController.initiate_place_new_object(objectToBeSpawned, get_global_mouse_position())
 
 func deselect_objects() -> void:
   for obj in selectedObjects:

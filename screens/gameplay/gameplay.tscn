@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=2]
+[gd_scene load_steps=16 format=2]
 
 [ext_resource path="res://screens/gameplay/game_objects/map_node/resource_node/resource_node.tscn" type="PackedScene" id=1]
 [ext_resource path="res://screens/gameplay/game_objects/map_node/village_node/village_node.tscn" type="PackedScene" id=2]
@@ -10,6 +10,7 @@
 [ext_resource path="res://screens/gameplay/ui/assets/Route.png" type="Texture" id=9]
 [ext_resource path="res://screens/gameplay/ui/build_panel/build_panel.gd" type="Script" id=11]
 [ext_resource path="res://screens/gameplay/game_objects/map/map.gd" type="Script" id=12]
+[ext_resource path="res://screens/gameplay/game_objects/cart_controller/cart_controller.gd" type="Script" id=13]
 [ext_resource path="res://screens/gameplay/ui/gameplay_ui_controller.gd" type="Script" id=14]
 [ext_resource path="res://screens/gameplay/ui/assets/Warehouse.png" type="Texture" id=15]
 [ext_resource path="res://screens/gameplay/ui/stock_button/stock_button.tscn" type="PackedScene" id=16]
