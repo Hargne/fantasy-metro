@@ -16,7 +16,7 @@ func get_buttoncontainer_by_type(buildOption) -> Node2D:
     GameplayEnums.BuildOption.ROUTE:
       return routeButton
     GameplayEnums.BuildOption.CART:
-       return cartButton
+      return cartButton
   return null
 
 func hide_build_option(buildOption) -> void:
