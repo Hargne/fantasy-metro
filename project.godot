@@ -20,6 +20,11 @@ _global_script_classes=[ {
 "path": "res://screens/gameplay/game_objects/map_node/cart/cart.gd"
 }, {
 "base": "Node2D",
+"class": "CartController",
+"language": "GDScript",
+"path": "res://screens/gameplay/game_objects/cart_controller/cart_controller.gd"
+}, {
+"base": "Node2D",
 "class": "Gameplay",
 "language": "GDScript",
 "path": "res://screens/gameplay/gameplay.gd"
@@ -62,6 +67,7 @@ _global_script_classes=[ {
 _global_script_class_icons={
 "ActionPanel": "",
 "Cart": "",
+"CartController": "",
 "Gameplay": "",
 "GameplayEnums": "",
 "Map": "",
@@ -79,7 +85,7 @@ run/main_scene="res://screens/main_menu/main_menu.tscn"
 
 [autoload]
 
-GameManager="*res://global/game_manager.gd"
+ApplicationManager="*res://global/application_manager.gd"
 Utils="*res://global/utils.gd"
 
 [display]
