@@ -10,6 +10,10 @@ var nodeConnections = []
 var routeContainer: Node2D
 var routePrefab = preload("res://screens/gameplay/game_objects/route/route.tscn")
 var dragNewRouteVisual: Line2D
+# SFX
+onready var placeRouteSFX = $PlaceRouteSFX
+onready var placeBuildingSFX = $PlaceBuildingSFX
+onready var demolishSFX = $DemolishSFX
 
 signal on_increase_stock(item, amount)
 signal on_decrease_stock(item, amount)
@@ -45,14 +49,15 @@ func initiate_place_new_object(objectTypeToBePlaced, startPosition: Vector2) -> 
   typeOfObjectBeingPlaced = objectTypeToBePlaced
   match objectTypeToBePlaced:
     GameplayEnums.BuildOption.WAREHOUSE:
-      var warehouse = warehouseNodePrefab.instance()
-      add_child(warehouse)
+      objectBeingPlaced = warehouseNodePrefab.instance()
+      add_child(objectBeingPlaced)
   if objectBeingPlaced:
     objectBeingPlaced.position = startPosition
 
 func end_place_new_object() -> void:
   if canPlaceObject:
     emit_signal("on_decrease_stock", typeOfObjectBeingPlaced)
+    placeBuildingSFX.play()
   else:
     # Cancel placement by removing the new object
     if objectBeingPlaced:
@@ -105,12 +110,14 @@ func connect_map_nodes(from: MapNode, to: MapNode) -> void:
     "route": spawn_route(from.get_connection_point(), to.get_connection_point())
   })
   emit_signal("on_decrease_stock", GameplayEnums.BuildOption.ROUTE)
+  placeRouteSFX.play()
 
 func demolish_route(route: Route) -> void:
   var relatedConnection = get_connection_by_route(route)
   if relatedConnection:
     delete_connection(relatedConnection)
     emit_signal("on_increase_stock", GameplayEnums.BuildOption.ROUTE)
+    demolishSFX.play()
 
 func delete_connection(connection: Dictionary) -> void:
   if "route" in connection && is_instance_valid(connection.route):

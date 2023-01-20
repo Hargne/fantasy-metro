@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://screens/gameplay/ui/build_panel/assets/button_background.tres" type="StyleBox" id=1]
 [ext_resource path="res://fonts/resource/m5x7.ttf" type="DynamicFontData" id=2]
@@ -19,6 +19,72 @@ corner_radius_bottom_left = 100
 size = 32
 extra_spacing_top = -5
 font_data = ExtResource( 2 )
+
+[sub_resource type="Animation" id=5]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/path = NodePath("AmountContainer:rect_position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Vector2( 65, 50 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("AmountContainer:rect_rotation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ 0.0 ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("AmountContainer:rect_scale")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Vector2( 1, 1 ) ]
+}
+
+[sub_resource type="Animation" id=6]
+resource_name = "amount_changed"
+tracks/0/type = "value"
+tracks/0/path = NodePath("AmountContainer:rect_scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.2, 0.4, 0.6, 0.7, 0.8 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1, 1 ),
+"update": 0,
+"values": [ Vector2( 1, 1 ), Vector2( 1.5, 0.8 ), Vector2( 0.9, 1.3 ), Vector2( 1, 1 ), Vector2( 1, 0.9 ), Vector2( 1, 1 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("AmountContainer:rect_position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.2, 0.4, 0.6, 0.7, 0.8 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1, 1 ),
+"update": 0,
+"values": [ Vector2( 65, 50 ), Vector2( 55, 60 ), Vector2( 68, 40 ), Vector2( 65, 50 ), Vector2( 65, 53 ), Vector2( 65, 50 ) ]
+}
 
 [node name="StockButton" type="Control"]
 margin_right = 100.0
@@ -46,17 +112,21 @@ expand = true
 [node name="AmountContainer" type="PanelContainer" parent="."]
 margin_left = 65.0
 margin_top = 50.0
-margin_right = 91.0
-margin_bottom = 81.0
+margin_right = 105.0
+margin_bottom = 87.0005
 custom_styles/panel = SubResource( 4 )
 
 [node name="Label" type="Label" parent="AmountContainer"]
 margin_left = 8.0
 margin_top = 8.0
-margin_right = 32.0
+margin_right = 32.0001
 margin_bottom = 29.0
 custom_colors/font_color = Color( 1, 1, 1, 1 )
 custom_fonts/font = SubResource( 2 )
 text = "x2"
 align = 1
 valign = 1
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+anims/RESET = SubResource( 5 )
+anims/amount_changed = SubResource( 6 )

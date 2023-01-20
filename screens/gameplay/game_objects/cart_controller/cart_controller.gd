@@ -8,10 +8,7 @@ var canPlaceObject = false
 var typeOfObjectBeingPlaced
 var cartPrefab = preload("res://screens/gameplay/game_objects/map_node/cart/cart.tscn")
 
-# Called when the node enters the scene tree for the first time.
-func _ready():
-  pass # Replace with function body.
-
+onready var placeCartSFX = $PlaceCartSFX
 
 func initiate_place_new_object(objectTypeToBePlaced, startPosition: Vector2) -> void:
   typeOfObjectBeingPlaced = objectTypeToBePlaced
@@ -28,6 +25,7 @@ func end_place_new_object(route: Route) -> int:
     if typeOfObjectBeingPlaced == GameplayEnums.BuildOption.CART:
       objectBeingPlaced.place_on_route(route)
       carts.append(objectBeingPlaced)
+      placeCartSFX.play()
   else:
     # Cancel placement by removing the new object
     if objectBeingPlaced:

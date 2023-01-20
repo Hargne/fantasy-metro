@@ -80,7 +80,7 @@ func on_interact_drag() -> void:
   var mpos = get_global_mouse_position()
 
   # Carts
-  if typeOfObjectBeingPlaced ==  GameplayEnums.BuildOption.CART:
+  if typeOfObjectBeingPlaced == GameplayEnums.BuildOption.CART:
     cartController.objectBeingPlaced.position = mpos
     var route = mapNodeController.get_route_from_point(mpos)
     if route:
