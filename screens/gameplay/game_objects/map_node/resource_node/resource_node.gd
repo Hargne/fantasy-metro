@@ -2,7 +2,7 @@ extends MapNode
 class_name ResourceNode
 func get_class(): return "ResourceNode"
 
-onready var visualsContainer = $Visuals
+onready var resourceTypeVisualsContainer = $Types
 export(GameplayEnums.Resource) var resourceType = GameplayEnums.Resource.WATER
 
 func _ready():
@@ -10,7 +10,7 @@ func _ready():
 
 func setup_visuals() -> void:
   # Display the correct resource visuals based on name
-  for c in visualsContainer.get_children():
+  for c in resourceTypeVisualsContainer.get_children():
     if c.name.to_upper() == GameplayEnums.Resource.keys()[resourceType]:
       c.visible = true
     else:

@@ -91,7 +91,7 @@ func get_connection_by_route(route: Route) -> Dictionary:
 func are_nodes_connected(node1: MapNode, node2: MapNode) -> bool:
   return !get_connection_by_map_nodes(node1, node2).empty()
 
-func spawn_route(from: Vector2, to: Vector2, width = 3) -> Route:
+func spawn_route(from: Vector2, to: Vector2, width = 2) -> Route:
   var route = routePrefab.instance()
   route.segments = [from, to]
   route.width = width

@@ -6,6 +6,9 @@ onready var storedResources = $ResourceList
 
 export var capacity = 6
 
+func get_connection_point() -> Vector2:
+  return Vector2(position.x, position.y + 6)
+
 func has_capacity() -> bool:
   return storedResources.resources.size() < capacity
 
