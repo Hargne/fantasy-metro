@@ -22,7 +22,7 @@ _global_script_classes=[ {
 "base": "Area2D",
 "class": "Cart",
 "language": "GDScript",
-"path": "res://screens/gameplay/game_objects/map_node/cart/cart.gd"
+"path": "res://screens/gameplay/game_objects/cart_controller/cart.gd"
 }, {
 "base": "Node2D",
 "class": "CartController",

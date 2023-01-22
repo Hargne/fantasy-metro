@@ -78,22 +78,17 @@ func is_placing_new_object() -> bool:
 
 func get_connection_by_map_nodes(node1: MapNode, node2: MapNode) -> Dictionary:
   for connection in nodeConnections:
-    if "mapNodes" in connection && connection.mapNodes.has(node1) && connection.mapNodes.has(node2):
-      return connection
-  return {}
-
-func get_connection_by_route(route: Route) -> Dictionary:
-  for connection in nodeConnections:
-    if "route" in connection && connection.route == route:
+    if connection.mapNodes.has(node1) && connection.mapNodes.has(node2):
       return connection
   return {}
 
 func are_nodes_connected(node1: MapNode, node2: MapNode) -> bool:
   return !get_connection_by_map_nodes(node1, node2).empty()
 
-func spawn_route(from: Vector2, to: Vector2, width = 2) -> Route:
+func spawn_route(from: MapNode, to: MapNode, width = 2) -> Route:
   var route = routePrefab.instance()
-  route.segments = [from, to]
+  route.mapNodes = [from, to]
+  route.segments = [from.get_connection_point(), to.get_connection_point()]
   route.width = width
   routeContainer.add_child(route)
   Utils.connect_signal(route, "on_demolish", self, "demolish_route")
@@ -105,51 +100,65 @@ func connect_map_nodes(from: MapNode, to: MapNode) -> void:
   if are_nodes_connected(from, to):
     printerr("Nodes are already connected")
     return
-  nodeConnections.append({
-    "mapNodes": [from, to],
-    "route": spawn_route(from.get_connection_point(), to.get_connection_point())
-  })
+
+  nodeConnections.append(spawn_route(from, to))
+  
   emit_signal("on_decrease_stock", GameplayEnums.BuildOption.ROUTE)
   placeRouteSFX.play()
 
 func demolish_route(route: Route) -> void:
-  var relatedConnection = get_connection_by_route(route)
-  if relatedConnection:
-    delete_connection(relatedConnection)
-    emit_signal("on_increase_stock", GameplayEnums.BuildOption.ROUTE)
-    demolishSFX.play()
+  delete_connection(route)
+  emit_signal("on_increase_stock", GameplayEnums.BuildOption.ROUTE)
+  demolishSFX.play()
 
-func delete_connection(connection: Dictionary) -> void:
-  if "route" in connection && is_instance_valid(connection.route):
-    connection.route.queue_free()
-    nodeConnections.erase(connection)
+func delete_connection(route: Route) -> void:
+  if is_instance_valid(route):
+    route.queue_free()
+    nodeConnections.erase(route)
 
 func does_point_intersect_any_routes(point: Vector2) -> bool:
   for connection in nodeConnections: 
-    if Geometry.is_point_in_polygon(point, connection.route.get_intersecting_rectangle().polygon):
+    if Geometry.is_point_in_polygon(point, connection.get_intersecting_rectangle().polygon):
       return true    
   return false
 
-func get_route_from_point(point: Vector2, strict = false) -> Route:
+func get_route_from_point(point: Vector2) -> Route:
+  var matchedConnections = []
   for connection in nodeConnections: 
-    if strict && does_point_intersect_any_routes(point):
-      return connection.route
-    else:
-      var startPoint = connection.route.get_start_point()
-      var endPoint = connection.route.get_end_point()
-      var rect = Rect2(
-        Vector2(
-          startPoint.x if startPoint.x < endPoint.x else endPoint.x,
-          startPoint.y if startPoint.y < endPoint.y else endPoint.y
-        ),
-        Vector2(
-          abs(startPoint.x - endPoint.x),
-          abs(startPoint.y - endPoint.y)
-        )
+    var startPoint = connection.get_start_point()
+    var endPoint = connection.get_end_point()
+
+    var rect = Rect2(
+      Vector2(
+        startPoint.x if startPoint.x < endPoint.x else endPoint.x,
+        startPoint.y if startPoint.y < endPoint.y else endPoint.y
+      ),
+      Vector2(
+        abs(startPoint.x - endPoint.x),
+        abs(startPoint.y - endPoint.y)
       )
-      if rect.has_point(point):
-        return connection.route
-  return null
+    )
+
+    if rect.has_point(point):
+      matchedConnections.append(connection)
+  if matchedConnections.size() > 1:
+    var closestDist = 9999999
+    var closestConnection = null
+
+    for connection in matchedConnections:
+      var startPoint = connection.get_start_point()
+      var endPoint = connection.get_end_point()
+      var closestLinePoint = Geometry.get_closest_point_to_segment_2d(point, startPoint, endPoint)
+      var dist = point.distance_to(closestLinePoint)
+      if dist < closestDist:
+        closestDist = dist
+        closestConnection = connection
+
+    return closestConnection
+  elif matchedConnections.size() == 1:
+    return matchedConnections[0]
+  else:
+    return null
 
 func update_drag_new_route_points(from: Vector2, to: Vector2) -> void:
   # Spawn a Line2D if non-existant
@@ -174,5 +183,5 @@ func is_dragging_new_route() -> bool:
 
 func blur_all_routes(except: Route = null) -> void:
   for connection in nodeConnections:
-    if "route" in connection && is_instance_valid(connection.route) && connection.route != except:
-      connection.route.blur()
+    if connection != except:
+      connection.blur()
