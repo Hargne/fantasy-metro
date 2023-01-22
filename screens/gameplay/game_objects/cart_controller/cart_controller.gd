@@ -6,7 +6,7 @@ var carts = []
 var objectBeingPlaced: Node
 var canPlaceObject = false
 var typeOfObjectBeingPlaced
-var cartPrefab = preload("res://screens/gameplay/game_objects/map_node/cart/cart.tscn")
+var cartPrefab = preload("res://screens/gameplay/game_objects/cart_controller/cart.tscn")
 
 onready var placeCartSFX = $PlaceCartSFX
 

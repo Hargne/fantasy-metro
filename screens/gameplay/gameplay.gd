@@ -83,7 +83,8 @@ func on_interact_drag() -> void:
   if typeOfObjectBeingPlaced == GameplayEnums.BuildOption.CART:
     cartController.objectBeingPlaced.position = mpos
     var route = mapNodeController.get_route_from_point(mpos)
-    if route:
+    if route:      
+      mapNodeController.blur_all_routes(route)
       route.highlight()
       cartController.canPlaceObject = true			
     else:

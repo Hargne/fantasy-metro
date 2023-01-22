@@ -4,6 +4,7 @@ class_name Route
 signal on_demolish(route)
 
 var width: float
+var mapNodes = []
 var segments: PoolVector2Array
 var lineColor = Color("#aaaaaa")
 var _currentHighlightAmount = 0
@@ -57,3 +58,9 @@ func get_center_point() -> Vector2:
 
 func demolish() -> void:
   emit_signal("on_demolish", self)
+
+func get_map_node_from_point(pt: Vector2) -> MapNode:
+  for mapNode in mapNodes:
+    if mapNode.get_connection_point() == pt:
+      return mapNode
+  return null
