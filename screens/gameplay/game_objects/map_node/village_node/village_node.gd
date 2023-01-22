@@ -12,6 +12,9 @@ var color = Color("#639bff")
 func _ready():
   set_color(color)
 
+func get_connection_point() -> Vector2:
+  return Vector2(position.x, position.y + 7)
+
 func can_add_resource_demand() -> bool:
   return demandedResources.resources.size() < maxResourceDemands
 

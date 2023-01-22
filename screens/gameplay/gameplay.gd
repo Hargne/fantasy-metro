@@ -3,11 +3,13 @@ class_name Gameplay
 
 var rng = RandomNumberGenerator.new()
 # Refs
+onready var menu = $Menu
 onready var mapNodeController: MapNodeController = $MapNodeController
 onready var cartController: CartController = $CartController
 onready var uiController: GameplayUIController = $UI
 onready var map: Map = $Map
 
+export var showMenuOnStartup = false
 var isInteractBeingHeldDown = false
 var interactDuration = 0
 var interactHoldDownThreshold = 15
@@ -37,8 +39,14 @@ func _ready():
   # Allow for nodes to get initialized
   yield(get_tree().create_timer(0.1), "timeout")
   uiController.buildPanel.update_stock(buildStock)
+  # Menu
+  Utils.connect_signal(menu, "on_start_game_pressed", self, "start_new_game")
+  Utils.connect_signal(menu, "on_continue_game_pressed", self, "unpause_game")
+  if showMenuOnStartup:
+    pause_game()
+    menu.display(false)
 
-func _input(event):
+func _unhandled_input(event):
   if event.is_action_pressed("interact"):
     isInteractBeingHeldDown = true
     interactDuration = 0
@@ -52,12 +60,26 @@ func _input(event):
       on_interact_drag_end()
     interactDuration = 0
     interactTarget = null
+  elif event.is_action_pressed("pause_game"):
+    pause_game()
+    menu.display(true)
 
 func _process(_delta):
   if isInteractBeingHeldDown && interactDuration < interactHoldDownThreshold:
     interactDuration += 1
   elif isInteractBeingHeldDown:
     on_interact_drag()
+
+func start_new_game() -> void:
+  unpause_game()
+  menu.hide()
+
+func pause_game() -> void:
+  get_tree().paused = true
+
+func unpause_game() -> void:
+  menu.hide()
+  get_tree().paused = false
 
 #
 # Interaction Handlers

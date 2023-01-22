@@ -6,7 +6,7 @@ signal on_demolish(route)
 var width: float
 var mapNodes = []
 var segments: PoolVector2Array
-var lineColor = Color("#aaaaaa")
+var lineColor = Color("#3f1605")
 var _currentHighlightAmount = 0
 var _targetHighlightAmount = 0
 
