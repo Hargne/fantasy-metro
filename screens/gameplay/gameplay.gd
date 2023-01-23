@@ -20,6 +20,7 @@ var demandIncrementTimer: Timer
 var secondsBetweenDemandIncrement = 20
 
 var typeOfObjectBeingPlaced
+var activeRoute: Route
 
 var buildStock = {
   GameplayEnums.BuildOption.WAREHOUSE: 1,
@@ -27,6 +28,10 @@ var buildStock = {
   GameplayEnums.BuildOption.CART: 2,
 }
 var _defaultCollisionLayer = 2147483647
+
+var routeColors: Array = [
+  Color.blue, Color.red, Color.green, Color.orange, Color.brown, Color.purple, Color.teal, Color.pink
+]
 
 func _ready():
   rng.randomize()
@@ -39,6 +44,7 @@ func _ready():
   # Allow for nodes to get initialized
   yield(get_tree().create_timer(0.1), "timeout")
   uiController.buildPanel.update_stock(buildStock)
+  routeColors.shuffle()
   # Menu
   Utils.connect_signal(menu, "on_start_game_pressed", self, "start_new_game")
   Utils.connect_signal(menu, "on_continue_game_pressed", self, "unpause_game")
@@ -71,6 +77,14 @@ func _process(_delta):
     on_interact_drag()
 
 func start_new_game() -> void:
+  # start game with 2 routes; these are added to the mapNodeController routes array, and the UI should use that as the source of the
+  # route list on the right side of the screen
+  mapNodeController.create_route()
+  mapNodeController.create_route()
+
+  # normally, the player has to select the route on the UI, and that sets the active route, but we don't have that yet, so we are picking manually so we can test and build routes
+  activeRoute = mapNodeController.routes[0]
+
   unpause_game()
   menu.hide()
 
@@ -92,11 +106,12 @@ func get_object_at_cursor_location() -> Node:
   return null
 
 func on_interact_click_handler() -> void:
-  var clickedRoute = mapNodeController.get_route_from_point(interactPosition)
-  mapNodeController.blur_all_routes(clickedRoute)
-  if clickedRoute:
-    selectedObjects.append(clickedRoute)
-    clickedRoute.highlight(true)
+  var clickedConnection = mapNodeController.get_connection_from_point(interactPosition)
+  if clickedConnection != null:
+    mapNodeController.blur_all_connections(clickedConnection)
+    if clickedConnection:
+      selectedObjects.append(clickedConnection)
+      clickedConnection.highlight(true)
 
 func on_interact_drag() -> void:
   var mpos = get_global_mouse_position()
@@ -104,18 +119,18 @@ func on_interact_drag() -> void:
   # Carts
   if typeOfObjectBeingPlaced == GameplayEnums.BuildOption.CART:
     cartController.objectBeingPlaced.position = mpos
-    var route = mapNodeController.get_route_from_point(mpos)
-    if route:      
-      mapNodeController.blur_all_routes(route)
-      route.highlight()
+    var connection = mapNodeController.get_connection_from_point(mpos)
+    if connection:      
+      mapNodeController.blur_all_connections(connection)
+      connection.highlight()
       cartController.canPlaceObject = true			
     else:
       cartController.canPlaceObject = false
-      mapNodeController.blur_all_routes()			
+      mapNodeController.blur_all_connections()			
   else:
     # Routes
     if can_build_route() && !mapNodeController.is_placing_new_object() && interactTarget && interactTarget is MapNode:
-      mapNodeController.update_drag_new_route_points(interactTarget.get_connection_point(), mpos)
+      mapNodeController.update_drag_new_connection_points(interactTarget.get_connection_point(), mpos)
     # Other Objects
     elif mapNodeController.is_placing_new_object():
       mapNodeController.objectBeingPlaced.position = map.get_tile_position_in_world(mpos)
@@ -125,22 +140,22 @@ func on_interact_drag() -> void:
 
 func on_interact_drag_end() -> void:
   if typeOfObjectBeingPlaced == GameplayEnums.BuildOption.CART:
-    var route = mapNodeController.get_route_from_point(cartController.objectBeingPlaced.position)		
-    if cartController.end_place_new_object(route):
+    var connection = mapNodeController.get_connection_from_point(cartController.objectBeingPlaced.position)		
+    if cartController.end_place_new_object(connection):
       decrease_stock_item(GameplayEnums.BuildOption.CART)
     cartController.stop_placing_object()
-    mapNodeController.blur_all_routes()
+    mapNodeController.blur_all_connections()
   else:
     # Routes
-    if mapNodeController.is_dragging_new_route():
+    if mapNodeController.is_dragging_new_connection():
       var objectAtEndOfDrag = get_object_at_cursor_location()
       if interactTarget && interactTarget is MapNode && objectAtEndOfDrag && objectAtEndOfDrag is MapNode && interactTarget != objectAtEndOfDrag && can_build_route():
-        mapNodeController.connect_map_nodes(interactTarget, objectAtEndOfDrag)
-      mapNodeController.hide_drag_new_route()
+        mapNodeController.connect_map_nodes(interactTarget, objectAtEndOfDrag, activeRoute)
+      mapNodeController.hide_drag_new_connection()
     # Placing Objects
     elif mapNodeController.is_placing_new_object():
       mapNodeController.end_place_new_object()
-      mapNodeController.blur_all_routes()
+      mapNodeController.blur_all_connections()
     
   interactTarget = null
   typeOfObjectBeingPlaced = null

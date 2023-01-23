@@ -1,9 +1,10 @@
 extends Node2D
-class_name Route
+class_name Connection
 
-signal on_demolish(route)
+signal on_demolish(connection)
 
 var width: float
+var route = null
 var mapNodes = []
 var segments: PoolVector2Array
 var lineColor = Color("#3f1605")
