@@ -3,7 +3,6 @@ extends CanvasLayer
 signal on_start_game_pressed
 signal on_continue_game_pressed
 
-var isActive = false
 var gameIsPaused = false
 var transitionSpeed = 10
 var rotationAmount = 20

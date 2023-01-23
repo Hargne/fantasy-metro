@@ -38,16 +38,25 @@ func add_resource(resourceType) -> void:
   icon.texture = load(textureBasePath + "/" + textureFile)
   resources.append({ "node": icon, "resourceType": resourceType })
 
-func remove_resource(resourceType) -> void:
+func remove_resource(resourceType, removeAll: bool = true) -> void:
   for resource in resources:
     if "resourceType" in resource && resource.resourceType == resourceType:
       # Remove the icon node
       if "node" in resource && is_instance_valid(resource.node):
         resource.node.queue_free()
       resources.erase(resourceType)
+      if !removeAll:
+        return
       
 func clear() -> void:
   resources.clear()
   for c in gridContainer.get_children():
     gridContainer.remove_child(c)
     c.queue_free()
+
+func contains_resource(resourceType) -> bool:
+  for resource in resources:
+    if "resourceType" in resource && resource.resourceType == resourceType:
+      return true
+
+  return false

@@ -3,30 +3,30 @@ class_name Cart
 
 onready var storedResources = $ResourceList
 
-var defaultCartSpeed = .1
+var defaultCartSpeed = .3 if ApplicationManager.debugMode else .1
 
 export var capacity = 1
 export var startPt = Vector2(0,0)
 export var destinationPt = Vector2(0,0)
 export var cartSpeed = .1
-var currentRoute: Route
-var currentStatus = RouteStatus.IN_PROGRESS
+var currentConnection: Connection
+var currentStatus = CartStatus.EN_ROUTE
 
-var arrivalTime = 0
-var arrivalDelay = 500 # we use a .5 second delay for actions to take place
+var stepTimeStamp = 0
+var stepDelay = 500 # we use a .5 second delay for actions to take place
 
-enum RouteStatus {
-  IN_PROGRESS,
-  JUST_ARRIVED,
-  LOADING,
+enum CartStatus {
+  EN_ROUTE,
+  JUST_ARRIVED,  
   UNLOADING,
-  WAITING,
-  EXITING
+  LOADING,
+  EXITING,
+  WAITING
 }
 
 func _process(_delta):
-  if currentStatus != RouteStatus.IN_PROGRESS || position.distance_to(destinationPt) < .05: # this is a magic number for now - probably will need to be based on map size or screen size or something
-    do_destination_handling()
+  if currentStatus != CartStatus.EN_ROUTE || position.distance_to(destinationPt) < .05: # this is a magic number for now - probably will need to be based on map size or screen size or something
+    cart_is_at_destination()
   else:
     move_cart_to_destination()    
 
@@ -41,11 +41,11 @@ func remove_resource(resourceType) -> void:
   if storedResources.resources.size() > 0:
     storedResources.remove_resource(resourceType)
 
-func place_on_route(route: Route) -> void:
+func place_on_connection(connection: Connection) -> void:
   # first, normalize the placement so it is on the line
-  var pt1 = route.get_start_point() 
-  var pt2 = route.get_end_point()
-  currentRoute = route
+  var pt1 = connection.get_start_point() 
+  var pt2 = connection.get_end_point()
+  currentConnection = connection
 
   var pts = Utils.get_line_segments(pt1, pt2, 4)
   var closestDist = 99999999
@@ -63,28 +63,129 @@ func place_on_route(route: Route) -> void:
   startPt = pt2 if closestPt.distance_to(pt1) < closestPt.distance_to(pt2) else pt1
   destinationPt = pt1 if closestPt.distance_to(pt1) < closestPt.distance_to(pt2) else pt2
   cartSpeed = defaultCartSpeed
+  currentStatus = CartStatus.EN_ROUTE
 
   look_at(destinationPt)
 
 func move_cart_to_destination() -> void:
   position = position.move_toward(destinationPt, cartSpeed)
 
-func do_destination_handling() -> void:  
-  if currentStatus == RouteStatus.IN_PROGRESS:
-    currentStatus = RouteStatus.JUST_ARRIVED
-    arrivalTime = Time.get_ticks_msec()
-  elif currentStatus == RouteStatus.JUST_ARRIVED:
+func cart_is_at_destination() -> void:  
+  if currentStatus == CartStatus.EN_ROUTE:
+    currentStatus = CartStatus.JUST_ARRIVED
+    position = destinationPt # make sure it is set to exact spot since the destination is triggered at .05 pixels
+    stepTimeStamp = Time.get_ticks_msec()
+  else:
     var t = Time.get_ticks_msec()
 
-    if (t - arrivalTime) > arrivalDelay:      
-      begin_destination_action()
+    if (t - stepTimeStamp) > stepDelay:      
+      do_destination_action()
 
 # in progress......
-func begin_destination_action() -> void:
-  if !storedResources.resources.empty():
-    true # unload
+func do_destination_action() -> void:
+  var destinationNode = currentConnection.get_map_node_from_point(destinationPt)
 
-  var destinationNode = currentRoute.get_map_node_from_point(destinationPt)
+  if currentStatus == CartStatus.JUST_ARRIVED:
+    do_just_arrived_action(destinationNode)    
+  elif currentStatus == CartStatus.UNLOADING:
+    do_unloading_action(destinationNode)
+  elif currentStatus == CartStatus.LOADING:
+    do_loading_action(destinationNode)
+  elif currentStatus == CartStatus.EXITING:
+    do_exiting_action(destinationNode)
+
+func do_just_arrived_action(destinationNode) -> void:
+  # show arrival graphics, smoke from cart stopping, etc... or just slow cart down
+  currentStatus = CartStatus.UNLOADING
+
+func do_unloading_action(destinationNode) -> void:  
+  var unloadedResourceType
+
+  if destinationNode is VillageNode:
+    for resource in storedResources.resources:
+      if "resourceType" in resource && destinationNode.demands_resource(resource.resourceType):
+        unloadedResourceType = resource.resourceType          
+        storedResources.remove_resource(unloadedResourceType, false)        
+        destinationNode.demandedResources.remove_resource(unloadedResourceType, false)
+        # show little icon moving from cart to village      
+        break  
+  elif destinationNode is WarehouseNode:
+    # the warehouse node takes ANYTHING up to capacity
+    if destinationNode.capacity < destinationNode.storedResources.resources.size():
+      for resource in storedResources.resources:
+        if "resourceType" in resource:
+          unloadedResourceType = resource.resourceType  
+          storedResources.remove_resource(unloadedResourceType, false) 
+
+          # show little icon moving from cart to warehouse
+
+          # NOTE: some resource types get upgraded at this stage, and the resource type that was unloaded is NOT the same
+          # as the resource that the warehouse will hold (like mana ore -> mana crystals)
+          destinationNode.add_resource(unloadedResourceType)
+
+          break        
+
+  if !unloadedResourceType:
+    currentStatus = CartStatus.LOADING
+
+  stepTimeStamp = Time.get_ticks_msec()
+
+func do_loading_action(destinationNode) -> void:  
+  var loadedResourceType  
+
+  if storedResources.resources.size() < capacity:
+    if destinationNode is ResourceNode:
+      loadedResourceType = destinationNode.resourceType
+
+      # show little icon moving from resource to cart
+      storedResources.add_resource(loadedResourceType)
+    elif destinationNode is WarehouseNode:
+      for resource in destinationNode.storedResources.resources:
+        if "resourceType" in resource:
+          # show little icon moving from warehouse to cart
+          loadedResourceType = resource.resourceType
+          destinationNode.storedResources.remove_resource(loadedResourceType)
+          storedResources.add_resource(loadedResourceType)
+          break
+
+  if !loadedResourceType:
+    currentStatus = CartStatus.EXITING
+
+  stepTimeStamp = Time.get_ticks_msec()
+
+# this function determines where to go next
+func do_exiting_action(destinationNode) -> void:
+  var currentRoute = currentConnection.route
+
+  var matchingConnections = currentRoute.get_all_connections_for_map_node(destinationNode)
+
+  if matchingConnections.size() > 1:
+    matchingConnections.erase(currentConnection)
+
+  if matchingConnections.size() > 1:
+    matchingConnections.shuffle()
+
+  currentConnection = matchingConnections[0]
+
+  startPt = destinationNode.get_connection_point()
+
+  if currentConnection.mapNodes[0] == destinationNode:
+    destinationPt = currentConnection.mapNodes[1].get_connection_point()
+  else:
+    destinationPt = currentConnection.mapNodes[0].get_connection_point()
+
+  look_at(destinationPt)
+
+  currentStatus = CartStatus.EN_ROUTE
+    
+
+  
+
+
+
+
+
+  
 
   
 
