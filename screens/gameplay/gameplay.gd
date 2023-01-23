@@ -46,23 +46,24 @@ func _ready():
     pause_game()
     menu.display(false)
 
-func _unhandled_input(event):
-  if event.is_action_pressed("interact"):
-    isInteractBeingHeldDown = true
-    interactDuration = 0
-    interactPosition = get_global_mouse_position()
-    interactTarget = get_object_at_cursor_location()
-  elif event.is_action_released("interact"):
-    isInteractBeingHeldDown = false
-    if interactDuration < interactHoldDownThreshold:
-      on_interact_click_handler()
-    else:
-      on_interact_drag_end()
-    interactDuration = 0
-    interactTarget = null
-  elif event.is_action_pressed("pause_game"):
-    pause_game()
-    menu.display(true)
+func _input(event):
+  if !menu.visible:
+    if event.is_action_pressed("interact"):
+      isInteractBeingHeldDown = true
+      interactDuration = 0
+      interactPosition = get_global_mouse_position()
+      interactTarget = get_object_at_cursor_location()
+    elif event.is_action_released("interact"):
+      isInteractBeingHeldDown = false
+      if interactDuration < interactHoldDownThreshold:
+        on_interact_click_handler()
+      else:
+        on_interact_drag_end()
+      interactDuration = 0
+      interactTarget = null
+    elif event.is_action_pressed("pause_game"):
+      pause_game()
+      menu.display(true)
 
 func _process(_delta):
   if isInteractBeingHeldDown && interactDuration < interactHoldDownThreshold:

@@ -102,6 +102,7 @@ alignment = 2
 margin_top = 965.0
 margin_right = 1920.0
 margin_bottom = 1080.0
+mouse_filter = 2
 custom_styles/panel = SubResource( 3 )
 script = ExtResource( 11 )
 
@@ -132,6 +133,7 @@ buttonIcon = ExtResource( 8 )
 margin_left = 234.0
 margin_right = 234.0
 margin_bottom = 100.0
+mouse_filter = 1
 size_flags_horizontal = 2
 
 [node name="Right" type="GridContainer" parent="UI/VBoxContainer/BuildPanel/HBoxContainer"]
