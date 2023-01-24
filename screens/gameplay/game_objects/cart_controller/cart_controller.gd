@@ -20,16 +20,18 @@ func initiate_place_new_object(objectTypeToBePlaced, startPosition: Vector2) -> 
   if objectBeingPlaced:
     objectBeingPlaced.position = startPosition
 
-func end_place_new_object(route: Route) -> int:
-  if canPlaceObject:
+func end_place_new_object(connection: Connection) -> int:
+  if connection:
     if typeOfObjectBeingPlaced == GameplayEnums.BuildOption.CART:
-      objectBeingPlaced.place_on_route(route)
+      objectBeingPlaced.place_on_connection(connection)
       carts.append(objectBeingPlaced)
       placeCartSFX.play()
+    stop_placing_object()      
   else:
     # Cancel placement by removing the new object
     if objectBeingPlaced:
       objectBeingPlaced.queue_free()
+    stop_placing_object()      
   return canPlaceObject
 
 func stop_placing_object() -> void:

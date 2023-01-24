@@ -5,24 +5,28 @@ var objectBeingPlaced: Node
 var canPlaceObject = false
 var typeOfObjectBeingPlaced
 var warehouseNodePrefab = preload("res://screens/gameplay/game_objects/map_node/warehouse_node/warehouse_node.tscn")
+var Route = load("res://screens/gameplay/game_objects/route/route.class.gd")
 # Connections / Routes
-var nodeConnections = []
-var routeContainer: Node2D
-var routePrefab = preload("res://screens/gameplay/game_objects/route/route.tscn")
-var dragNewRouteVisual: Line2D
+var routes = []
+
+var connectionContainer: Node2D
+var connectionPrefab = preload("res://screens/gameplay/game_objects/route/connection.tscn")
+var dragNewConnectionVisual: Line2D
+
 # SFX
 onready var placeRouteSFX = $PlaceRouteSFX
 onready var placeBuildingSFX = $PlaceBuildingSFX
 onready var demolishSFX = $DemolishSFX
+onready var gameplay = get_parent()
 
 signal on_increase_stock(item, amount)
 signal on_decrease_stock(item, amount)
 
 func _ready():
   # Create a container for routes
-  routeContainer = Node2D.new()
-  add_child(routeContainer)
-  move_child(routeContainer, 0)
+  connectionContainer = Node2D.new()
+  add_child(connectionContainer)
+  move_child(connectionContainer, 0)
 
 func _process(_delta):
   if objectBeingPlaced:
@@ -30,6 +34,10 @@ func _process(_delta):
       objectBeingPlaced.modulate.a = 1
     elif !canPlaceObject && objectBeingPlaced.modulate.a == 1:
       objectBeingPlaced.modulate.a = 0.5
+
+#################################################################
+# BUILDINGS/RESOURCES
+#################################################################      
 
 func get_village_nodes() -> Array:
   var nodes = []
@@ -67,80 +75,89 @@ func end_place_new_object() -> void:
 func stop_placing_object() -> void:
   objectBeingPlaced = null
   typeOfObjectBeingPlaced = null
-  blur_all_routes()
+  blur_all_connections()
 
 func is_placing_new_object() -> bool:
   return objectBeingPlaced != null && is_instance_valid(objectBeingPlaced)
 
-#
+#################################################################
 # Connections / Routes
-#
+#################################################################
 
-func get_connection_by_map_nodes(node1: MapNode, node2: MapNode) -> Dictionary:
-  for connection in nodeConnections:
-    if connection.mapNodes.has(node1) && connection.mapNodes.has(node2):
-      return connection
-  return {}
-
-func are_nodes_connected(node1: MapNode, node2: MapNode) -> bool:
-  return !get_connection_by_map_nodes(node1, node2).empty()
-
-func spawn_route(from: MapNode, to: MapNode, width = 2) -> Route:
-  var route = routePrefab.instance()
-  route.mapNodes = [from, to]
-  route.segments = [from.get_connection_point(), to.get_connection_point()]
-  route.width = width
-  routeContainer.add_child(route)
-  Utils.connect_signal(route, "on_demolish", self, "demolish_route")
+# creates a new route that the player can use; all routes start EMPTY; the UI can then display the routes on the right
+# side of the screen for the user to select
+func create_route() -> Route:
+  var route = Route.new()
+  route.routeIndex = routes.size()
+  route.color = gameplay.routeColors[route.routeIndex]
+  routes.append(route)  
   return route
 
-func connect_map_nodes(from: MapNode, to: MapNode) -> void:
-  if from == to:
+func get_connection_by_map_nodes(node1: MapNode, node2: MapNode, route: Route = null) -> Dictionary:
+  for rte in routes:
+    if route == null || rte == route:
+      for connection in rte.connections:
+        if connection.mapNodes.has(node1) && connection.mapNodes.has(node2):
+          return connection
+  return {}
+
+func are_nodes_connected(node1: MapNode, node2: MapNode, route: Route) -> bool:
+  return !get_connection_by_map_nodes(node1, node2, route).empty()
+
+func connect_map_nodes(from: MapNode, to: MapNode, route: Route) -> void:
+  if from == to || route == null:
     return
-  if are_nodes_connected(from, to):
+  if are_nodes_connected(from, to, route):
     printerr("Nodes are already connected")
     return
 
-  nodeConnections.append(spawn_route(from, to))
-  
-  emit_signal("on_decrease_stock", GameplayEnums.BuildOption.ROUTE)
+  var connection = spawn_connection(from, to, route)
+  route.connections.append(connection)
+
   placeRouteSFX.play()
 
-func demolish_route(route: Route) -> void:
-  delete_connection(route)
-  emit_signal("on_increase_stock", GameplayEnums.BuildOption.ROUTE)
+func spawn_connection(from: MapNode, to: MapNode, route: Route) -> Connection:
+  var connection = connectionPrefab.instance()
+  connection.route = route
+  connection.mapNodes = [from, to]
+  connection.segments = [from.get_connection_point(), to.get_connection_point()]
+  connection.width = 2
+  connection.lineColor = gameplay.routeColors[route.routeIndex]
+  connectionContainer.add_child(connection)
+  Utils.connect_signal(connection, "on_demolish", self, "demolish_connection")
+  return connection  
+
+func demolish_connection(connection: Connection) -> void:
+  delete_connection(connection)  
   demolishSFX.play()
 
-func delete_connection(route: Route) -> void:
-  if is_instance_valid(route):
-    route.queue_free()
-    nodeConnections.erase(route)
+func delete_connection(connection: Connection) -> void:
+  if is_instance_valid(connection):
+    connection.queue_free()
+    for route in routes:
+      route.connections.erase(connection)
 
-func does_point_intersect_any_routes(point: Vector2) -> bool:
-  for connection in nodeConnections: 
-    if Geometry.is_point_in_polygon(point, connection.get_intersecting_rectangle().polygon):
-      return true    
-  return false
-
-func get_route_from_point(point: Vector2) -> Route:
+func get_connection_from_point(point: Vector2) -> Connection:
   var matchedConnections = []
-  for connection in nodeConnections: 
-    var startPoint = connection.get_start_point()
-    var endPoint = connection.get_end_point()
+  for route in routes:
+    for connection in route.connections:
+      var startPoint = connection.get_start_point()
+      var endPoint = connection.get_end_point()
 
-    var rect = Rect2(
-      Vector2(
-        startPoint.x if startPoint.x < endPoint.x else endPoint.x,
-        startPoint.y if startPoint.y < endPoint.y else endPoint.y
-      ),
-      Vector2(
-        abs(startPoint.x - endPoint.x),
-        abs(startPoint.y - endPoint.y)
+      var rect = Rect2(
+        Vector2(
+          startPoint.x if startPoint.x < endPoint.x else endPoint.x,
+          startPoint.y if startPoint.y < endPoint.y else endPoint.y
+        ),
+        Vector2(
+          abs(startPoint.x - endPoint.x),
+          abs(startPoint.y - endPoint.y)
+        )
       )
-    )
 
-    if rect.has_point(point):
-      matchedConnections.append(connection)
+      if rect.has_point(point):
+        matchedConnections.append(connection)
+
   if matchedConnections.size() > 1:
     var closestDist = 9999999
     var closestConnection = null
@@ -160,28 +177,29 @@ func get_route_from_point(point: Vector2) -> Route:
   else:
     return null
 
-func update_drag_new_route_points(from: Vector2, to: Vector2) -> void:
+func update_drag_new_connection_points(from: Vector2, to: Vector2) -> void:
   # Spawn a Line2D if non-existant
-  if !dragNewRouteVisual:
-    dragNewRouteVisual = Line2D.new()
-    dragNewRouteVisual.points = [from, to]
-    dragNewRouteVisual.width = 3
-    dragNewRouteVisual.default_color = Color("#96ffffff")
-    dragNewRouteVisual.antialiased = true
-    dragNewRouteVisual.begin_cap_mode = Line2D.LINE_CAP_ROUND
-    dragNewRouteVisual.end_cap_mode = Line2D.LINE_CAP_ROUND 
-    routeContainer.add_child(dragNewRouteVisual)
+  if !dragNewConnectionVisual:
+    dragNewConnectionVisual = Line2D.new()
+    dragNewConnectionVisual.points = [from, to]
+    dragNewConnectionVisual.width = 3
+    dragNewConnectionVisual.default_color = gameplay.activeRoute.color
+    dragNewConnectionVisual.antialiased = true
+    dragNewConnectionVisual.begin_cap_mode = Line2D.LINE_CAP_ROUND
+    dragNewConnectionVisual.end_cap_mode = Line2D.LINE_CAP_ROUND 
+    connectionContainer.add_child(dragNewConnectionVisual)
   # Update line points
-  dragNewRouteVisual.points[0] = from
-  dragNewRouteVisual.points[1] = to
+  dragNewConnectionVisual.points[0] = from
+  dragNewConnectionVisual.points[1] = to
 
-func hide_drag_new_route() -> void:
-  update_drag_new_route_points(Vector2.ZERO, Vector2.ZERO)
+func hide_drag_new_connection() -> void:
+  update_drag_new_connection_points(Vector2.ZERO, Vector2.ZERO)
 
-func is_dragging_new_route() -> bool:
-  return dragNewRouteVisual && dragNewRouteVisual.points.size() > 1 && dragNewRouteVisual.points[0] != Vector2.ZERO && dragNewRouteVisual.points[1] != Vector2.ZERO
+func is_dragging_new_connection() -> bool:
+  return dragNewConnectionVisual && dragNewConnectionVisual.points.size() > 1 && dragNewConnectionVisual.points[0] != Vector2.ZERO && dragNewConnectionVisual.points[1] != Vector2.ZERO
 
-func blur_all_routes(except: Route = null) -> void:
-  for connection in nodeConnections:
-    if connection != except:
-      connection.blur()
+func blur_all_connections(except: Connection = null) -> void:
+  for route in routes:
+    for connection in route.connections:
+      if connection != except:
+        connection.blur()

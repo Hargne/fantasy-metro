@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/route.png-aaf922c455169e94a761a5e65c3839f0.stex"
+path="res://.import/connection.png-411ac5e0bd763fbde0f7df527fa1c13e.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://screens/gameplay/game_objects/route/assets/route.png"
-dest_files=[ "res://.import/route.png-aaf922c455169e94a761a5e65c3839f0.stex" ]
+source_file="res://screens/gameplay/game_objects/route/assets/connection.png"
+dest_files=[ "res://.import/connection.png-411ac5e0bd763fbde0f7df527fa1c13e.stex" ]
 
 [params]
 

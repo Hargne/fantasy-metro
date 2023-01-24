@@ -12,6 +12,9 @@ func get_connection_point() -> Vector2:
 func has_capacity() -> bool:
   return storedResources.resources.size() < capacity
 
+func has_stock() -> bool:
+  return storedResources.resources.size() > 0
+
 func add_resource(resourceType) -> void:
   if has_capacity():
     storedResources.add_resource(resourceType)
