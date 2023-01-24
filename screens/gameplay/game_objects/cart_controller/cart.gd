@@ -110,7 +110,7 @@ func do_just_arrived_action(destinationNode) -> void:
     else:
       currentStatus = CartStatus.EXITING
   elif destinationNode is WarehouseNode:
-    if storedResources.resource.size() > 0 && destinationNode.has_capacity():
+    if storedResources.resources.size() > 0 && destinationNode.has_capacity():
       currentStatus = CartStatus.UNLOADING
     elif destinationNode.has_stock() && has_capacity():    
       currentStatus = CartStatus.LOADING    

@@ -53,7 +53,7 @@ func get_ordered_map_nodes(startConnection, startPt, includeStartNodeInList: boo
     foundNewConnection = false
 
     for connection in connections:
-      if connection.has_point(startPt) && !connectionsSeen.has(connection):
+      if connection.contains_point(startPt) && !connectionsSeen.has(connection):
         foundNewConnection = true
         connectionsSeen.append(connection)
 

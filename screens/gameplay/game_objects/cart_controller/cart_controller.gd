@@ -26,11 +26,12 @@ func end_place_new_object(connection: Connection) -> int:
       objectBeingPlaced.place_on_connection(connection)
       carts.append(objectBeingPlaced)
       placeCartSFX.play()
+    stop_placing_object()      
   else:
     # Cancel placement by removing the new object
     if objectBeingPlaced:
       objectBeingPlaced.queue_free()
-      objectBeingPlaced = null
+    stop_placing_object()      
   return canPlaceObject
 
 func stop_placing_object() -> void:
