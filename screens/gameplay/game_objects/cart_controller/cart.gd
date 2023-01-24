@@ -28,7 +28,8 @@ func _process(_delta):
   if currentStatus != CartStatus.EN_ROUTE || position.distance_to(destinationPt) < .05: # this is a magic number for now - probably will need to be based on map size or screen size or something
     cart_is_at_destination()
   else:
-    move_cart_to_destination()    
+    if currentConnection:
+      move_cart_to_destination()    
 
 func has_capacity() -> bool:
   return storedResources.resources.size() < capacity
@@ -95,8 +96,26 @@ func do_destination_action() -> void:
     do_exiting_action(destinationNode)
 
 func do_just_arrived_action(destinationNode) -> void:
-  # show arrival graphics, smoke from cart stopping, etc... or just slow cart down
-  currentStatus = CartStatus.UNLOADING
+  # show arrival graphics, smoke from cart stopping, etc... or just slow cart down  
+
+  # the if statements below allow us to skip uneeded steps right away
+  if destinationNode is VillageNode:
+    if storedResources.resources.size() > 0 && destinationNode.has_demands():
+      currentStatus = CartStatus.UNLOADING
+    else: 
+      currentStatus = CartStatus.EXITING
+  elif destinationNode is ResourceNode:
+    if has_capacity():      
+      currentStatus = CartStatus.LOADING
+    else:
+      currentStatus = CartStatus.EXITING
+  elif destinationNode is WarehouseNode:
+    if storedResources.resource.size() > 0 && destinationNode.has_capacity():
+      currentStatus = CartStatus.UNLOADING
+    elif destinationNode.has_stock() && has_capacity():    
+      currentStatus = CartStatus.LOADING    
+    else:
+      currentStatus = CartStatus.EXITING
 
 func do_unloading_action(destinationNode) -> void:  
   var unloadedResourceType
@@ -111,7 +130,7 @@ func do_unloading_action(destinationNode) -> void:
         break  
   elif destinationNode is WarehouseNode:
     # the warehouse node takes ANYTHING up to capacity
-    if destinationNode.capacity < destinationNode.storedResources.resources.size():
+    if destinationNode.has_capacity():
       for resource in storedResources.resources:
         if "resourceType" in resource:
           unloadedResourceType = resource.resourceType  
@@ -133,20 +152,41 @@ func do_unloading_action(destinationNode) -> void:
 func do_loading_action(destinationNode) -> void:  
   var loadedResourceType  
 
-  if storedResources.resources.size() < capacity:
+  if has_capacity():
     if destinationNode is ResourceNode:
       loadedResourceType = destinationNode.resourceType
 
       # show little icon moving from resource to cart
       storedResources.add_resource(loadedResourceType)
     elif destinationNode is WarehouseNode:
-      for resource in destinationNode.storedResources.resources:
-        if "resourceType" in resource:
-          # show little icon moving from warehouse to cart
-          loadedResourceType = resource.resourceType
-          destinationNode.storedResources.remove_resource(loadedResourceType)
-          storedResources.add_resource(loadedResourceType)
-          break
+      var demandedResourcesOnRoute = currentConnection.route.get_demands_along_route(currentConnection, currentConnection.get_point_from_map_node(destinationNode))
+
+      if demandedResourcesOnRoute.size() > 0:
+        # remove all the resources we already have, so we don't add them again
+        # note: we have to do this because we add 1 resource per loading action cycle (500 ms)
+        for storedResource in storedResources.resources:
+          var demandedRscIdx = demandedResourcesOnRoute.find(storedResource.resourceType)
+          demandedResourcesOnRoute.remove(demandedRscIdx)
+
+        for demandedResource in demandedResourcesOnRoute:
+          for resource in destinationNode.storedResources.resources:
+            if "resourceType" in resource && resource.resourceType == demandedResource:
+              # show little icon moving from warehouse to cart
+              loadedResourceType = resource.resourceType
+              destinationNode.storedResources.remove_resource(loadedResourceType)
+              storedResources.add_resource(loadedResourceType)
+              break
+
+          if loadedResourceType:
+            break
+      else:
+        for resource in destinationNode.storedResources.resources:
+          if "resourceType" in resource:
+            # show little icon moving from warehouse to cart
+            loadedResourceType = resource.resourceType
+            destinationNode.storedResources.remove_resource(loadedResourceType)
+            storedResources.add_resource(loadedResourceType)
+            break
 
   if !loadedResourceType:
     currentStatus = CartStatus.EXITING
@@ -166,7 +206,6 @@ func do_exiting_action(destinationNode) -> void:
     matchingConnections.shuffle()
 
   currentConnection = matchingConnections[0]
-
   startPt = destinationNode.get_connection_point()
 
   if currentConnection.mapNodes[0] == destinationNode:

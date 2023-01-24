@@ -107,12 +107,26 @@ func get_object_at_cursor_location() -> Node:
   return null
 
 func on_interact_click_handler() -> void:
+  cartController.end_place_new_object(null)
+  mapNodeController.canPlaceObject = null
+  mapNodeController.end_place_new_object()
+  
   var clickedConnection = mapNodeController.get_connection_from_point(interactPosition)
   if clickedConnection != null:
     mapNodeController.blur_all_connections(clickedConnection)
     if clickedConnection:
       selectedObjects.append(clickedConnection)
       clickedConnection.highlight(true)
+
+# Gets called when the player starts dragging an object from the build panel
+func on_new_object_drag_start(objectToBeSpawned) -> void:
+  # Check if there's enough in stock
+  if buildStock[objectToBeSpawned] > 0:
+    typeOfObjectBeingPlaced = objectToBeSpawned
+    if objectToBeSpawned == GameplayEnums.BuildOption.CART:
+      cartController.initiate_place_new_object(objectToBeSpawned, get_global_mouse_position())
+    else:
+      mapNodeController.initiate_place_new_object(objectToBeSpawned, get_global_mouse_position())      
 
 func on_interact_drag() -> void:
   var mpos = get_global_mouse_position()
@@ -145,7 +159,8 @@ func on_interact_drag_end() -> void:
     if connection:
       if cartController.end_place_new_object(connection):
         decrease_stock_item(GameplayEnums.BuildOption.CART)
-    cartController.stop_placing_object()
+    else:    
+      cartController.end_place_new_object(null)      
     mapNodeController.blur_all_connections()
   else:
     # Routes
@@ -161,16 +176,6 @@ func on_interact_drag_end() -> void:
     
   interactTarget = null
   typeOfObjectBeingPlaced = null
-
-# Gets called when the player starts dragging an object from the build panel
-func on_new_object_drag_start(objectToBeSpawned) -> void:
-  # Check if there's enough in stock
-  if buildStock[objectToBeSpawned] > 0:
-    typeOfObjectBeingPlaced = objectToBeSpawned
-    if objectToBeSpawned == GameplayEnums.BuildOption.CART:
-      cartController.initiate_place_new_object(objectToBeSpawned, get_global_mouse_position())
-    else:
-      mapNodeController.initiate_place_new_object(objectToBeSpawned, get_global_mouse_position())
 
 func deselect_objects() -> void:
   for obj in selectedObjects:

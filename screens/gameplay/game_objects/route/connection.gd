@@ -41,11 +41,36 @@ func blur() -> void:
   _targetHighlightAmount = 0
   actionPrompt.hide()
 
+func get_start_node() -> MapNode:
+  return mapNodes[0]
+
+func get_end_node() -> MapNode:
+  return mapNodes[mapNodes.size() - 1]
+
+
 func get_start_point() -> Vector2:
   return segments[0]
 
 func get_end_point() -> Vector2:
   return segments[segments.size() - 1]
+
+func get_map_node_from_point(point) -> MapNode:
+  return mapNodes[0] if segments[0] == point else mapNodes[1]
+
+func get_point_from_map_node(mapNode) -> Vector2:
+  return segments[0] if mapNodes[0] == mapNode else segments[1]
+
+func contains_point(point) -> bool:
+  return segments.has(point)
+
+func contains_node(mapNode) -> bool:
+  return mapNodes.has(mapNode)
+
+func get_other_point(point) -> Vector2:
+  return segments[0] if segments[1] == point else segments[1]
+
+func get_other_node(mapNode) -> MapNode:
+  return mapNodes[0] if mapNodes[1] == mapNode else mapNodes[1]
 
 func get_intersecting_rectangle() -> Rect2:
   return Utils.get_rectangle_polygon_from_two_points_and_width(
@@ -59,9 +84,3 @@ func get_center_point() -> Vector2:
 
 func demolish() -> void:
   emit_signal("on_demolish", self)
-
-func get_map_node_from_point(pt: Vector2) -> MapNode:
-  for mapNode in mapNodes:
-    if mapNode.get_connection_point() == pt:
-      return mapNode
-  return null

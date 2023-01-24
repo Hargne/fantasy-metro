@@ -8,6 +8,8 @@ onready var gridContainer = $CenterContainer/PanelContainer/GridContainer
 var textureBasePath = "res://screens/gameplay/ui/resource_list/assets"
 var iconSize = 16
 
+var icons = []
+
 func _ready():
   var size = columns * (iconSize + 10)
   gridContainer.columns = columns
@@ -22,6 +24,8 @@ func add_resource(resourceType) -> void:
   var icon = TextureRect.new()
   gridContainer.add_child(icon)
   icon.rect_size = Vector2(iconSize, iconSize)
+  icons.append(icon)
+
   # Grab texture
   var textureFile
   match resourceType:
@@ -39,14 +43,23 @@ func add_resource(resourceType) -> void:
   resources.append({ "node": icon, "resourceType": resourceType })
 
 func remove_resource(resourceType, removeAll: bool = true) -> void:
+  var idx = -1
+
   for resource in resources:
-    if "resourceType" in resource && resource.resourceType == resourceType:
-      # Remove the icon node
-      if "node" in resource && is_instance_valid(resource.node):
-        resource.node.queue_free()
-      resources.erase(resourceType)
-      if !removeAll:
-        return
+    if resource.resourceType == resourceType:
+      idx = resources.find(resource)
+
+  if idx == -1:
+    return
+
+  resources.remove(idx)
+
+  var icon = icons[idx]
+  gridContainer.remove_child(icon)
+  icons.remove(idx)
+
+  if removeAll:
+    remove_resource(resourceType, true)
       
 func clear() -> void:
   resources.clear()
