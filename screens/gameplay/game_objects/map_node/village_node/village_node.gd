@@ -26,6 +26,12 @@ func remove_demand(resourceType) -> void:
   if demandedResources.resources.size() > 0:
     demandedResources.remove_resource(resourceType)
 
+func demands_resource(resourceType) -> bool:
+  return demandedResources.contains_resource(resourceType)
+
+func has_demands() -> bool:
+  return demandedResources.resources.size() > 0
+
 func set_color(inputColor: Color) -> void:
   flagLeft.modulate = inputColor
   flagRight.modulate = inputColor

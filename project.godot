@@ -30,6 +30,11 @@ _global_script_classes=[ {
 "path": "res://screens/gameplay/game_objects/cart_controller/cart_controller.gd"
 }, {
 "base": "Node2D",
+"class": "Connection",
+"language": "GDScript",
+"path": "res://screens/gameplay/game_objects/route/connection.gd"
+}, {
+"base": "Node2D",
 "class": "Gameplay",
 "language": "GDScript",
 "path": "res://screens/gameplay/gameplay.gd"
@@ -64,10 +69,10 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://screens/gameplay/game_objects/map_node/resource_node/resource_node.gd"
 }, {
-"base": "Node2D",
+"base": "Reference",
 "class": "Route",
 "language": "GDScript",
-"path": "res://screens/gameplay/game_objects/route/route.gd"
+"path": "res://screens/gameplay/game_objects/route/route.class.gd"
 }, {
 "base": "Control",
 "class": "StockButton",
@@ -89,6 +94,7 @@ _global_script_class_icons={
 "BuildPanel": "",
 "Cart": "",
 "CartController": "",
+"Connection": "",
 "Gameplay": "",
 "GameplayEnums": "",
 "GameplayUIController": "",
