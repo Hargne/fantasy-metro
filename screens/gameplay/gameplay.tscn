@@ -7,14 +7,14 @@
 [ext_resource path="res://screens/gameplay/gameplay.gd" type="Script" id=5]
 [ext_resource path="res://sfx/pop.wav" type="AudioStream" id=6]
 [ext_resource path="res://screens/gameplay/camera/main_camera.gd" type="Script" id=7]
-[ext_resource path="res://screens/gameplay/ui/assets/Cart.png" type="Texture" id=8]
-[ext_resource path="res://screens/gameplay/ui/assets/Route.png" type="Texture" id=9]
+[ext_resource path="res://screens/gameplay/ui/build_panel/assets/cart_button.png" type="Texture" id=8]
+[ext_resource path="res://screens/gameplay/ui/build_panel/assets/route_button.png" type="Texture" id=9]
 [ext_resource path="res://sfx/thud.wav" type="AudioStream" id=10]
 [ext_resource path="res://screens/gameplay/ui/build_panel/build_panel.gd" type="Script" id=11]
 [ext_resource path="res://screens/gameplay/game_objects/map/map.gd" type="Script" id=12]
 [ext_resource path="res://screens/gameplay/game_objects/cart_controller/cart_controller.gd" type="Script" id=13]
 [ext_resource path="res://screens/gameplay/ui/gameplay_ui_controller.gd" type="Script" id=14]
-[ext_resource path="res://screens/gameplay/ui/assets/Warehouse.png" type="Texture" id=15]
+[ext_resource path="res://screens/gameplay/ui/build_panel/assets/warehouse_button.png" type="Texture" id=15]
 [ext_resource path="res://screens/gameplay/ui/stock_button/stock_button.tscn" type="PackedScene" id=16]
 [ext_resource path="res://sfx/crack.wav" type="AudioStream" id=17]
 [ext_resource path="res://screens/gameplay/ui/menu/menu.tscn" type="PackedScene" id=18]
@@ -116,36 +116,37 @@ custom_constants/separation = 4
 alignment = 2
 
 [node name="Left" type="GridContainer" parent="UI/VBoxContainer/BuildPanel/HBoxContainer"]
-margin_right = 230.0
+margin_right = 360.0
 margin_bottom = 100.0
 custom_constants/hseparation = 30
 columns = 10
 
+[node name="ROUTE" parent="UI/VBoxContainer/BuildPanel/HBoxContainer/Left" instance=ExtResource( 16 )]
+buttonIcon = ExtResource( 9 )
+
 [node name="WAREHOUSE" parent="UI/VBoxContainer/BuildPanel/HBoxContainer/Left" instance=ExtResource( 16 )]
+margin_left = 130.0
+margin_right = 230.0
 buttonIcon = ExtResource( 15 )
 
 [node name="CART" parent="UI/VBoxContainer/BuildPanel/HBoxContainer/Left" instance=ExtResource( 16 )]
-margin_left = 130.0
-margin_right = 230.0
+margin_left = 260.0
+margin_right = 360.0
 buttonIcon = ExtResource( 8 )
 
 [node name="Spacing" type="Control" parent="UI/VBoxContainer/BuildPanel/HBoxContainer"]
-margin_left = 234.0
-margin_right = 234.0
+margin_left = 364.0
+margin_right = 364.0
 margin_bottom = 100.0
 mouse_filter = 1
 size_flags_horizontal = 2
 
 [node name="Right" type="GridContainer" parent="UI/VBoxContainer/BuildPanel/HBoxContainer"]
-margin_left = 1760.0
+margin_left = 1860.0
 margin_right = 1860.0
 margin_bottom = 100.0
 custom_constants/hseparation = 30
 columns = 10
-
-[node name="ROUTE" parent="UI/VBoxContainer/BuildPanel/HBoxContainer/Right" instance=ExtResource( 16 )]
-buttonIcon = ExtResource( 9 )
-displayOnly = true
 
 [node name="Menu" parent="." instance=ExtResource( 18 )]
 visible = false
