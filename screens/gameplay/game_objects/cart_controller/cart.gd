@@ -97,7 +97,6 @@ func do_destination_action() -> void:
 
 func do_just_arrived_action(destinationNode) -> void:
   # show arrival graphics, smoke from cart stopping, etc... or just slow cart down  
-
   # the if statements below allow us to skip uneeded steps right away
   if destinationNode is VillageNode:
     if storedResources.resources.size() > 0 && destinationNode.has_demands():
@@ -129,10 +128,17 @@ func do_unloading_action(destinationNode) -> void:
         # show little icon moving from cart to village      
         break  
   elif destinationNode is WarehouseNode:
-    # the warehouse node takes ANYTHING up to capacity
+    # the warehouse node takes ANYTHING up to capacity;
+    # however, don't drop anything that we still need further on the route
+
+    var demandedResourcesOnRoute = currentConnection.route.get_demands_along_route(currentConnection, currentConnection.get_point_from_map_node(destinationNode))
+
     if destinationNode.has_capacity():
       for resource in storedResources.resources:
         if "resourceType" in resource:
+          if demandedResourcesOnRoute.has(resource.resourceType):
+            continue # don't drop this resource
+
           unloadedResourceType = resource.resourceType  
           storedResources.remove_resource(unloadedResourceType, false) 
 
@@ -216,17 +222,3 @@ func do_exiting_action(destinationNode) -> void:
   look_at(destinationPt)
 
   currentStatus = CartStatus.EN_ROUTE
-    
-
-  
-
-
-
-
-
-  
-
-  
-
-
-  
