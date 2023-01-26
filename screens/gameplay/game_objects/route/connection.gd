@@ -47,7 +47,6 @@ func get_start_node() -> MapNode:
 func get_end_node() -> MapNode:
   return mapNodes[mapNodes.size() - 1]
 
-
 func get_start_point() -> Vector2:
   return segments[0]
 
@@ -82,6 +81,13 @@ func get_intersecting_rectangle() -> Rect2:
 func get_center_point() -> Vector2:
   return 0.5 * (get_start_point() + get_end_point())
 
+func demolish() -> void:
+  emit_signal("on_demolish", self)
+
+func change_color(newColor: Color) -> void:
+  self.lineColor = newColor
+  line.default_color = newColor
+  
 func action_prompt_button_pressed(buttonName) -> void:
   if (buttonName.to_upper() == 'DELETE'):
     emit_signal("on_demolish", self)
