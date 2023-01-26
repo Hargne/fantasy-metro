@@ -33,6 +33,7 @@ custom_constants/separation = 20
 margin_right = 48.0
 margin_bottom = 48.0
 rect_min_size = Vector2( 48, 48 )
+action_mode = 0
 texture_normal = ExtResource( 3 )
 expand = true
 
@@ -51,3 +52,5 @@ margin_bottom = 48.0
 rect_min_size = Vector2( 48, 48 )
 texture_normal = ExtResource( 1 )
 expand = true
+
+[connection signal="pressed" from="HBoxContainer/DELETE" to="." method="button_clicked" binds= [ "DELETE" ]]
