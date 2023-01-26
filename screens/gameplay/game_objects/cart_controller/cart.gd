@@ -2,8 +2,11 @@ extends Area2D
 class_name Cart
 
 onready var storedResources = $ResourceList
+onready var actionPrompt = $ActionPrompt
 
-var defaultCartSpeed = .3 if ApplicationManager.debugMode else .1
+signal on_demolish(cart)
+
+var defaultCartSpeed = .1 if ApplicationManager.debugMode else .1
 
 export var capacity = 1
 export var startPt = Vector2(0,0)
@@ -24,12 +27,15 @@ enum CartStatus {
   WAITING
 }
 
+func _ready():
+  Utils.connect_signal(actionPrompt, "action_prompt_button_pressed", self, "action_prompt_button_pressed")
+
 func _process(_delta):
   if currentStatus != CartStatus.EN_ROUTE || position.distance_to(destinationPt) < .05: # this is a magic number for now - probably will need to be based on map size or screen size or something
     cart_is_at_destination()
   else:
     if currentConnection:
-      move_cart_to_destination()    
+      move_cart_to_destination()      
 
 func has_capacity() -> bool:
   return storedResources.resources.size() < capacity
@@ -222,3 +228,16 @@ func do_exiting_action(destinationNode) -> void:
   look_at(destinationPt)
 
   currentStatus = CartStatus.EN_ROUTE
+
+func cart_clicked() -> void:     
+  # TODO: DISPLAY THE PROMPT ROTATED PROPERLY FOR THE CART
+  actionPrompt.display(Vector2(0, 0), [ActionPrompt.ButtonType.DELETE])
+
+func blur() -> void:
+  actionPrompt.hide()
+      
+
+func action_prompt_button_pressed(buttonName) -> void:
+  if (buttonName.to_upper() == 'DELETE'):
+    emit_signal('on_demolish', self)
+  

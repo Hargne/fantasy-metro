@@ -41,6 +41,8 @@ func _ready():
   # Connect Map Node Controller events
   Utils.connect_signal(mapNodeController, "on_increase_stock", self, "increase_stock_item")
   Utils.connect_signal(mapNodeController, "on_decrease_stock", self, "decrease_stock_item")
+  Utils.connect_signal(cartController, "on_increase_stock", self, "increase_stock_item")
+  Utils.connect_signal(cartController, "on_decrease_stock", self, "decrease_stock_item")  
   # Allow for nodes to get initialized
   yield(get_tree().create_timer(0.1), "timeout")
   uiController.buildPanel.update_stock(buildStock)
@@ -110,6 +112,13 @@ func on_interact_click_handler() -> void:
   cartController.end_place_new_object(null)
   mapNodeController.canPlaceObject = null
   mapNodeController.end_place_new_object()
+
+  if interactTarget is Cart:
+    cartController.blur_all_carts(interactTarget)
+    interactTarget.cart_clicked()
+    return
+  else:
+    cartController.blur_all_carts()
   
   var clickedConnection = mapNodeController.get_connection_from_point(interactPosition)
   if clickedConnection != null:
@@ -120,6 +129,8 @@ func on_interact_click_handler() -> void:
 
 # Gets called when the player starts dragging an object from the build panel
 func on_new_object_drag_start(objectToBeSpawned) -> void:
+  cartController.blur_all_carts()
+  
   # Check if there's enough in stock
   if buildStock[objectToBeSpawned] > 0:
     typeOfObjectBeingPlaced = objectToBeSpawned

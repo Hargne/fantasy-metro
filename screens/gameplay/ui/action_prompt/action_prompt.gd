@@ -4,13 +4,15 @@ class_name ActionPrompt
 var isVisible = false
 var transitionSpeed = 10
 
+signal action_prompt_button_pressed(buttonName)
+
 enum ButtonType { DELETE, MOVE, UPGRADE }
 
 # Refs
-onready var buttonContainer = $HBoxContainer
-onready var deleteButton = $HBoxContainer/DELETE
-onready var moveButton = $HBoxContainer/MOVE
-onready var upgradeButton = $HBoxContainer/UPGRADE
+onready var buttonContainer = $Node2D/HBoxContainer
+onready var deleteButton = $Node2D/HBoxContainer/DELETE
+onready var moveButton = $Node2D/HBoxContainer/MOVE
+onready var upgradeButton = $Node2D/HBoxContainer/UPGRADE
 
 func _ready():
   modulate.a = 0
@@ -40,3 +42,6 @@ func hide() -> void:
     isVisible = false
     for button in buttonContainer.get_children():
       button.disabled = true
+
+func button_clicked(buttonName) -> void:
+  emit_signal('action_prompt_button_pressed', buttonName)

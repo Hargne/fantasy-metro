@@ -17,7 +17,7 @@ onready var actionPrompt = $ActionPrompt
 
 func _ready():
   setup_visuals()
-  Utils.connect_signal(actionPrompt.deleteButton, "pressed", self, "demolish")
+  Utils.connect_signal(actionPrompt, "action_prompt_button_pressed", self, "action_prompt_button_pressed")
 
 func _process(delta):
   if _currentHighlightAmount != _targetHighlightAmount:
@@ -82,5 +82,6 @@ func get_intersecting_rectangle() -> Rect2:
 func get_center_point() -> Vector2:
   return 0.5 * (get_start_point() + get_end_point())
 
-func demolish() -> void:
-  emit_signal("on_demolish", self)
+func action_prompt_button_pressed(buttonName) -> void:
+  if (buttonName.to_upper() == 'DELETE'):
+    emit_signal("on_demolish", self)
