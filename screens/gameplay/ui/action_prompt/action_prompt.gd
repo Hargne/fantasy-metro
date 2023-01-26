@@ -9,10 +9,10 @@ signal action_prompt_button_pressed(buttonName)
 enum ButtonType { DELETE, MOVE, UPGRADE }
 
 # Refs
-onready var buttonContainer = $Node2D/HBoxContainer
-onready var deleteButton = $Node2D/HBoxContainer/DELETE
-onready var moveButton = $Node2D/HBoxContainer/MOVE
-onready var upgradeButton = $Node2D/HBoxContainer/UPGRADE
+onready var buttonContainer = $HBoxContainer
+onready var deleteButton = $HBoxContainer/DELETE
+onready var moveButton = $HBoxContainer/MOVE
+onready var upgradeButton = $HBoxContainer/UPGRADE
 
 func _ready():
   modulate.a = 0
