@@ -8,6 +8,16 @@ var warehouseNodePrefab = preload("res://screens/gameplay/game_objects/map_node/
 var Route = load("res://screens/gameplay/game_objects/route/route.class.gd")
 # Connections / Routes
 var routes = []
+var activeRoute: Route
+var routeColors: Array = [
+  Color("#C17A7A"),
+  Color("#80A3D8"),
+  Color("#599772"),
+  Color("#9B58A0"),
+  Color("#A3A3A3"),
+  Color("#F0F7A2")
+]
+var defaultRouteColor = Color("#222222")
 
 var connectionContainer: Node2D
 var newRouteConnectionContainer: Node2D
@@ -18,7 +28,6 @@ var dragNewConnectionVisual: Line2D
 onready var placeRouteSFX = $PlaceRouteSFX
 onready var placeBuildingSFX = $PlaceBuildingSFX
 onready var demolishSFX = $DemolishSFX
-onready var gameplay = get_parent()
 
 signal on_increase_stock(item, amount)
 signal on_decrease_stock(item, amount)
@@ -122,7 +131,7 @@ func is_placing_new_object() -> bool:
 func create_route() -> Route:
   var route = Route.new()
   route.routeIndex = routes.size()
-  route.color = gameplay.routeColors[route.routeIndex]
+  route.color = routeColors[route.routeIndex]
   routes.append(route)  
   return route
 
@@ -132,7 +141,13 @@ func get_connection_by_map_nodes(node1: MapNode, node2: MapNode, route: Route = 
       for connection in rte.connections:
         if connection.mapNodes.has(node1) && connection.mapNodes.has(node2):
           return connection
-  return null
+  return null  
+
+func set_active_route(newActiveRoute: Route) -> void:
+  activeRoute = newActiveRoute
+  for route in routes:
+    for connection in route.connections:
+      connection.change_color(routeColors[route.routeIndex] if newActiveRoute == route else defaultRouteColor)
 
 func are_nodes_connected(node1: MapNode, node2: MapNode, route: Route) -> bool:
   return get_connection_by_map_nodes(node1, node2, route) != null
@@ -163,7 +178,7 @@ func spawn_connection(from: MapNode, to: MapNode, route: Route) -> Connection:
   connection.mapNodes = [from, to]
   connection.segments = [from.get_connection_point(), to.get_connection_point()]
   connection.width = 2
-  connection.lineColor = gameplay.routeColors[route.routeIndex]
+  connection.lineColor = routeColors[route.routeIndex]
   connectionContainer.add_child(connection)
   Utils.connect_signal(connection, "on_demolish", self, "demolish_connection")
   return connection  
@@ -245,6 +260,8 @@ func draw_new_route_nodes(startPt, currentMousePosition) -> void:
     dragNewConnectionVisual.antialiased = true
     dragNewConnectionVisual.begin_cap_mode = Line2D.LINE_CAP_ROUND
     dragNewConnectionVisual.end_cap_mode = Line2D.LINE_CAP_ROUND 
+    if dragNewConnectionVisual.default_color != activeRoute.color:
+      dragNewConnectionVisual.default_color = activeRoute.color    
     newRouteConnectionContainer.add_child(dragNewConnectionVisual)    
 
 func hide_drag_new_connection() -> void:

@@ -1,22 +1,23 @@
-[gd_scene load_steps=13 format=2]
+[gd_scene load_steps=14 format=2]
 
 [ext_resource path="res://screens/gameplay/ui/menu/menu.gd" type="Script" id=1]
 [ext_resource path="res://shaders/blur/blur_shader.tres" type="Shader" id=2]
 [ext_resource path="res://fonts/resource/m5x7.ttf" type="DynamicFontData" id=3]
 [ext_resource path="res://screens/gameplay/ui/menu/assets/logo.png" type="Texture" id=4]
 [ext_resource path="res://screens/gameplay/ui/menu/assets/menu_button_normal.tres" type="StyleBox" id=5]
+[ext_resource path="res://fonts/resource/Aleo-Bold.ttf" type="DynamicFontData" id=6]
 
 [sub_resource type="ShaderMaterial" id=1]
 shader = ExtResource( 2 )
 shader_param/blur_amount = 1.0
 
 [sub_resource type="DynamicFont" id=5]
-size = 32
+size = 36
 font_data = ExtResource( 3 )
 
 [sub_resource type="DynamicFont" id=3]
-size = 64
-font_data = ExtResource( 3 )
+size = 36
+font_data = ExtResource( 6 )
 
 [sub_resource type="StyleBoxFlat" id=4]
 content_margin_left = 60.0
@@ -332,7 +333,7 @@ texture = ExtResource( 4 )
 margin_left = 687.0
 margin_top = 1000.0
 margin_right = 1232.0
-margin_bottom = 1026.0
+margin_bottom = 1029.0
 custom_colors/font_color = Color( 1, 1, 1, 1 )
 custom_colors/font_color_shadow = Color( 0, 0, 0, 1 )
 custom_constants/shadow_offset_x = 0
@@ -349,25 +350,25 @@ margin_bottom = 40.0
 rect_min_size = Vector2( 1920, 1080 )
 
 [node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer"]
-margin_left = 814.0
-margin_top = 351.0
-margin_right = 1106.0
-margin_bottom = 729.0
+margin_left = 835.0
+margin_top = 349.0
+margin_right = 1084.0
+margin_bottom = 730.0
 custom_constants/separation = 100
 alignment = 1
 
 [node name="CenterContainer" type="CenterContainer" parent="CenterContainer/VBoxContainer"]
-margin_right = 292.0
-margin_bottom = 378.0
+margin_right = 249.0
+margin_bottom = 381.0
 
 [node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer/VBoxContainer/CenterContainer"]
-margin_right = 292.0
-margin_bottom = 378.0
+margin_right = 249.0
+margin_bottom = 381.0
 custom_constants/separation = 60
 
 [node name="StartGame" type="Button" parent="CenterContainer/VBoxContainer/CenterContainer/VBoxContainer"]
-margin_right = 292.0
-margin_bottom = 86.0
+margin_right = 249.0
+margin_bottom = 87.0
 custom_colors/font_color = Color( 1, 1, 1, 1 )
 custom_fonts/font = SubResource( 3 )
 custom_styles/hover = ExtResource( 5 )
@@ -379,8 +380,8 @@ text = "Start"
 
 [node name="Settings" type="Button" parent="CenterContainer/VBoxContainer/CenterContainer/VBoxContainer"]
 margin_top = 146.0
-margin_right = 292.0
-margin_bottom = 232.0
+margin_right = 249.0
+margin_bottom = 233.0
 custom_colors/font_color = Color( 1, 1, 1, 1 )
 custom_fonts/font = SubResource( 3 )
 custom_styles/hover = ExtResource( 5 )
@@ -392,8 +393,8 @@ text = "Settings"
 
 [node name="Exit" type="Button" parent="CenterContainer/VBoxContainer/CenterContainer/VBoxContainer"]
 margin_top = 292.0
-margin_right = 292.0
-margin_bottom = 378.0
+margin_right = 249.0
+margin_bottom = 379.0
 custom_colors/font_color = Color( 1, 1, 1, 1 )
 custom_fonts/font = SubResource( 3 )
 custom_styles/hover = ExtResource( 5 )
