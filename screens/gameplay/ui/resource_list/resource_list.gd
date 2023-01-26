@@ -43,23 +43,14 @@ func add_resource(resourceType) -> void:
   resources.append({ "node": icon, "resourceType": resourceType })
 
 func remove_resource(resourceType, removeAll: bool = true) -> void:
-  var idx = -1
-
   for resource in resources:
-    if resource.resourceType == resourceType:
-      idx = resources.find(resource)
-
-  if idx == -1:
-    return
-
-  resources.remove(idx)
-
-  var icon = icons[idx]
-  gridContainer.remove_child(icon)
-  icons.remove(idx)
-
-  if removeAll:
-    remove_resource(resourceType, true)
+    if "resourceType" in resource && resource.resourceType == resourceType:
+      # Remove the icon node
+      if "node" in resource && is_instance_valid(resource.node):
+        resource.node.queue_free()
+      resources.erase(resource)
+      if !removeAll:
+        return
       
 func clear() -> void:
   resources.clear()

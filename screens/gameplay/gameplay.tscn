@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=2]
+[gd_scene load_steps=26 format=2]
 
 [ext_resource path="res://screens/gameplay/game_objects/map_node/resource_node/resource_node.tscn" type="PackedScene" id=1]
 [ext_resource path="res://screens/gameplay/game_objects/map_node/village_node/village_node.tscn" type="PackedScene" id=2]
@@ -7,17 +7,21 @@
 [ext_resource path="res://screens/gameplay/gameplay.gd" type="Script" id=5]
 [ext_resource path="res://sfx/pop.wav" type="AudioStream" id=6]
 [ext_resource path="res://screens/gameplay/camera/main_camera.gd" type="Script" id=7]
-[ext_resource path="res://screens/gameplay/ui/build_panel/assets/cart_button.png" type="Texture" id=8]
-[ext_resource path="res://screens/gameplay/ui/build_panel/assets/route_button.png" type="Texture" id=9]
+[ext_resource path="res://screens/gameplay/ui/build_panel/assets/build_icon.png" type="Texture" id=8]
+[ext_resource path="res://screens/gameplay/ui/build_panel/assets/route_icon.png" type="Texture" id=9]
 [ext_resource path="res://sfx/thud.wav" type="AudioStream" id=10]
 [ext_resource path="res://screens/gameplay/ui/build_panel/build_panel.gd" type="Script" id=11]
 [ext_resource path="res://screens/gameplay/game_objects/map/map.gd" type="Script" id=12]
 [ext_resource path="res://screens/gameplay/game_objects/cart_controller/cart_controller.gd" type="Script" id=13]
 [ext_resource path="res://screens/gameplay/ui/gameplay_ui_controller.gd" type="Script" id=14]
-[ext_resource path="res://screens/gameplay/ui/build_panel/assets/warehouse_button.png" type="Texture" id=15]
-[ext_resource path="res://screens/gameplay/ui/stock_button/stock_button.tscn" type="PackedScene" id=16]
+[ext_resource path="res://screens/gameplay/ui/build_panel/assets/warehouse_icon.png" type="Texture" id=15]
+[ext_resource path="res://screens/gameplay/ui/build_panel/build_panel_button/build_panel_button.tscn" type="PackedScene" id=16]
 [ext_resource path="res://sfx/crack.wav" type="AudioStream" id=17]
 [ext_resource path="res://screens/gameplay/ui/menu/menu.tscn" type="PackedScene" id=18]
+[ext_resource path="res://screens/gameplay/ui/build_panel/assets/cart_icon.png" type="Texture" id=19]
+[ext_resource path="res://screens/gameplay/ui/build_panel/assets/panel_transition_init.tres" type="Animation" id=20]
+[ext_resource path="res://screens/gameplay/ui/build_panel/assets/panel_transition_out.tres" type="Animation" id=23]
+[ext_resource path="res://screens/gameplay/ui/build_panel/assets/panel_transition_in.tres" type="Animation" id=24]
 
 [sub_resource type="StyleBoxFlat" id=3]
 content_margin_left = 30.0
@@ -30,6 +34,60 @@ corner_radius_top_left = 15
 corner_radius_top_right = 15
 corner_radius_bottom_right = 15
 corner_radius_bottom_left = 15
+
+[sub_resource type="Animation" id=7]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:rect_position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Vector2( 0, 0 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath(".:modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Color( 1, 1, 1, 1 ) ]
+}
+
+[sub_resource type="Animation" id=4]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:rect_position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Vector2( 0, 0 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath(".:modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Color( 1, 1, 1, 1 ) ]
+}
 
 [node name="Gameplay" type="Node2D"]
 pause_mode = 2
@@ -93,15 +151,16 @@ stream = ExtResource( 17 )
 script = ExtResource( 14 )
 
 [node name="VBoxContainer" type="VBoxContainer" parent="UI"]
-margin_right = 1920.0
-margin_bottom = 1080.0
+margin_left = 10.0
+margin_right = 1910.0
+margin_bottom = 1050.0
 mouse_filter = 2
 alignment = 2
 
 [node name="BuildPanel" type="PanelContainer" parent="UI/VBoxContainer"]
-margin_top = 965.0
-margin_right = 1920.0
-margin_bottom = 1080.0
+margin_top = 705.0
+margin_right = 1900.0
+margin_bottom = 1050.0
 mouse_filter = 2
 custom_styles/panel = SubResource( 3 )
 script = ExtResource( 11 )
@@ -109,44 +168,99 @@ script = ExtResource( 11 )
 [node name="HBoxContainer" type="HBoxContainer" parent="UI/VBoxContainer/BuildPanel"]
 margin_left = 30.0
 margin_top = 5.0
-margin_right = 1890.0
-margin_bottom = 105.0
+margin_right = 1870.0
+margin_bottom = 335.0
 grow_horizontal = 0
 custom_constants/separation = 4
+
+[node name="Left" type="HBoxContainer" parent="UI/VBoxContainer/BuildPanel/HBoxContainer"]
+margin_right = 230.0
+margin_bottom = 330.0
+custom_constants/separation = 30
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="UI/VBoxContainer/BuildPanel/HBoxContainer/Left"]
+margin_top = 210.0
+margin_right = 100.0
+margin_bottom = 330.0
+size_flags_vertical = 8
+custom_constants/separation = 20
 alignment = 2
 
-[node name="Left" type="GridContainer" parent="UI/VBoxContainer/BuildPanel/HBoxContainer"]
-margin_right = 360.0
-margin_bottom = 100.0
-custom_constants/hseparation = 30
-columns = 10
+[node name="RouteSelector" type="VBoxContainer" parent="UI/VBoxContainer/BuildPanel/HBoxContainer/Left/VBoxContainer2"]
+margin_right = 100.0
+custom_constants/separation = 10
+alignment = 2
 
-[node name="ROUTE" parent="UI/VBoxContainer/BuildPanel/HBoxContainer/Left" instance=ExtResource( 16 )]
-buttonIcon = ExtResource( 9 )
+[node name="Control" type="Control" parent="UI/VBoxContainer/BuildPanel/HBoxContainer/Left/VBoxContainer2/RouteSelector"]
+margin_right = 100.0
+size_flags_vertical = 3
 
-[node name="WAREHOUSE" parent="UI/VBoxContainer/BuildPanel/HBoxContainer/Left" instance=ExtResource( 16 )]
+[node name="AnimationPlayer" type="AnimationPlayer" parent="UI/VBoxContainer/BuildPanel/HBoxContainer/Left/VBoxContainer2/RouteSelector"]
+anims/RESET = SubResource( 7 )
+anims/panel_transition_in = ExtResource( 24 )
+anims/panel_transition_init = ExtResource( 20 )
+anims/panel_transition_out = ExtResource( 23 )
+
+[node name="ROUTE" parent="UI/VBoxContainer/BuildPanel/HBoxContainer/Left/VBoxContainer2" instance=ExtResource( 16 )]
+margin_top = 20.0
+margin_bottom = 120.0
+backgroundColor = Color( 0.133333, 0.133333, 0.133333, 1 )
+icon = ExtResource( 9 )
+tooltiptext = "Routes"
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/VBoxContainer/BuildPanel/HBoxContainer/Left"]
 margin_left = 130.0
 margin_right = 230.0
-buttonIcon = ExtResource( 15 )
+margin_bottom = 330.0
+custom_constants/separation = 20
+alignment = 2
 
-[node name="CART" parent="UI/VBoxContainer/BuildPanel/HBoxContainer/Left" instance=ExtResource( 16 )]
-margin_left = 260.0
-margin_right = 360.0
-buttonIcon = ExtResource( 8 )
+[node name="BuildOptions" type="VBoxContainer" parent="UI/VBoxContainer/BuildPanel/HBoxContainer/Left/VBoxContainer"]
+margin_right = 100.0
+margin_bottom = 210.0
+size_flags_vertical = 3
+custom_constants/separation = 10
+alignment = 2
+
+[node name="CART" parent="UI/VBoxContainer/BuildPanel/HBoxContainer/Left/VBoxContainer/BuildOptions" instance=ExtResource( 16 )]
+margin_bottom = 100.0
+backgroundColor = Color( 0.109804, 0.784314, 0.419608, 0 )
+icon = ExtResource( 19 )
+tooltiptext = "New Horse Cart"
+showAmount = true
+
+[node name="WAREHOUSE" parent="UI/VBoxContainer/BuildPanel/HBoxContainer/Left/VBoxContainer/BuildOptions" instance=ExtResource( 16 )]
+margin_top = 110.0
+margin_bottom = 210.0
+backgroundColor = Color( 0, 0, 0, 0 )
+icon = ExtResource( 15 )
+tooltiptext = "New Warehouse"
+showAmount = true
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="UI/VBoxContainer/BuildPanel/HBoxContainer/Left/VBoxContainer/BuildOptions"]
+anims/RESET = SubResource( 4 )
+anims/panel_transition_in = ExtResource( 24 )
+anims/panel_transition_init = ExtResource( 20 )
+anims/panel_transition_out = ExtResource( 23 )
+
+[node name="BUILD" parent="UI/VBoxContainer/BuildPanel/HBoxContainer/Left/VBoxContainer" instance=ExtResource( 16 )]
+margin_top = 230.0
+margin_bottom = 330.0
+backgroundColor = Color( 0.133333, 0.133333, 0.133333, 1 )
+icon = ExtResource( 8 )
+tooltiptext = "Build"
 
 [node name="Spacing" type="Control" parent="UI/VBoxContainer/BuildPanel/HBoxContainer"]
-margin_left = 364.0
-margin_right = 364.0
-margin_bottom = 100.0
+margin_left = 234.0
+margin_right = 234.0
+margin_bottom = 330.0
 mouse_filter = 1
 size_flags_horizontal = 2
 
-[node name="Right" type="GridContainer" parent="UI/VBoxContainer/BuildPanel/HBoxContainer"]
-margin_left = 1860.0
-margin_right = 1860.0
-margin_bottom = 100.0
-custom_constants/hseparation = 30
-columns = 10
+[node name="Right" type="HBoxContainer" parent="UI/VBoxContainer/BuildPanel/HBoxContainer"]
+margin_left = 1840.0
+margin_right = 1840.0
+margin_bottom = 330.0
 
 [node name="Menu" parent="." instance=ExtResource( 18 )]
 visible = false

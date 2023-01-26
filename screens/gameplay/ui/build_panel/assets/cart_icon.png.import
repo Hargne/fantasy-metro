@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/cart_button.png-b3d9d160b8053cb50f4bd2dd610ee7a5.stex"
+path="res://.import/cart_icon.png-5949bfaf735338b3c14e9627c7e845b5.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://screens/gameplay/ui/build_panel/assets/cart_button.png"
-dest_files=[ "res://.import/cart_button.png-b3d9d160b8053cb50f4bd2dd610ee7a5.stex" ]
+source_file="res://screens/gameplay/ui/build_panel/assets/cart_icon.png"
+dest_files=[ "res://.import/cart_icon.png-5949bfaf735338b3c14e9627c7e845b5.stex" ]
 
 [params]
 

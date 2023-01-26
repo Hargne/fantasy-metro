@@ -47,7 +47,6 @@ func get_start_node() -> MapNode:
 func get_end_node() -> MapNode:
   return mapNodes[mapNodes.size() - 1]
 
-
 func get_start_point() -> Vector2:
   return segments[0]
 
@@ -84,3 +83,7 @@ func get_center_point() -> Vector2:
 
 func demolish() -> void:
   emit_signal("on_demolish", self)
+
+func change_color(newColor: Color) -> void:
+  self.lineColor = newColor
+  line.default_color = newColor
