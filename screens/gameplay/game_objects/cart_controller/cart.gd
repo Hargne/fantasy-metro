@@ -3,6 +3,7 @@ class_name Cart
 
 onready var storedResources = $ResourceList
 onready var actionPrompt = $ActionPrompt
+onready var routeLine = $RouteLine
 
 signal on_demolish(cart)
 
@@ -71,6 +72,8 @@ func place_on_connection(connection: Connection) -> void:
   destinationPt = pt1 if closestPt.distance_to(pt1) < closestPt.distance_to(pt2) else pt2
   cartSpeed = defaultCartSpeed
   currentStatus = CartStatus.EN_ROUTE
+
+  routeLine.default_color = connection.route.color
 
   look_at(destinationPt)
 

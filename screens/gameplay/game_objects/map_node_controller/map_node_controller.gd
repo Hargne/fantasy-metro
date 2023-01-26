@@ -256,7 +256,7 @@ func draw_new_route_nodes(startPt, currentMousePosition) -> void:
     dragNewConnectionVisual = Line2D.new()
     dragNewConnectionVisual.points = [pt1, pt2]
     dragNewConnectionVisual.width = 1.5
-    dragNewConnectionVisual.default_color = gameplay.activeRoute.color
+    dragNewConnectionVisual.default_color = activeRoute.color
     dragNewConnectionVisual.antialiased = true
     dragNewConnectionVisual.begin_cap_mode = Line2D.LINE_CAP_ROUND
     dragNewConnectionVisual.end_cap_mode = Line2D.LINE_CAP_ROUND 
