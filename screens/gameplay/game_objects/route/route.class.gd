@@ -13,7 +13,7 @@ func get_all_connections_for_map_node(mapNode) -> Array:
   return matchingConnections
 
 # gets demands for cart as if cart just pulled into the starting destination point and will continue forward from there
-func get_demands_along_route(startConnection, startDestinationPt) -> Array:
+func get_demands_along_route(startConnection, startDestinationPt, lookBothDirections: bool = false) -> Array:
   var demands = []
 
   if connections.size() == 0:
@@ -27,14 +27,15 @@ func get_demands_along_route(startConnection, startDestinationPt) -> Array:
       for demandedResource in mapNode.demandedResources.resources:
         demands.append(demandedResource.resourceType)
 
-  # look backwards from destination pt (we do this second so upcoming demands have higher priority
-  # note: if we have a circular loop, we will repeat demands in opposite order going backwards
-  orderedMapNodes = get_ordered_map_nodes(startConnection, startConnection.get_other_point(startDestinationPt), true)
+  if lookBothDirections:
+    # look backwards from destination pt (we do this second so upcoming demands have higher priority
+    # note: if we have a circular loop, we will repeat demands in opposite order going backwards
+    orderedMapNodes = get_ordered_map_nodes(startConnection, startConnection.get_other_point(startDestinationPt), true)
 
-  for mapNode in orderedMapNodes:
-    if mapNode is VillageNode:
-      for demandedResource in mapNode.demandedResources.resources:
-        demands.append(demandedResource.resourceType)
+    for mapNode in orderedMapNodes:
+      if mapNode is VillageNode:
+        for demandedResource in mapNode.demandedResources.resources:
+          demands.append(demandedResource.resourceType)
 
   return demands
 

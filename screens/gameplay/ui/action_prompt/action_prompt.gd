@@ -4,6 +4,8 @@ class_name ActionPrompt
 var isVisible = false
 var transitionSpeed = 10
 
+signal action_prompt_button_pressed(buttonName)
+
 enum ButtonType { DELETE, MOVE, UPGRADE }
 
 # Refs
@@ -40,3 +42,6 @@ func hide() -> void:
     isVisible = false
     for button in buttonContainer.get_children():
       button.disabled = true
+
+func button_clicked(buttonName) -> void:
+  emit_signal('action_prompt_button_pressed', buttonName)

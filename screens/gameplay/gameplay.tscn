@@ -147,6 +147,9 @@ script = ExtResource( 13 )
 [node name="PlaceCartSFX" type="AudioStreamPlayer2D" parent="CartController"]
 stream = ExtResource( 17 )
 
+[node name="DemolishSFX" type="AudioStreamPlayer2D" parent="CartController"]
+stream = ExtResource( 17 )
+
 [node name="UI" type="CanvasLayer" parent="."]
 script = ExtResource( 14 )
 
