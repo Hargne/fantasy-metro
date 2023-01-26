@@ -229,7 +229,7 @@ alignment = 2
 margin_bottom = 100.0
 backgroundColor = Color( 0.109804, 0.784314, 0.419608, 0 )
 icon = ExtResource( 19 )
-tooltiptext = "New Horse Cart"
+tooltiptext = "Horse Cart"
 showAmount = true
 
 [node name="WAREHOUSE" parent="UI/VBoxContainer/BuildPanel/HBoxContainer/Left/VBoxContainer/BuildOptions" instance=ExtResource( 16 )]
@@ -237,7 +237,7 @@ margin_top = 110.0
 margin_bottom = 210.0
 backgroundColor = Color( 0, 0, 0, 0 )
 icon = ExtResource( 15 )
-tooltiptext = "New Warehouse"
+tooltiptext = "Warehouse"
 showAmount = true
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="UI/VBoxContainer/BuildPanel/HBoxContainer/Left/VBoxContainer/BuildOptions"]
