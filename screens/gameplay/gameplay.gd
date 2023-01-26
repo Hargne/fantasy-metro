@@ -156,7 +156,7 @@ func on_interact_drag() -> void:
   else:
     # Routes
     if can_build_route() && !mapNodeController.is_placing_new_object() && interactTarget && interactTarget is MapNode:
-      mapNodeController.update_drag_new_connection_points(interactTarget.get_connection_point(), mpos)
+      mapNodeController.draw_new_route_nodes(interactTarget.get_connection_point(), mpos)
     # Other Objects
     elif mapNodeController.is_placing_new_object():
       mapNodeController.objectBeingPlaced.position = map.get_tile_position_in_world(mpos)
@@ -177,8 +177,8 @@ func on_interact_drag_end() -> void:
     # Routes
     if mapNodeController.is_dragging_new_connection():
       var objectAtEndOfDrag = get_object_at_cursor_location()
-      if interactTarget && interactTarget is MapNode && objectAtEndOfDrag && objectAtEndOfDrag is MapNode && interactTarget != objectAtEndOfDrag && can_build_route():
-        mapNodeController.connect_map_nodes(interactTarget, objectAtEndOfDrag, activeRoute)
+      if interactTarget && interactTarget is MapNode:
+        mapNodeController.finish_drawing_new_route_nodes(activeRoute)
       mapNodeController.hide_drag_new_connection()
     # Placing Objects
     elif mapNodeController.is_placing_new_object():

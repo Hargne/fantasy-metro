@@ -16,7 +16,7 @@ var currentConnection: Connection
 var currentStatus = CartStatus.EN_ROUTE
 
 var stepTimeStamp = 0
-var stepDelay = 500 # we use a .5 second delay for actions to take place
+var stepDelay = 200 if ApplicationManager.debugMode else 500
 
 enum CartStatus {
   EN_ROUTE,

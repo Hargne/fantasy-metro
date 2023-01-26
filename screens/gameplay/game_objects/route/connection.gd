@@ -32,10 +32,36 @@ func setup_visuals() -> void:
   line.begin_cap_mode = Line2D.LINE_CAP_ROUND
   line.end_cap_mode = Line2D.LINE_CAP_ROUND 
 
-func highlight(showPrompt = false) -> void:
-  _targetHighlightAmount = 1
-  if showPrompt:
-    actionPrompt.display(get_center_point(), [ActionPrompt.ButtonType.DELETE])
+func highlight(showPrompt = false) -> void:  
+  if can_be_deleted():
+    _targetHighlightAmount = 1
+    if showPrompt:
+      actionPrompt.display(get_center_point(), [ActionPrompt.ButtonType.DELETE])
+
+func can_be_deleted() -> bool:
+  if route.connections.size() < 3:
+    return true
+
+  var connectedConnections = 0
+
+  for conn in route.connections:
+    if conn == self:
+      continue
+
+    var nd1 = conn.get_start_node()
+    var nd2 = conn.get_end_node()
+
+    var conn1 = route.get_all_connections_for_map_node(nd1)
+    conn1.erase(conn)
+    conn1.erase(self)
+    var conn2 = route.get_all_connections_for_map_node(nd2)
+    conn2.erase(conn)
+    conn2.erase(self)
+
+    if conn1.size() > 0 || conn2.size() > 0:
+      connectedConnections = connectedConnections + 1
+
+  return connectedConnections >= (route.connections.size() - 1)
 
 func blur() -> void:
   _targetHighlightAmount = 0
