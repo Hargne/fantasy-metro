@@ -6,7 +6,7 @@ onready var actionPrompt = $ActionPrompt
 
 signal on_demolish(cart)
 
-var defaultCartSpeed = .1 if ApplicationManager.debugMode else .1
+var defaultCartSpeed = .33 if ApplicationManager.debugMode else .1
 
 export var capacity = 1
 export var startPt = Vector2(0,0)
@@ -137,7 +137,7 @@ func do_unloading_action(destinationNode) -> void:
     # the warehouse node takes ANYTHING up to capacity;
     # however, don't drop anything that we still need further on the route
 
-    var demandedResourcesOnRoute = currentConnection.route.get_demands_along_route(currentConnection, currentConnection.get_point_from_map_node(destinationNode))
+    var demandedResourcesOnRoute = currentConnection.route.get_demands_along_route(currentConnection, currentConnection.get_point_from_map_node(destinationNode), true)
 
     if destinationNode.has_capacity():
       for resource in storedResources.resources:
@@ -171,7 +171,7 @@ func do_loading_action(destinationNode) -> void:
       # show little icon moving from resource to cart
       storedResources.add_resource(loadedResourceType)
     elif destinationNode is WarehouseNode:
-      var demandedResourcesOnRoute = currentConnection.route.get_demands_along_route(currentConnection, currentConnection.get_point_from_map_node(destinationNode))
+      var demandedResourcesOnRoute = currentConnection.route.get_demands_along_route(currentConnection, currentConnection.get_point_from_map_node(destinationNode), true)
 
       if demandedResourcesOnRoute.size() > 0:
         # remove all the resources we already have, so we don't add them again
