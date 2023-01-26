@@ -14,17 +14,42 @@ onready var cartButton = $HBoxContainer/Left/VBoxContainer/BuildOptions/CART
 onready var warehouseButton = $HBoxContainer/Left/VBoxContainer/BuildOptions/WAREHOUSE
 
 var buildPanelButtonPrefab = preload("res://screens/gameplay/ui/build_panel/build_panel_button/build_panel_button.tscn")
-
+# Sub Menus
 enum SubMenu { NONE, ROUTE, BUILD }
 var _currentSubmenu = SubMenu.NONE
+# Transitions
+var isVisible = true
+var transitionSpeed = 8
 
 func _ready():
-  Utils.connect_signal(buildMenuButton.button, "button_down", self, "toggle_build_menu")
-  Utils.connect_signal(routesButton.button, "button_down", self, "toggle_route_menu")
+  Utils.connect_signal(buildMenuButton.button, "button_down", self, "toggle_submenu", [SubMenu.BUILD])
+  Utils.connect_signal(routesButton.button, "button_down", self, "toggle_submenu", [SubMenu.ROUTE])
   Utils.connect_signal(warehouseButton.button, "button_down", self, "initiate_dragging_object", [GameplayEnums.BuildOption.WAREHOUSE])
   Utils.connect_signal(cartButton.button, "button_down", self, "initiate_dragging_object", [GameplayEnums.BuildOption.CART])
   buildMenuContainer.get_node("AnimationPlayer").play("panel_transition_init")
   routeSelectorContainer.get_node("AnimationPlayer").play("panel_transition_init")
+
+func _process(delta):
+  transition_handler(delta)
+
+func _input(event):
+  # Check whether the user clicks outside this component
+  if (event is InputEventMouseButton) and event.pressed:
+    if !Rect2(Vector2(0,0),rect_size).has_point(make_input_local(event).position):
+      hide_all_submenus()
+
+
+func transition_handler(delta: float) -> void:
+  if isVisible && modulate.a < 1:
+    modulate.a = lerp(modulate.a, 1, transitionSpeed * delta)
+  elif !isVisible && modulate.a > 0:
+    modulate.a = lerp(modulate.a, 0, transitionSpeed * delta)
+
+func hide() -> void:
+  isVisible = false
+
+func display() -> void:
+  isVisible = true
 
 func get_button_by_type(buildOptionType) -> BuildPanelButton:
   match buildOptionType:
@@ -65,13 +90,14 @@ func display_submenu(submenu) -> void:
       hide_submenu(SubMenu.BUILD)
   _currentSubmenu = submenu
 
-func hide_submenu(submenu) -> void:
+func hide_submenu(submenu, instant = false) -> void:
   if _currentSubmenu == submenu:
+    var animationName = "panel_transition_out" if !instant else "RESET"
     match submenu:
       SubMenu.BUILD:
-        buildMenuContainer.get_node("AnimationPlayer").play("panel_transition_out")
+        buildMenuContainer.get_node("AnimationPlayer").play(animationName)
       SubMenu.ROUTE:
-        routeSelectorContainer.get_node("AnimationPlayer").play("panel_transition_out")
+        routeSelectorContainer.get_node("AnimationPlayer").play(animationName)
     _currentSubmenu = SubMenu.NONE
 
 func toggle_submenu(submenu) -> void:
@@ -80,11 +106,9 @@ func toggle_submenu(submenu) -> void:
   else:
     display_submenu(submenu)
 
-func toggle_build_menu() -> void:
-  toggle_submenu(SubMenu.BUILD)
-
-func toggle_route_menu() -> void:
-  toggle_submenu(SubMenu.ROUTE)
+func hide_all_submenus() -> void:
+  hide_submenu(SubMenu.BUILD)
+  hide_submenu(SubMenu.ROUTE)
 
 func initiate_dragging_object(type) -> void:
   emit_signal("started_dragging_object", type)
@@ -112,6 +136,7 @@ func hide_route_option(route: Route) -> void:
 
 func select_route(route: Route) -> void:
   emit_signal("on_selected_route", route)
-  routesButton.set_background_color(route.color)
+  hide_submenu(SubMenu.ROUTE, true)
   hide_route_option(route)
-  hide_submenu(SubMenu.ROUTE)
+  routesButton.set_background_color(route.color)
+  routesButton.pop()

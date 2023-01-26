@@ -47,7 +47,7 @@ tracks/0/keys = {
 "times": PoolRealArray( 0 ),
 "transitions": PoolRealArray( 1 ),
 "update": 0,
-"values": [ Vector2( 0, 0 ) ]
+"values": [ Vector2( 0, 100 ) ]
 }
 tracks/1/type = "value"
 tracks/1/path = NodePath(".:modulate")
@@ -59,7 +59,7 @@ tracks/1/keys = {
 "times": PoolRealArray( 0 ),
 "transitions": PoolRealArray( 1 ),
 "update": 0,
-"values": [ Color( 1, 1, 1, 1 ) ]
+"values": [ Color( 1, 1, 1, 0 ) ]
 }
 
 [sub_resource type="Animation" id=4]
@@ -74,7 +74,7 @@ tracks/0/keys = {
 "times": PoolRealArray( 0 ),
 "transitions": PoolRealArray( 1 ),
 "update": 0,
-"values": [ Vector2( 0, 0 ) ]
+"values": [ Vector2( 0, 100 ) ]
 }
 tracks/1/type = "value"
 tracks/1/path = NodePath(".:modulate")
@@ -86,7 +86,7 @@ tracks/1/keys = {
 "times": PoolRealArray( 0 ),
 "transitions": PoolRealArray( 1 ),
 "update": 0,
-"values": [ Color( 1, 1, 1, 1 ) ]
+"values": [ Color( 1, 1, 1, 0 ) ]
 }
 
 [node name="Gameplay" type="Node2D"]
@@ -219,8 +219,10 @@ custom_constants/separation = 20
 alignment = 2
 
 [node name="BuildOptions" type="VBoxContainer" parent="UI/VBoxContainer/BuildPanel/HBoxContainer/Left/VBoxContainer"]
+modulate = Color( 1, 1, 1, 0 )
+margin_top = 100.0
 margin_right = 100.0
-margin_bottom = 210.0
+margin_bottom = 310.0
 size_flags_vertical = 3
 custom_constants/separation = 10
 alignment = 2
@@ -267,3 +269,5 @@ margin_bottom = 330.0
 
 [node name="Menu" parent="." instance=ExtResource( 18 )]
 visible = false
+
+[connection signal="focus_exited" from="UI/VBoxContainer/BuildPanel" to="UI/VBoxContainer/BuildPanel" method="_on_focus_lost"]

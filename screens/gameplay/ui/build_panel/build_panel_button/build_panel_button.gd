@@ -16,8 +16,8 @@ onready var tooltip = $Tooltip
 
 func _ready():
   button.icon = icon
-  Utils.connect_signal(button, "mouse_entered", self, "display_tooltip")
-  Utils.connect_signal(button, "mouse_exited", self, "hide_tooltip")
+  Utils.connect_signal(button, "mouse_entered", self, "on_mouse_over")
+  Utils.connect_signal(button, "mouse_exited", self, "on_mouse_leave")
   tooltip.text = tooltiptext
   hide_tooltip()
   if !showAmount:
@@ -36,10 +36,18 @@ func set_stock_amount(amount: int) -> void:
     animations.play("amount_changed")
   _currentAmount = amount
 
+func on_mouse_over() -> void:
+  animations.play("hover")
+  display_tooltip()
+
+func on_mouse_leave() -> void:
+  animations.play("blur")
+  hide_tooltip()
+
 func display_tooltip() -> void:
   if tooltiptext.length() > 0:
     tooltip.visible = true
-    tooltip.rect_position = Vector2((button.rect_size.x - tooltip.rect_size.x) / 2, - 50)
+    tooltip.rect_position = Vector2((button.rect_size.x - tooltip.rect_size.x) / 2, - 60)
 
 func hide_tooltip() -> void:
   tooltip.visible = false
@@ -47,3 +55,6 @@ func hide_tooltip() -> void:
 func set_background_color(color: Color) -> void:
   backgroundColor = color
   background.modulate = color
+
+func pop() -> void:
+  animations.play("pop")

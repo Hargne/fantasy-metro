@@ -78,10 +78,11 @@ func _process(_delta):
 
 func start_new_game() -> void:
   # Setup routes
-  var created_routes = []
-  for i in 2:
-    created_routes.append(mapNodeController.create_route())
-  uiController.buildPanel.set_route_options(created_routes)
+  var amountOfRoutes = 2
+  var _createdRoutes = []
+  for i in amountOfRoutes:
+    _createdRoutes.append(mapNodeController.create_route())
+  uiController.buildPanel.set_route_options(_createdRoutes)
   # Unpause and start
   unpause_game()
   menu.hide()
@@ -136,9 +137,11 @@ func on_new_object_drag_start(objectToBeSpawned) -> void:
 
 func on_interact_drag() -> void:
   var mpos = get_global_mouse_position()
-
+  var shouldHideUI = false
+  
   # Carts
-  if typeOfObjectBeingPlaced == GameplayEnums.BuildOption.CART:
+  if typeOfObjectBeingPlaced == GameplayEnums.BuildOption.CART && cartController.objectBeingPlaced:
+    shouldHideUI = true
     cartController.objectBeingPlaced.position = mpos
     var connection = mapNodeController.get_connection_from_point(mpos)
     if connection:      
@@ -151,15 +154,25 @@ func on_interact_drag() -> void:
   else:
     # Routes
     if can_build_route() && !mapNodeController.is_placing_new_object() && interactTarget && interactTarget is MapNode:
+      shouldHideUI = true
       mapNodeController.update_drag_new_connection_points(interactTarget.get_connection_point(), mpos)
     # Other Objects
     elif mapNodeController.is_placing_new_object():
+      shouldHideUI = true
       mapNodeController.objectBeingPlaced.position = map.get_tile_position_in_world(mpos)
       mapNodeController.canPlaceObject = map.is_tile_buildable(mpos)
       if mapNodeController.canPlaceObject && mapNodeController.objectBeingPlaced is Area2D && mapNodeController.objectBeingPlaced.get_overlapping_areas().size() > 0:
           mapNodeController.canPlaceObject = false
+  
+  # Hide Build Panel while dragging
+  if shouldHideUI && uiController.buildPanel.isVisible:
+    uiController.buildPanel.hide()
 
 func on_interact_drag_end() -> void:
+  # Show Build Panel after a drag
+  if !uiController.buildPanel.isVisible:
+    uiController.buildPanel.display()
+
   if typeOfObjectBeingPlaced == GameplayEnums.BuildOption.CART:
     var connection = mapNodeController.get_connection_from_point(cartController.objectBeingPlaced.position)		
     if connection:
