@@ -20,6 +20,7 @@ var routeColors: Array = [
 var defaultRouteColor = Color("#222222")
 
 var connectionContainer: Node2D
+var newRouteConnectionContainer: Node2D
 var connectionPrefab = preload("res://screens/gameplay/game_objects/route/connection.tscn")
 var dragNewConnectionVisual: Line2D
 
@@ -31,11 +32,18 @@ onready var demolishSFX = $DemolishSFX
 signal on_increase_stock(item, amount)
 signal on_decrease_stock(item, amount)
 
+var newRoutePoints = []
+
 func _ready():
   # Create a container for routes
   connectionContainer = Node2D.new()
   add_child(connectionContainer)
   move_child(connectionContainer, 0)
+
+  newRouteConnectionContainer = Node2D.new()
+  add_child(newRouteConnectionContainer)
+  move_child(newRouteConnectionContainer, 0)
+  newRouteConnectionContainer.hide()
 
 func _process(_delta):
   if objectBeingPlaced:
@@ -62,14 +70,38 @@ func get_resource_nodes() -> Array:
       nodes.append(child)
   return nodes
 
+func get_warehouse_nodes() -> Array:
+  var nodes = []
+  for child in get_children():
+    if child is WarehouseNode:
+      nodes.append(child)
+  return nodes  
+
+func get_map_nodes() -> Array:
+  var nodes = []
+
+  for child in get_children():
+    if child is WarehouseNode || child is VillageNode || child is ResourceNode:
+      nodes.append(child)
+  return nodes  
+
+func get_map_node_from_point(point) -> MapNode:
+  var nodes = get_map_nodes()
+
+  for nd in nodes:
+    if nd.get_connection_point() == point:
+      return nd
+  return null 
+
 func initiate_place_new_object(objectTypeToBePlaced, startPosition: Vector2) -> void:
   typeOfObjectBeingPlaced = objectTypeToBePlaced
   match objectTypeToBePlaced:
     GameplayEnums.BuildOption.WAREHOUSE:
       objectBeingPlaced = warehouseNodePrefab.instance()
       add_child(objectBeingPlaced)
-  if objectBeingPlaced:
-    objectBeingPlaced.position = startPosition
+  if objectBeingPlaced:   
+    objectBeingPlaced.position = startPosition   
+    
 
 func end_place_new_object() -> void:
   if canPlaceObject:
@@ -84,6 +116,7 @@ func end_place_new_object() -> void:
 func stop_placing_object() -> void:
   objectBeingPlaced = null
   typeOfObjectBeingPlaced = null
+  newRouteConnectionContainer.hide()
   blur_all_connections()
 
 func is_placing_new_object() -> bool:
@@ -102,34 +135,42 @@ func create_route() -> Route:
   routes.append(route)  
   return route
 
+func get_connection_by_map_nodes(node1: MapNode, node2: MapNode, route: Route = null) -> Connection:
+  for rte in routes:
+    if route == null || rte == route:
+      for connection in rte.connections:
+        if connection.mapNodes.has(node1) && connection.mapNodes.has(node2):
+          return connection
+  return null  
+
 func set_active_route(newActiveRoute: Route) -> void:
   activeRoute = newActiveRoute
   for route in routes:
     for connection in route.connections:
       connection.change_color(routeColors[route.routeIndex] if newActiveRoute == route else defaultRouteColor)
 
-func get_connection_by_map_nodes(node1: MapNode, node2: MapNode, route: Route = null) -> Dictionary:
-  for rte in routes:
-    if route == null || rte == route:
-      for connection in rte.connections:
-        if connection.mapNodes.has(node1) && connection.mapNodes.has(node2):
-          return connection
-  return {}
-
 func are_nodes_connected(node1: MapNode, node2: MapNode, route: Route) -> bool:
-  return !get_connection_by_map_nodes(node1, node2, route).empty()
+  return get_connection_by_map_nodes(node1, node2, route) != null
 
-func connect_map_nodes(from: MapNode, to: MapNode, route: Route) -> void:
-  if from == to || route == null:
-    return
-  if are_nodes_connected(from, to, route):
-    printerr("Nodes are already connected")
+func finish_drawing_new_route_nodes(route: Route) -> void:
+  if newRoutePoints.size() < 2:
     return
 
-  var connection = spawn_connection(from, to, route)
-  route.connections.append(connection)
+  for i in newRoutePoints.size() - 1:
+    var pt1 = newRoutePoints[i]
+    var pt2 = newRoutePoints[i + 1]
+
+    var nd1 = get_map_node_from_point(pt1)
+    var nd2 = get_map_node_from_point(pt2)
+
+    if !are_nodes_connected(nd1, nd2, route):
+      var connection = spawn_connection(nd1, nd2, route)
+      route.connections.append(connection)
 
   placeRouteSFX.play()
+
+  newRoutePoints.clear()
+  newRouteConnectionContainer.hide()
 
 func spawn_connection(from: MapNode, to: MapNode, route: Route) -> Connection:
   var connection = connectionPrefab.instance()
@@ -192,28 +233,46 @@ func get_connection_from_point(point: Vector2) -> Connection:
   else:
     return null
 
-func update_drag_new_connection_points(from: Vector2, to: Vector2) -> void:
-  # Spawn a Line2D if non-existant
-  if !dragNewConnectionVisual:
+func draw_new_route_nodes(startPt, currentMousePosition) -> void:
+  if newRoutePoints.size() == 0:    
+    newRouteConnectionContainer.show()
+    newRoutePoints.append(startPt)
+  else:
+    for nd in get_map_nodes():      
+      var cpt = nd.get_connection_point()
+      if !newRoutePoints.has(cpt) && cpt.distance_to(currentMousePosition) < (get_viewport().size.x * .005):
+        newRoutePoints.append(cpt)
+
+    # check to see if we added a new node to our collection
+
+  for n in newRouteConnectionContainer.get_children():
+    newRouteConnectionContainer.remove_child(n)
+    n.queue_free()  
+
+  for i in newRoutePoints.size():
+    var pt1 = newRoutePoints[i]
+    var pt2 = newRoutePoints[i + 1] if i < newRoutePoints.size() - 1 else currentMousePosition
+
     dragNewConnectionVisual = Line2D.new()
-    dragNewConnectionVisual.points = [from, to]
-    dragNewConnectionVisual.width = 3
+    dragNewConnectionVisual.points = [pt1, pt2]
+    dragNewConnectionVisual.width = 1.5
+    dragNewConnectionVisual.default_color = activeRoute.color
     dragNewConnectionVisual.antialiased = true
     dragNewConnectionVisual.begin_cap_mode = Line2D.LINE_CAP_ROUND
     dragNewConnectionVisual.end_cap_mode = Line2D.LINE_CAP_ROUND 
-    connectionContainer.add_child(dragNewConnectionVisual)
-  # Update color
-  if dragNewConnectionVisual.default_color != activeRoute.color:
-    dragNewConnectionVisual.default_color = activeRoute.color
-  # Update line points
-  dragNewConnectionVisual.points[0] = from
-  dragNewConnectionVisual.points[1] = to
+    if dragNewConnectionVisual.default_color != activeRoute.color:
+      dragNewConnectionVisual.default_color = activeRoute.color    
+    newRouteConnectionContainer.add_child(dragNewConnectionVisual)    
 
 func hide_drag_new_connection() -> void:
-  update_drag_new_connection_points(Vector2.ZERO, Vector2.ZERO)
+  for n in newRouteConnectionContainer.get_children():
+    newRouteConnectionContainer.remove_child(n)
+    n.queue_free()  
+  newRouteConnectionContainer.hide()
+  newRoutePoints.clear()
 
 func is_dragging_new_connection() -> bool:
-  return dragNewConnectionVisual && dragNewConnectionVisual.points.size() > 1 && dragNewConnectionVisual.points[0] != Vector2.ZERO && dragNewConnectionVisual.points[1] != Vector2.ZERO
+  return newRoutePoints.size() > 0
 
 func blur_all_connections(except: Connection = null) -> void:
   for route in routes:

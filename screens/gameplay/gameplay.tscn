@@ -190,7 +190,10 @@ custom_constants/separation = 20
 alignment = 2
 
 [node name="RouteSelector" type="VBoxContainer" parent="UI/VBoxContainer/BuildPanel/HBoxContainer/Left/VBoxContainer2"]
+modulate = Color( 1, 1, 1, 0 )
+margin_top = 100.0
 margin_right = 100.0
+margin_bottom = 100.0
 custom_constants/separation = 10
 alignment = 2
 

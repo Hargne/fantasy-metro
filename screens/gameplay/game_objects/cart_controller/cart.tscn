@@ -26,8 +26,13 @@ anchor_left = 8.0
 anchor_top = 8.0
 anchor_right = 8.0
 anchor_bottom = 8.0
-margin_left = -26.0
-margin_top = -8.0
-margin_right = 178.0
-margin_bottom = 50.0
+margin_left = 7.0
+margin_top = 6.0
+margin_right = 211.0
+margin_bottom = 64.0
 rect_scale = Vector2( 0.25, 0.25 )
+
+[node name="RouteLine" type="Line2D" parent="."]
+points = PoolVector2Array( -3, 8, 1, 8 )
+width = 1.5
+default_color = Color( 0, 0, 0, 0 )
