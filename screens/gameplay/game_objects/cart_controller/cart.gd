@@ -29,7 +29,7 @@ enum CartStatus {
 }
 
 func _ready():
-  Utils.connect_signal(actionPrompt, "action_prompt_button_pressed", self, "action_prompt_button_pressed")
+  Utils.connect_signal(actionPrompt, "on_button_clicked", self, "action_prompt_button_pressed")
 
 func _process(_delta):
   if currentStatus != CartStatus.EN_ROUTE || position.distance_to(destinationPt) < .05: # this is a magic number for now - probably will need to be based on map size or screen size or something
@@ -240,7 +240,7 @@ func blur() -> void:
   actionPrompt.hide()
       
 
-func action_prompt_button_pressed(buttonName) -> void:
-  if (buttonName.to_upper() == 'DELETE'):
+func action_prompt_button_pressed(buttonType) -> void:
+  if buttonType == ActionPrompt.ButtonType.DELETE:
     emit_signal('on_demolish', self)
   
