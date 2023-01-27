@@ -42,26 +42,29 @@ func can_be_deleted() -> bool:
   if route.connections.size() < 3:
     return true
 
-  var connectedConnections = 0
+  # routes should only ever have 0 or 2 open nodes; any other number means we have a branch / illegal configuration
+  var openNodes = 0
 
   for conn in route.connections:
     if conn == self:
       continue
 
-    var nd1 = conn.get_start_node()
-    var nd2 = conn.get_end_node()
+    var mn1 = conn.get_start_node()
+    var mn2 = conn.get_end_node()
 
-    var conn1 = route.get_all_connections_for_map_node(nd1)
-    conn1.erase(conn)
-    conn1.erase(self)
-    var conn2 = route.get_all_connections_for_map_node(nd2)
-    conn2.erase(conn)
-    conn2.erase(self)
+    var conns1 = route.get_all_connections_for_map_node(mn1)
+    conns1.erase(self)
 
-    if conn1.size() > 0 || conn2.size() > 0:
-      connectedConnections = connectedConnections + 1
+    var conns2 = route.get_all_connections_for_map_node(mn2)
+    conns2.erase(self)
 
-  return connectedConnections >= (route.connections.size() - 1)
+    if conns1.size() == 1:
+      openNodes += 1
+
+    if conns2.size() == 1:
+      openNodes += 1
+
+  return openNodes == 0 || openNodes == 2
 
 func blur() -> void:
   _targetHighlightAmount = 0

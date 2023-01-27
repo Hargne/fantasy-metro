@@ -215,7 +215,16 @@ func decrease_stock_item(item, amount = 1) -> void:
   uiController.buildPanel.set_build_option_amount(item, buildStock[item])
 
 func can_build_route() -> bool:
-  return buildStock[GameplayEnums.BuildOption.ROUTE] > 0
+  if interactTarget is MapNode:
+    var route = mapNodeController.activeRoute
+
+    if route.connections.size() == 0:
+      return true
+    else:
+      var conns = route.get_all_connections_for_map_node(interactTarget)    
+      return conns.size() == 1
+  else:
+    return false
 
 #
 # Demand Increment Timer

@@ -100,4 +100,28 @@ func get_ordered_connections(startConnection, startPt, includeStartConnectionInL
 
   return orderedConnections
 
+func is_connection_list_valid_as_route(connectionList): -> bool
+  for conn in connectionList:
+    var mn1 = conn.get_start_node()
+    for connInner in connectionList:
+      if connInner_contains_point(
+
+
+
+
+    var mn2 = conn.get_end_node()
+
+    
+
+    var conns1 = route.get_all_connections_for_map_node(mn1)
+    var conns2 = route.get_all_connections_for_map_node(mn2)
+
+    if conns1.size() == 1:
+      openNodes += 1
+
+    if conns2.size() == 1:
+      openNodes += 1
+
+  return openNodes == 0 || openNodes == 2
+
   
