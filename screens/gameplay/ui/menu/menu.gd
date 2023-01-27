@@ -28,6 +28,7 @@ func _ready():
   Utils.connect_signal(exitButton, "pressed", self, "exit_game")
   
 func display(paused = false) -> void:
+  offset = Vector2(0, 0)
   visible = true
   animations.play("transition_in")
   if paused:
@@ -52,3 +53,4 @@ func exit_game() -> void:
 func on_animation_finished(anim_name):
   if anim_name == "transition_out":
     visible = false
+    offset = Vector2(-1920, 0)

@@ -4,7 +4,7 @@ class_name ActionPrompt
 var isVisible = false
 var transitionSpeed = 10
 
-signal action_prompt_button_pressed(buttonName)
+signal on_button_clicked(buttonName)
 
 enum ButtonType { DELETE, MOVE, UPGRADE }
 
@@ -16,6 +16,9 @@ onready var upgradeButton = $HBoxContainer/UPGRADE
 
 func _ready():
   modulate.a = 0
+  Utils.connect_signal(deleteButton, "pressed", self, "button_clicked", [ButtonType.DELETE])
+  Utils.connect_signal(moveButton, "pressed", self, "button_clicked", [ButtonType.MOVE])
+  Utils.connect_signal(upgradeButton, "pressed", self, "button_clicked", [ButtonType.UPGRADE])
 
 func _process(delta):
   if isVisible:
@@ -43,5 +46,5 @@ func hide() -> void:
     for button in buttonContainer.get_children():
       button.disabled = true
 
-func button_clicked(buttonName) -> void:
-  emit_signal('action_prompt_button_pressed', buttonName)
+func button_clicked(buttonType) -> void:
+  emit_signal('on_button_clicked', buttonType)

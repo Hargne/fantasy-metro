@@ -17,7 +17,7 @@ onready var actionPrompt = $ActionPrompt
 
 func _ready():
   setup_visuals()
-  Utils.connect_signal(actionPrompt, "action_prompt_button_pressed", self, "action_prompt_button_pressed")
+  Utils.connect_signal(actionPrompt, "on_button_clicked", self, "action_prompt_button_pressed")
 
 func _process(delta):
   if _currentHighlightAmount != _targetHighlightAmount:
@@ -33,10 +33,13 @@ func setup_visuals() -> void:
   line.end_cap_mode = Line2D.LINE_CAP_ROUND 
 
 func highlight(showPrompt = false) -> void:  
-  if can_be_deleted():
-    _targetHighlightAmount = 1
-    if showPrompt:
-      actionPrompt.display(get_center_point(), [ActionPrompt.ButtonType.DELETE])
+  _targetHighlightAmount = 1
+  if showPrompt:
+    actionPrompt.display(get_center_point(), [ActionPrompt.ButtonType.DELETE])
+    #actionPrompt.deleteButton.disabled = !can_be_deleted()
+
+func is_highlighted() -> bool:
+  return _targetHighlightAmount == 1
 
 func can_be_deleted() -> bool:
   if route.connections.size() < 3:
@@ -65,6 +68,7 @@ func can_be_deleted() -> bool:
 
 func blur() -> void:
   _targetHighlightAmount = 0
+  yield(get_tree().create_timer(0.1), "timeout")
   actionPrompt.hide()
 
 func get_start_node() -> MapNode:
@@ -114,6 +118,6 @@ func change_color(newColor: Color) -> void:
   self.lineColor = newColor
   line.default_color = newColor
   
-func action_prompt_button_pressed(buttonName) -> void:
-  if (buttonName.to_upper() == 'DELETE'):
+func action_prompt_button_pressed(buttonType) -> void:
+  if buttonType == ActionPrompt.ButtonType.DELETE:
     emit_signal("on_demolish", self)

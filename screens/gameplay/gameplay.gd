@@ -105,23 +105,20 @@ func get_object_at_cursor_location() -> Node:
   return null
 
 func on_interact_click_handler() -> void:
-  cartController.end_place_new_object(null)
-  mapNodeController.canPlaceObject = null
-  mapNodeController.end_place_new_object()
-
   if interactTarget is Cart:
     cartController.blur_all_carts(interactTarget)
     interactTarget.cart_clicked()
     return
   else:
     cartController.blur_all_carts()
-  
+
   var clickedConnection = mapNodeController.get_connection_from_point(interactPosition)
-  if clickedConnection != null:
+  if clickedConnection:
     mapNodeController.blur_all_connections(clickedConnection)
-    if clickedConnection:
-      selectedObjects.append(clickedConnection)
-      clickedConnection.highlight(true)
+    selectedObjects.append(clickedConnection)
+    clickedConnection.highlight(true)
+  else:
+    mapNodeController.blur_all_connections()
 
 # Gets called when the player starts dragging an object from the build panel
 func on_new_object_drag_start(objectToBeSpawned) -> void:
@@ -144,11 +141,10 @@ func on_interact_drag() -> void:
     shouldHideUI = true
     cartController.objectBeingPlaced.position = mpos
     var connection = mapNodeController.get_connection_from_point(mpos)
-    if connection:      
-      mapNodeController.blur_all_connections(connection)
+    if connection && !connection.is_highlighted():
       connection.highlight()
       cartController.canPlaceObject = true			
-    else:
+    elif !connection && cartController.canPlaceObject:
       cartController.canPlaceObject = false
       mapNodeController.blur_all_connections()			
   else:
@@ -179,7 +175,7 @@ func on_interact_drag_end() -> void:
       if cartController.end_place_new_object(connection):
         decrease_stock_item(GameplayEnums.BuildOption.CART)
     else:    
-      cartController.end_place_new_object(null)      
+      cartController.end_place_new_object(null)
     mapNodeController.blur_all_connections()
   else:
     # Routes

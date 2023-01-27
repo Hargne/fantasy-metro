@@ -117,7 +117,6 @@ func stop_placing_object() -> void:
   objectBeingPlaced = null
   typeOfObjectBeingPlaced = null
   newRouteConnectionContainer.hide()
-  blur_all_connections()
 
 func is_placing_new_object() -> bool:
   return objectBeingPlaced != null && is_instance_valid(objectBeingPlaced)

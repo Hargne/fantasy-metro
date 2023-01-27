@@ -379,9 +379,9 @@ custom_styles/normal = ExtResource( 5 )
 text = "Start"
 
 [node name="Settings" type="Button" parent="CenterContainer/VBoxContainer/CenterContainer/VBoxContainer"]
-margin_top = 146.0
+margin_top = 147.0
 margin_right = 249.0
-margin_bottom = 233.0
+margin_bottom = 234.0
 custom_colors/font_color = Color( 1, 1, 1, 1 )
 custom_fonts/font = SubResource( 3 )
 custom_styles/hover = ExtResource( 5 )
@@ -392,9 +392,9 @@ custom_styles/normal = ExtResource( 5 )
 text = "Settings"
 
 [node name="Exit" type="Button" parent="CenterContainer/VBoxContainer/CenterContainer/VBoxContainer"]
-margin_top = 292.0
+margin_top = 294.0
 margin_right = 249.0
-margin_bottom = 379.0
+margin_bottom = 381.0
 custom_colors/font_color = Color( 1, 1, 1, 1 )
 custom_fonts/font = SubResource( 3 )
 custom_styles/hover = ExtResource( 5 )
