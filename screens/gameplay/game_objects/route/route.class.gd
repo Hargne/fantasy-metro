@@ -100,4 +100,68 @@ func get_ordered_connections(startConnection, startPt, includeStartConnectionInL
 
   return orderedConnections
 
+func get_number_of_open_nodes() -> int:
+  if connections.size() == 0:
+    return 0
+
+  if connections.size() == 1:
+    return 2
+
+  var openEndedSegments = 0
+
+  for conn in connections:
+    var pt1 = conn.get_start_point()
+    var segmentsWithPtCount = 0
+    for connInner in connections:    
+      if connInner.contains_point(pt1):
+        segmentsWithPtCount += 1
+
+    if segmentsWithPtCount == 1:
+      openEndedSegments += 1   
+
+    var pt2 = conn.get_end_point()
+    segmentsWithPtCount = 0
+    for connInner in connections:    
+      if connInner.contains_point(pt2):
+        segmentsWithPtCount += 1
+
+    if segmentsWithPtCount == 1:
+      openEndedSegments += 1         
+
+  return openEndedSegments
+
+func is_segment_list_valid_as_route(segmentList) -> bool:
+  if segmentList.size() == 0:
+    return false
+
+  if segmentList.size() == 1:
+    return true
+  
+  var openEndedSegments = 0
+
+  for segmentArray in segmentList:
+    var pt1 = segmentArray[0]
+    var segmentsWithPtCount = 0
+    for segmentArrayInner in segmentList:    
+      if segmentArrayInner[0] == pt1 || segmentArrayInner[1] == pt1:
+        segmentsWithPtCount += 1
+
+    if segmentsWithPtCount == 1:
+      openEndedSegments += 1
+    elif segmentsWithPtCount > 2:
+      return false
+
+    var pt2 = segmentArray[1]
+    segmentsWithPtCount = 0
+    for segmentArrayInner in segmentList:    
+      if segmentArrayInner[0] == pt2 || segmentArrayInner[1] == pt2:
+        segmentsWithPtCount += 1
+
+    if segmentsWithPtCount == 1:
+      openEndedSegments += 1
+    elif segmentsWithPtCount > 2:
+      return false
+
+  return openEndedSegments == 0 || openEndedSegments == 2
+
   

@@ -18,6 +18,7 @@ var interactTarget: Node
 var selectedObjects = []
 var demandIncrementTimer: Timer
 var secondsBetweenDemandIncrement = 20
+var dragStartApproved = false
 
 var typeOfObjectBeingPlaced
 
@@ -149,7 +150,8 @@ func on_interact_drag() -> void:
       mapNodeController.blur_all_connections()			
   else:
     # Routes
-    if can_build_route() && !mapNodeController.is_placing_new_object() && interactTarget && interactTarget is MapNode:
+    if dragStartApproved || (can_build_route() && !mapNodeController.is_placing_new_object() && interactTarget && interactTarget is MapNode):
+      dragStartApproved = true
       shouldHideUI = true
       mapNodeController.draw_new_route_nodes(interactTarget.get_connection_point(), mpos)
     # Other Objects
@@ -191,6 +193,7 @@ func on_interact_drag_end() -> void:
     
   interactTarget = null
   typeOfObjectBeingPlaced = null
+  dragStartApproved = false
 
 func deselect_objects() -> void:
   for obj in selectedObjects:
@@ -211,7 +214,15 @@ func decrease_stock_item(item, amount = 1) -> void:
   uiController.buildPanel.set_build_option_amount(item, buildStock[item])
 
 func can_build_route() -> bool:
-  return buildStock[GameplayEnums.BuildOption.ROUTE] > 0
+  if interactTarget is MapNode:
+    var route = mapNodeController.activeRoute
+
+    if route.connections.size() == 0:
+      return true
+    else:
+      return route.get_all_connections_for_map_node(interactTarget).size() == 1 && route.get_number_of_open_nodes() == 2
+  else:
+    return false
 
 #
 # Demand Increment Timer

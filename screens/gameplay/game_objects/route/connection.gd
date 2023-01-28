@@ -36,7 +36,7 @@ func highlight(showPrompt = false) -> void:
   _targetHighlightAmount = 1
   if showPrompt:
     actionPrompt.display(get_center_point(), [ActionPrompt.ButtonType.DELETE])
-    #actionPrompt.deleteButton.disabled = !can_be_deleted()
+    actionPrompt.deleteButton.disabled = !can_be_deleted()
 
 func is_highlighted() -> bool:
   return _targetHighlightAmount == 1
@@ -45,26 +45,13 @@ func can_be_deleted() -> bool:
   if route.connections.size() < 3:
     return true
 
-  var connectedConnections = 0
+  var proposedConnectionSegments = []
 
   for conn in route.connections:
     if conn == self:
       continue
-
-    var nd1 = conn.get_start_node()
-    var nd2 = conn.get_end_node()
-
-    var conn1 = route.get_all_connections_for_map_node(nd1)
-    conn1.erase(conn)
-    conn1.erase(self)
-    var conn2 = route.get_all_connections_for_map_node(nd2)
-    conn2.erase(conn)
-    conn2.erase(self)
-
-    if conn1.size() > 0 || conn2.size() > 0:
-      connectedConnections = connectedConnections + 1
-
-  return connectedConnections >= (route.connections.size() - 1)
+    proposedConnectionSegments.append([conn.segments[0], conn.segments[1]])
+  return route.is_segment_list_valid_as_route(proposedConnectionSegments) 
 
 func blur() -> void:
   _targetHighlightAmount = 0
@@ -121,3 +108,4 @@ func change_color(newColor: Color) -> void:
 func action_prompt_button_pressed(buttonType) -> void:
   if buttonType == ActionPrompt.ButtonType.DELETE:
     emit_signal("on_demolish", self)
+
