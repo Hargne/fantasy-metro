@@ -100,28 +100,68 @@ func get_ordered_connections(startConnection, startPt, includeStartConnectionInL
 
   return orderedConnections
 
-func is_connection_list_valid_as_route(connectionList): -> bool
-  for conn in connectionList:
-    var mn1 = conn.get_start_node()
-    for connInner in connectionList:
-      if connInner_contains_point(
+func get_number_of_open_nodes() -> int:
+  if connections.size() == 0:
+    return 0
 
+  if connections.size() == 1:
+    return 2
 
+  var openEndedSegments = 0
 
+  for conn in connections:
+    var pt1 = conn.get_start_point()
+    var segmentsWithPtCount = 0
+    for connInner in connections:    
+      if connInner.contains_point(pt1):
+        segmentsWithPtCount += 1
 
-    var mn2 = conn.get_end_node()
+    if segmentsWithPtCount == 1:
+      openEndedSegments += 1   
 
-    
+    var pt2 = conn.get_end_point()
+    segmentsWithPtCount = 0
+    for connInner in connections:    
+      if connInner.contains_point(pt2):
+        segmentsWithPtCount += 1
 
-    var conns1 = route.get_all_connections_for_map_node(mn1)
-    var conns2 = route.get_all_connections_for_map_node(mn2)
+    if segmentsWithPtCount == 1:
+      openEndedSegments += 1         
 
-    if conns1.size() == 1:
-      openNodes += 1
+  return openEndedSegments
 
-    if conns2.size() == 1:
-      openNodes += 1
+func is_segment_list_valid_as_route(segmentList) -> bool:
+  if segmentList.size() == 0:
+    return false
 
-  return openNodes == 0 || openNodes == 2
+  if segmentList.size() == 1:
+    return true
+  
+  var openEndedSegments = 0
+
+  for segmentArray in segmentList:
+    var pt1 = segmentArray[0]
+    var segmentsWithPtCount = 0
+    for segmentArrayInner in segmentList:    
+      if segmentArrayInner[0] == pt1 || segmentArrayInner[1] == pt1:
+        segmentsWithPtCount += 1
+
+    if segmentsWithPtCount == 1:
+      openEndedSegments += 1
+    elif segmentsWithPtCount > 2:
+      return false
+
+    var pt2 = segmentArray[1]
+    segmentsWithPtCount = 0
+    for segmentArrayInner in segmentList:    
+      if segmentArrayInner[0] == pt2 || segmentArrayInner[1] == pt2:
+        segmentsWithPtCount += 1
+
+    if segmentsWithPtCount == 1:
+      openEndedSegments += 1
+    elif segmentsWithPtCount > 2:
+      return false
+
+  return openEndedSegments == 0 || openEndedSegments == 2
 
   

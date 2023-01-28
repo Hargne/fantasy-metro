@@ -168,14 +168,14 @@ func do_loading_action(destinationNode) -> void:
   var loadedResourceType  
 
   if has_capacity():
+    var demandedResourcesOnRoute = currentConnection.route.get_demands_along_route(currentConnection, currentConnection.get_point_from_map_node(destinationNode), false)
+
     if destinationNode is ResourceNode:
-      loadedResourceType = destinationNode.resourceType
-
-      # show little icon moving from resource to cart
-      storedResources.add_resource(loadedResourceType)
+      if demandedResourcesOnRoute.has(destinationNode.resourceType):
+        loadedResourceType = destinationNode.resourceType
+        # show little icon moving from resource to cart
+        storedResources.add_resource(loadedResourceType)
     elif destinationNode is WarehouseNode:
-      var demandedResourcesOnRoute = currentConnection.route.get_demands_along_route(currentConnection, currentConnection.get_point_from_map_node(destinationNode), true)
-
       if demandedResourcesOnRoute.size() > 0:
         # remove all the resources we already have, so we don't add them again
         # note: we have to do this because we add 1 resource per loading action cycle (500 ms)

@@ -18,6 +18,7 @@ var interactTarget: Node
 var selectedObjects = []
 var demandIncrementTimer: Timer
 var secondsBetweenDemandIncrement = 20
+var dragStartApproved = false
 
 var typeOfObjectBeingPlaced
 
@@ -149,7 +150,8 @@ func on_interact_drag() -> void:
       mapNodeController.blur_all_connections()			
   else:
     # Routes
-    if can_build_route() && !mapNodeController.is_placing_new_object() && interactTarget && interactTarget is MapNode:
+    if dragStartApproved || (can_build_route() && !mapNodeController.is_placing_new_object() && interactTarget && interactTarget is MapNode):
+      dragStartApproved = true
       shouldHideUI = true
       mapNodeController.draw_new_route_nodes(interactTarget.get_connection_point(), mpos)
     # Other Objects
@@ -191,6 +193,7 @@ func on_interact_drag_end() -> void:
     
   interactTarget = null
   typeOfObjectBeingPlaced = null
+  dragStartApproved = false
 
 func deselect_objects() -> void:
   for obj in selectedObjects:
@@ -217,8 +220,7 @@ func can_build_route() -> bool:
     if route.connections.size() == 0:
       return true
     else:
-      var conns = route.get_all_connections_for_map_node(interactTarget)    
-      return conns.size() == 1
+      return route.get_all_connections_for_map_node(interactTarget).size() == 1 && route.get_number_of_open_nodes() == 2
   else:
     return false
 

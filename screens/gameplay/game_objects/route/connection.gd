@@ -36,7 +36,7 @@ func highlight(showPrompt = false) -> void:
   _targetHighlightAmount = 1
   if showPrompt:
     actionPrompt.display(get_center_point(), [ActionPrompt.ButtonType.DELETE])
-    #actionPrompt.deleteButton.disabled = !can_be_deleted()
+    actionPrompt.deleteButton.disabled = !can_be_deleted()
 
 func is_highlighted() -> bool:
   return _targetHighlightAmount == 1
@@ -45,29 +45,13 @@ func can_be_deleted() -> bool:
   if route.connections.size() < 3:
     return true
 
-  # routes should only ever have 0 or 2 open nodes; any other number means we have a branch / illegal configuration
-  var openNodes = 0
+  var proposedConnectionSegments = []
 
   for conn in route.connections:
     if conn == self:
       continue
-
-    var mn1 = conn.get_start_node()
-    var mn2 = conn.get_end_node()
-
-    var conns1 = route.get_all_connections_for_map_node(mn1)
-    conns1.erase(self)
-
-    var conns2 = route.get_all_connections_for_map_node(mn2)
-    conns2.erase(self)
-
-    if conns1.size() == 1:
-      openNodes += 1
-
-    if conns2.size() == 1:
-      openNodes += 1
-
-  return openNodes == 0 || openNodes == 2
+    proposedConnectionSegments.append([conn.segments[0], conn.segments[1]])
+  return route.is_segment_list_valid_as_route(proposedConnectionSegments) 
 
 func blur() -> void:
   _targetHighlightAmount = 0

@@ -239,8 +239,16 @@ func draw_new_route_nodes(startPt, currentMousePosition) -> void:
   else:
     for nd in get_map_nodes():      
       var cpt = nd.get_connection_point()
-      if !newRoutePoints.has(cpt) && cpt.distance_to(currentMousePosition) < (get_viewport().size.x * .005):
-        newRoutePoints.append(cpt)
+      if cpt.distance_to(currentMousePosition) < (get_viewport().size.x * .005):
+        # now we need to evaluate the existing connections with all the new drawn points
+        var segmentArray = []
+        for conn in activeRoute.connections:
+          segmentArray.append([conn.get_start_point(), conn.get_end_point()])
+        for i in newRoutePoints.size() - 1:
+          segmentArray.append([newRoutePoints[i], newRoutePoints[i + 1]])
+        segmentArray.append([newRoutePoints[newRoutePoints.size() - 1], cpt])        
+        if activeRoute.is_segment_list_valid_as_route(segmentArray):
+          newRoutePoints.append(cpt)
 
     # check to see if we added a new node to our collection
 
