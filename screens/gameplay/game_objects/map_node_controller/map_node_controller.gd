@@ -105,6 +105,15 @@ func initiate_place_new_object(objectTypeToBePlaced, startPosition: Vector2) -> 
 
 func end_place_new_object() -> void:
   if canPlaceObject:
+    if typeOfObjectBeingPlaced == GameplayEnums.BuildOption.WAREHOUSE:
+      var conn = get_connection_from_point(get_global_mouse_position())      
+      if conn != null:
+        # we are going to split the connection into 2
+        activeRoute.connections.append(spawn_connection(conn.get_start_node(), objectBeingPlaced, activeRoute))
+        activeRoute.connections.append(spawn_connection(conn.get_end_node(), objectBeingPlaced, activeRoute))
+        conn.queue_free()
+        activeRoute.connections.erase(conn) 
+
     emit_signal("on_decrease_stock", typeOfObjectBeingPlaced)
     placeBuildingSFX.play()
   else:
@@ -192,26 +201,18 @@ func delete_connection(connection: Connection) -> void:
     for route in routes:
       route.connections.erase(connection)
 
-func get_connection_from_point(point: Vector2) -> Connection:
+func get_connection_from_point(point: Vector2, useActiveRouteOnly: bool = true) -> Connection:
   var matchedConnections = []
   for route in routes:
-    for connection in route.connections:
-      var startPoint = connection.get_start_point()
-      var endPoint = connection.get_end_point()
+    if route == activeRoute || !useActiveRouteOnly:
+      for connection in route.connections:
+        var startPoint = connection.get_start_point()
+        var endPoint = connection.get_end_point()
+        var closestLinePoint = Geometry.get_closest_point_to_segment_2d(point, startPoint, endPoint)
+        var dist = point.distance_to(closestLinePoint)        
 
-      var rect = Rect2(
-        Vector2(
-          startPoint.x if startPoint.x < endPoint.x else endPoint.x,
-          startPoint.y if startPoint.y < endPoint.y else endPoint.y
-        ),
-        Vector2(
-          abs(startPoint.x - endPoint.x),
-          abs(startPoint.y - endPoint.y)
-        )
-      )
-
-      if rect.has_point(point):
-        matchedConnections.append(connection)
+        if dist < 25:
+          matchedConnections.append(connection)
 
   if matchedConnections.size() > 1:
     var closestDist = 9999999

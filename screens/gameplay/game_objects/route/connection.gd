@@ -108,3 +108,4 @@ func change_color(newColor: Color) -> void:
 func action_prompt_button_pressed(buttonType) -> void:
   if buttonType == ActionPrompt.ButtonType.DELETE:
     emit_signal("on_demolish", self)
+
