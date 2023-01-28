@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/button.png-5ff72ece3d01b1e45eb25a2e896b213f.stex"
+path="res://.import/upgrade_icon.png-0f6863b911eab5dc6214cb310d65800f.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://screens/gameplay/ui/build_panel/assets/button.png"
-dest_files=[ "res://.import/button.png-5ff72ece3d01b1e45eb25a2e896b213f.stex" ]
+source_file="res://screens/gameplay/ui/action_prompt/assets/upgrade_icon.png"
+dest_files=[ "res://.import/upgrade_icon.png-0f6863b911eab5dc6214cb310d65800f.stex" ]
 
 [params]
 

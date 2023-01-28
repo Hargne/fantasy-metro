@@ -1,10 +1,10 @@
 [gd_scene load_steps=17 format=2]
 
-[ext_resource path="res://screens/gameplay/ui/build_panel/build_panel_button/button_panel.tres" type="StyleBox" id=1]
-[ext_resource path="res://screens/gameplay/ui/build_panel/build_panel_button/build_panel_button.gd" type="Script" id=2]
+[ext_resource path="res://screens/gameplay/ui/panel_button/assets/button_panel.tres" type="StyleBox" id=1]
+[ext_resource path="res://screens/gameplay/ui/panel_button/panel_button.gd" type="Script" id=2]
 [ext_resource path="res://fonts/resource/Aleo-Bold.ttf" type="DynamicFontData" id=3]
-[ext_resource path="res://screens/gameplay/ui/build_panel/assets/button_background.tres" type="StyleBox" id=4]
-[ext_resource path="res://screens/gameplay/ui/build_panel/assets/button.png" type="Texture" id=5]
+[ext_resource path="res://screens/gameplay/ui/panel_button/assets/button_background.tres" type="StyleBox" id=4]
+[ext_resource path="res://screens/gameplay/ui/panel_button/assets/button.png" type="Texture" id=5]
 [ext_resource path="res://screens/gameplay/ui/build_panel/assets/build_icon.png" type="Texture" id=6]
 
 [sub_resource type="DynamicFont" id=8]
@@ -167,8 +167,9 @@ tracks/1/keys = {
 "values": [ 2.0, -2.0, 0.0 ]
 }
 
-[node name="BuildPanelButton" type="Control"]
+[node name="PanelButton" type="Control"]
 margin_right = 100.0
+margin_bottom = 50.0
 rect_min_size = Vector2( 100, 100 )
 rect_pivot_offset = Vector2( 50, 50 )
 script = ExtResource( 2 )
@@ -186,23 +187,23 @@ align = 1
 valign = 1
 
 [node name="PanelContainer" type="PanelContainer" parent="."]
-margin_right = 104.0
-margin_bottom = 104.0
-rect_min_size = Vector2( 90, 90 )
+margin_right = 100.0
+margin_bottom = 100.0
+rect_min_size = Vector2( 100, 100 )
 rect_pivot_offset = Vector2( 52, 52 )
 custom_styles/panel = SubResource( 10 )
 
 [node name="TextureRect" type="TextureRect" parent="PanelContainer"]
-margin_right = 104.0
-margin_bottom = 104.0
-rect_min_size = Vector2( 90, 90 )
+margin_right = 100.0
+margin_bottom = 100.0
+rect_min_size = Vector2( 100, 100 )
 texture = ExtResource( 5 )
 expand = true
 
 [node name="Button" type="Button" parent="PanelContainer"]
-margin_right = 104.0
-margin_bottom = 104.0
-rect_min_size = Vector2( 90, 90 )
+margin_right = 100.0
+margin_bottom = 100.0
+rect_min_size = Vector2( 100, 100 )
 custom_styles/hover = ExtResource( 4 )
 custom_styles/pressed = ExtResource( 4 )
 custom_styles/focus = ExtResource( 4 )

@@ -19,11 +19,6 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://screens/gameplay/ui/build_panel/build_panel.gd"
 }, {
-"base": "Control",
-"class": "BuildPanelButton",
-"language": "GDScript",
-"path": "res://screens/gameplay/ui/build_panel/build_panel_button/build_panel_button.gd"
-}, {
 "base": "Area2D",
 "class": "Cart",
 "language": "GDScript",
@@ -69,6 +64,16 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://screens/gameplay/game_objects/map_node_controller/map_node_controller.gd"
 }, {
+"base": "Control",
+"class": "PanelButton",
+"language": "GDScript",
+"path": "res://screens/gameplay/ui/panel_button/panel_button.gd"
+}, {
+"base": "VBoxContainer",
+"class": "PopupList",
+"language": "GDScript",
+"path": "res://screens/gameplay/ui/popup_list/popup_list.gd"
+}, {
 "base": "MapNode",
 "class": "ResourceNode",
 "language": "GDScript",
@@ -92,7 +97,6 @@ _global_script_classes=[ {
 _global_script_class_icons={
 "ActionPrompt": "",
 "BuildPanel": "",
-"BuildPanelButton": "",
 "Cart": "",
 "CartController": "",
 "Connection": "",
@@ -102,6 +106,8 @@ _global_script_class_icons={
 "Map": "",
 "MapNode": "",
 "MapNodeController": "",
+"PanelButton": "",
+"PopupList": "",
 "ResourceNode": "",
 "Route": "",
 "VillageNode": "",

@@ -167,15 +167,12 @@ func finish_drawing_new_route_nodes(route: Route) -> void:
   for i in newRoutePoints.size() - 1:
     var pt1 = newRoutePoints[i]
     var pt2 = newRoutePoints[i + 1]
-
     var nd1 = get_map_node_from_point(pt1)
     var nd2 = get_map_node_from_point(pt2)
 
     if !are_nodes_connected(nd1, nd2, route):
       var connection = spawn_connection(nd1, nd2, route)
       route.connections.append(connection)
-
-  placeRouteSFX.play()
 
   newRoutePoints.clear()
   newRouteConnectionContainer.hide()
@@ -233,36 +230,11 @@ func get_connection_from_point(point: Vector2, useActiveRouteOnly: bool = true) 
   else:
     return null
 
-func draw_new_route_nodes(startPt, currentMousePosition) -> void:
-  if newRoutePoints.size() == 0:    
-    newRouteConnectionContainer.show()
-    newRoutePoints.append(startPt)
-  else:
-    for nd in get_map_nodes():      
-      var cpt = nd.get_connection_point()
-      if cpt.distance_to(currentMousePosition) < (get_viewport().size.x * .005):
-        # now we need to evaluate the existing connections with all the new drawn points
-        var segmentArray = []
-        for conn in activeRoute.connections:
-          segmentArray.append([conn.get_start_point(), conn.get_end_point()])
-        for i in newRoutePoints.size() - 1:
-          segmentArray.append([newRoutePoints[i], newRoutePoints[i + 1]])
-        segmentArray.append([newRoutePoints[newRoutePoints.size() - 1], cpt])        
-        if activeRoute.is_segment_list_valid_as_route(segmentArray):
-          newRoutePoints.append(cpt)
-
-    # check to see if we added a new node to our collection
-
-  for n in newRouteConnectionContainer.get_children():
-    newRouteConnectionContainer.remove_child(n)
-    n.queue_free()  
-
-  for i in newRoutePoints.size():
-    var pt1 = newRoutePoints[i]
-    var pt2 = newRoutePoints[i + 1] if i < newRoutePoints.size() - 1 else currentMousePosition
-
+func start_dragging_new_route(startNode: MapNode) -> void:
+  var startPoint = startNode.get_connection_point()
+  # Initiate visuals for when dragging a new route
+  if !dragNewConnectionVisual:
     dragNewConnectionVisual = Line2D.new()
-    dragNewConnectionVisual.points = [pt1, pt2]
     dragNewConnectionVisual.width = 1.5
     dragNewConnectionVisual.default_color = activeRoute.color
     dragNewConnectionVisual.antialiased = true
@@ -270,12 +242,35 @@ func draw_new_route_nodes(startPt, currentMousePosition) -> void:
     dragNewConnectionVisual.end_cap_mode = Line2D.LINE_CAP_ROUND 
     if dragNewConnectionVisual.default_color != activeRoute.color:
       dragNewConnectionVisual.default_color = activeRoute.color    
-    newRouteConnectionContainer.add_child(dragNewConnectionVisual)    
+    newRouteConnectionContainer.add_child(dragNewConnectionVisual) 
+  if newRoutePoints.size() == 0:    
+    newRouteConnectionContainer.show()
+    newRoutePoints.append(startPoint)
+    dragNewConnectionVisual.points = [startPoint]
+
+func update_drag_new_route(currentMousePosition: Vector2) -> void:
+  if is_dragging_new_connection():
+    for node in get_map_nodes():
+      var connectionPoint = node.get_connection_point()
+      if connectionPoint.distance_to(currentMousePosition) < (get_viewport().size.x * .005):
+        # Evaluate the existing connections with all the new drawn points
+        var segmentArray = []
+        for connection in activeRoute.connections:
+          segmentArray.append([connection.get_start_point(), connection.get_end_point()])
+        for i in newRoutePoints.size() - 1:
+          segmentArray.append([newRoutePoints[i], newRoutePoints[i + 1]])
+        segmentArray.append([newRoutePoints[newRoutePoints.size() - 1], connectionPoint])
+        if activeRoute.is_segment_list_valid_as_route(segmentArray):
+          newRoutePoints.append(connectionPoint)
+          dragNewConnectionVisual.points = newRoutePoints
+          placeRouteSFX.play()
+    # Update the last point of the new route visuals, which should follow the cursor position
+    if dragNewConnectionVisual.points.size() == newRoutePoints.size():
+      dragNewConnectionVisual.add_point(currentMousePosition)
+    dragNewConnectionVisual.points[dragNewConnectionVisual.points.size() - 1] = currentMousePosition
 
 func hide_drag_new_connection() -> void:
-  for n in newRouteConnectionContainer.get_children():
-    newRouteConnectionContainer.remove_child(n)
-    n.queue_free()  
+  dragNewConnectionVisual.clear_points()
   newRouteConnectionContainer.hide()
   newRoutePoints.clear()
 

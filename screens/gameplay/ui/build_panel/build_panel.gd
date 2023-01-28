@@ -7,13 +7,13 @@ signal on_selected_route(route)
 onready var leftContainer = $HBoxContainer/Left
 onready var rightContainer = $HBoxContainer/Right
 onready var routesButton = $HBoxContainer/Left/VBoxContainer2/ROUTE
-onready var routeSelectorContainer = $HBoxContainer/Left/VBoxContainer2/RouteSelector
+onready var routeList: PopupList = $HBoxContainer/Left/VBoxContainer2/RouteSelector
 onready var buildMenuButton = $HBoxContainer/Left/VBoxContainer/BUILD
-onready var buildMenuContainer = $HBoxContainer/Left/VBoxContainer/BuildOptions
+onready var buildList: PopupList = $HBoxContainer/Left/VBoxContainer/BuildOptions
 onready var cartButton = $HBoxContainer/Left/VBoxContainer/BuildOptions/CART
 onready var warehouseButton = $HBoxContainer/Left/VBoxContainer/BuildOptions/WAREHOUSE
 
-var buildPanelButtonPrefab = preload("res://screens/gameplay/ui/build_panel/build_panel_button/build_panel_button.tscn")
+var panelButtonPrefab = preload("res://screens/gameplay/ui/panel_button/panel_button.tscn")
 # Sub Menus
 enum SubMenu { NONE, ROUTE, BUILD }
 var _currentSubmenu = SubMenu.NONE
@@ -26,18 +26,9 @@ func _ready():
   Utils.connect_signal(routesButton.button, "button_down", self, "toggle_submenu", [SubMenu.ROUTE])
   Utils.connect_signal(warehouseButton.button, "button_down", self, "initiate_dragging_object", [GameplayEnums.BuildOption.WAREHOUSE])
   Utils.connect_signal(cartButton.button, "button_down", self, "initiate_dragging_object", [GameplayEnums.BuildOption.CART])
-  buildMenuContainer.get_node("AnimationPlayer").play("panel_transition_init")
-  routeSelectorContainer.get_node("AnimationPlayer").play("panel_transition_init")
 
 func _process(delta):
   transition_handler(delta)
-
-func _input(event):
-  # Check whether the user clicks outside this component
-  if (event is InputEventMouseButton) and event.pressed:
-    if !Rect2(Vector2(0,0),rect_size).has_point(make_input_local(event).position):
-      hide_all_submenus()
-
 
 func transition_handler(delta: float) -> void:
   if isVisible && modulate.a < 1:
@@ -51,7 +42,7 @@ func hide() -> void:
 func display() -> void:
   isVisible = true
 
-func get_button_by_type(buildOptionType) -> BuildPanelButton:
+func get_button_by_type(buildOptionType) -> PanelButton:
   match buildOptionType:
     GameplayEnums.BuildOption.CART:
       return cartButton
@@ -83,21 +74,20 @@ func update_stock(stock) -> void:
 func display_submenu(submenu) -> void:
   match submenu:
     SubMenu.BUILD:
-      buildMenuContainer.get_node("AnimationPlayer").play("panel_transition_in")
+      buildList.display()
       hide_submenu(SubMenu.ROUTE)
     SubMenu.ROUTE:
-      routeSelectorContainer.get_node("AnimationPlayer").play("panel_transition_in")
+      routeList.display()
       hide_submenu(SubMenu.BUILD)
   _currentSubmenu = submenu
 
 func hide_submenu(submenu, instant = false) -> void:
   if _currentSubmenu == submenu:
-    var animationName = "panel_transition_out" if !instant else "RESET"
     match submenu:
       SubMenu.BUILD:
-        buildMenuContainer.get_node("AnimationPlayer").play(animationName)
+        buildList.hide(instant)
       SubMenu.ROUTE:
-        routeSelectorContainer.get_node("AnimationPlayer").play(animationName)
+        routeList.hide(instant)
     _currentSubmenu = SubMenu.NONE
 
 func toggle_submenu(submenu) -> void:
@@ -115,20 +105,20 @@ func initiate_dragging_object(type) -> void:
 
 func set_route_options(routes: Array) -> void:
   # Start by removing existing routes
-  for c in routeSelectorContainer.get_children():
-    if c is BuildPanelButton:
+  for c in routeList.get_children():
+    if c is PanelButton:
       c.queue_free()
   if routes && routes.size() > 0:
     for route in routes:
-      var buildPanelButton = buildPanelButtonPrefab.instance()
-      buildPanelButton.backgroundColor = route.color
-      routeSelectorContainer.add_child(buildPanelButton)
-      Utils.connect_signal(buildPanelButton.button, "button_down", self, "select_route", [route])
+      var panelButton = panelButtonPrefab.instance()
+      routeList.add_child(panelButton)
+      panelButton.set_background_color(route.color)
+      Utils.connect_signal(panelButton.button, "button_down", self, "select_route", [route])
     select_route(routes[0])
 
 func hide_route_option(route: Route) -> void:
-  for c in routeSelectorContainer.get_children():
-    if c is BuildPanelButton:
+  for c in routeList.get_children():
+    if c is PanelButton:
       if c.backgroundColor == route.color:
         c.visible = false
       else:

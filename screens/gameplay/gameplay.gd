@@ -10,11 +10,10 @@ onready var uiController: GameplayUIController = $UI
 onready var map: Map = $Map
 
 export var showMenuOnStartup = false
-var isInteractBeingHeldDown = false
-var interactDuration = 0
-var interactHoldDownThreshold = 15
+var isInteracting = false
 var interactPosition: Vector2
 var interactTarget: Node
+var isDragging = false
 var selectedObjects = []
 var demandIncrementTimer: Timer
 var secondsBetweenDemandIncrement = 20
@@ -55,27 +54,26 @@ func _ready():
 func _input(event):
   if !menu.visible:
     if event.is_action_pressed("interact"):
-      isInteractBeingHeldDown = true
-      interactDuration = 0
+      isDragging = false
+      isInteracting = true
       interactPosition = get_global_mouse_position()
       interactTarget = get_object_at_cursor_location()
     elif event.is_action_released("interact"):
-      isInteractBeingHeldDown = false
-      if interactDuration < interactHoldDownThreshold:
-        on_interact_click_handler()
-      else:
+      if isDragging:
         on_interact_drag_end()
-      interactDuration = 0
+      else:
+        on_interact_click_handler()
+      isInteracting = false
       interactTarget = null
     elif event.is_action_pressed("pause_game"):
       pause_game()
       menu.display(true)
 
-func _process(_delta):
-  if isInteractBeingHeldDown && interactDuration < interactHoldDownThreshold:
-    interactDuration += 1
-  elif isInteractBeingHeldDown:
-    on_interact_drag()
+    if event is InputEventMouseMotion && isInteracting:
+      if interactPosition && interactPosition.distance_to(get_global_mouse_position()) > 10 && !isDragging:
+        isDragging = true
+      elif isDragging:
+        on_interact_drag()
 
 func start_new_game() -> void:
   # Setup routes
@@ -136,8 +134,7 @@ func on_new_object_drag_start(objectToBeSpawned) -> void:
 func on_interact_drag() -> void:
   var mpos = get_global_mouse_position()
   var shouldHideUI = false
-  
-  # Carts
+  # Placing Carts
   if typeOfObjectBeingPlaced == GameplayEnums.BuildOption.CART && cartController.objectBeingPlaced:
     shouldHideUI = true
     cartController.objectBeingPlaced.position = mpos
@@ -147,21 +144,22 @@ func on_interact_drag() -> void:
       cartController.canPlaceObject = true			
     elif !connection && cartController.canPlaceObject:
       cartController.canPlaceObject = false
-      mapNodeController.blur_all_connections()			
+      mapNodeController.blur_all_connections()
+  # Placing Objects
+  elif mapNodeController.is_placing_new_object():
+    shouldHideUI = true
+    mapNodeController.objectBeingPlaced.position = map.get_tile_position_in_world(mpos)
+    mapNodeController.canPlaceObject = map.is_tile_buildable(mpos)
+    if mapNodeController.canPlaceObject && mapNodeController.objectBeingPlaced is Area2D && mapNodeController.objectBeingPlaced.get_overlapping_areas().size() > 0:
+        mapNodeController.canPlaceObject = false
+  # Dragging Routes
   else:
-    # Routes
-    if dragStartApproved || (can_build_route() && !mapNodeController.is_placing_new_object() && interactTarget && interactTarget is MapNode):
-      dragStartApproved = true
-      shouldHideUI = true
-      mapNodeController.draw_new_route_nodes(interactTarget.get_connection_point(), mpos)
-    # Other Objects
-    elif mapNodeController.is_placing_new_object():
-      shouldHideUI = true
-      mapNodeController.objectBeingPlaced.position = map.get_tile_position_in_world(mpos)
-      mapNodeController.canPlaceObject = map.is_tile_buildable(mpos)
-      if mapNodeController.canPlaceObject && mapNodeController.objectBeingPlaced is Area2D && mapNodeController.objectBeingPlaced.get_overlapping_areas().size() > 0:
-          mapNodeController.canPlaceObject = false
-  
+    if !mapNodeController.is_dragging_new_connection() && interactTarget && interactTarget is MapNode && can_build_route():
+      mapNodeController.start_dragging_new_route(interactTarget)
+    elif mapNodeController.is_dragging_new_connection():
+      mapNodeController.update_drag_new_route(mpos)
+      if !shouldHideUI:
+        shouldHideUI = true
   # Hide Build Panel while dragging
   if shouldHideUI && uiController.buildPanel.isVisible:
     uiController.buildPanel.hide()
@@ -182,7 +180,6 @@ func on_interact_drag_end() -> void:
   else:
     # Routes
     if mapNodeController.is_dragging_new_connection():
-      var objectAtEndOfDrag = get_object_at_cursor_location()
       if interactTarget && interactTarget is MapNode:
         mapNodeController.finish_drawing_new_route_nodes(mapNodeController.activeRoute)
       mapNodeController.hide_drag_new_connection()
@@ -190,10 +187,11 @@ func on_interact_drag_end() -> void:
     elif mapNodeController.is_placing_new_object():
       mapNodeController.end_place_new_object()
       mapNodeController.blur_all_connections()
-    
+  # Finally reset drag variables
+  isDragging = false
   interactTarget = null
+  interactPosition = Vector2.ZERO
   typeOfObjectBeingPlaced = null
-  dragStartApproved = false
 
 func deselect_objects() -> void:
   for obj in selectedObjects:
@@ -216,7 +214,6 @@ func decrease_stock_item(item, amount = 1) -> void:
 func can_build_route() -> bool:
   if interactTarget is MapNode:
     var route = mapNodeController.activeRoute
-
     if route.connections.size() == 0:
       return true
     else:

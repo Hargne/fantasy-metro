@@ -36,10 +36,16 @@ func highlight(showPrompt = false) -> void:
   _targetHighlightAmount = 1
   if showPrompt:
     actionPrompt.display(get_center_point(), [ActionPrompt.ButtonType.DELETE])
-    actionPrompt.deleteButton.disabled = !can_be_deleted()
+    if !can_be_deleted():
+      actionPrompt.disable_button(ActionPrompt.ButtonType.DELETE)
 
 func is_highlighted() -> bool:
   return _targetHighlightAmount == 1
+
+func blur() -> void:
+  _targetHighlightAmount = 0
+  yield(get_tree().create_timer(0.1), "timeout")
+  actionPrompt.hide()
 
 func can_be_deleted() -> bool:
   if route.connections.size() < 3:
@@ -52,11 +58,6 @@ func can_be_deleted() -> bool:
       continue
     proposedConnectionSegments.append([conn.segments[0], conn.segments[1]])
   return route.is_segment_list_valid_as_route(proposedConnectionSegments) 
-
-func blur() -> void:
-  _targetHighlightAmount = 0
-  yield(get_tree().create_timer(0.1), "timeout")
-  actionPrompt.hide()
 
 func get_start_node() -> MapNode:
   return mapNodes[0]

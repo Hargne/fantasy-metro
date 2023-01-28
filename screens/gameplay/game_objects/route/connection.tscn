@@ -14,4 +14,4 @@ texture_mode = 1
 
 [node name="ActionPrompt" parent="." instance=ExtResource( 2 )]
 margin_right = 204.0
-rect_scale = Vector2( 0.25, 0.25 )
+rect_scale = Vector2( 0.15, 0.15 )

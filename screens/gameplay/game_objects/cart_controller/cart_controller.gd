@@ -14,9 +14,6 @@ var cartPrefab = preload("res://screens/gameplay/game_objects/cart_controller/ca
 onready var placeCartSFX = $PlaceCartSFX
 onready var demolishSFX = $DemolishSFX
 
-func _ready():
-  pass
-
 func initiate_place_new_object(objectTypeToBePlaced, startPosition: Vector2) -> void:
   typeOfObjectBeingPlaced = objectTypeToBePlaced
   match objectTypeToBePlaced:
@@ -27,20 +24,19 @@ func initiate_place_new_object(objectTypeToBePlaced, startPosition: Vector2) -> 
   if objectBeingPlaced:
     objectBeingPlaced.position = startPosition
 
-func end_place_new_object(connection: Connection) -> int:
+func end_place_new_object(connection: Connection) -> void:
   if connection:
     if typeOfObjectBeingPlaced == GameplayEnums.BuildOption.CART:
       objectBeingPlaced.place_on_connection(connection)
       carts.append(objectBeingPlaced)
       Utils.connect_signal(objectBeingPlaced, "on_demolish", self, "demolish_cart")
       placeCartSFX.play()
-    stop_placing_object()      
+    stop_placing_object()
   else:
     # Cancel placement by removing the new object
     if objectBeingPlaced:
       objectBeingPlaced.queue_free()
-    stop_placing_object()      
-  return canPlaceObject
+    stop_placing_object()
 
 func stop_placing_object() -> void:
   objectBeingPlaced = null

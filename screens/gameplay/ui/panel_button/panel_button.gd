@@ -1,5 +1,5 @@
 extends Control
-class_name BuildPanelButton
+class_name PanelButton
 
 export var backgroundColor: Color = Color("#666666")
 export var icon: Texture
@@ -8,6 +8,7 @@ export var showAmount = false
 var _currentAmount = 0
 
 # Refs
+onready var panel = $PanelContainer
 onready var background = $PanelContainer/TextureRect
 onready var button = $PanelContainer/Button
 onready var amountLabel = $Amount
@@ -16,9 +17,10 @@ onready var tooltip = $Tooltip
 
 func _ready():
   button.icon = icon
+  tooltip.text = tooltiptext
   Utils.connect_signal(button, "mouse_entered", self, "on_mouse_over")
   Utils.connect_signal(button, "mouse_exited", self, "on_mouse_leave")
-  tooltip.text = tooltiptext
+
   hide_tooltip()
   if !showAmount:
     amountLabel.visible = false
@@ -37,11 +39,13 @@ func set_stock_amount(amount: int) -> void:
   _currentAmount = amount
 
 func on_mouse_over() -> void:
-  animations.play("hover")
+  if !button.disabled:
+    animations.play("hover")
   display_tooltip()
 
 func on_mouse_leave() -> void:
-  animations.play("blur")
+  if !button.disabled:
+    animations.play("blur")
   hide_tooltip()
 
 func display_tooltip() -> void:
@@ -58,3 +62,9 @@ func set_background_color(color: Color) -> void:
 
 func pop() -> void:
   animations.play("pop")
+
+func disable() -> void:
+  button.disabled = true
+
+func enable() -> void:
+  button.disabled = false
