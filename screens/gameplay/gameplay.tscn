@@ -1,8 +1,7 @@
-[gd_scene load_steps=22 format=2]
+[gd_scene load_steps=20 format=2]
 
 [ext_resource path="res://screens/gameplay/game_objects/map_node/resource_node/resource_node.tscn" type="PackedScene" id=1]
 [ext_resource path="res://screens/gameplay/game_objects/map_node/village_node/village_node.tscn" type="PackedScene" id=2]
-[ext_resource path="res://screens/gameplay/game_objects/map/assets/map-tileset.tres" type="TileSet" id=3]
 [ext_resource path="res://screens/gameplay/game_objects/map_node_controller/map_node_controller.gd" type="Script" id=4]
 [ext_resource path="res://screens/gameplay/gameplay.gd" type="Script" id=5]
 [ext_resource path="res://sfx/pop.wav" type="AudioStream" id=6]
@@ -11,7 +10,6 @@
 [ext_resource path="res://screens/gameplay/ui/build_panel/assets/route_icon.png" type="Texture" id=9]
 [ext_resource path="res://sfx/thud.wav" type="AudioStream" id=10]
 [ext_resource path="res://screens/gameplay/ui/build_panel/build_panel.gd" type="Script" id=11]
-[ext_resource path="res://screens/gameplay/game_objects/map/map.gd" type="Script" id=12]
 [ext_resource path="res://screens/gameplay/game_objects/cart_controller/cart_controller.gd" type="Script" id=13]
 [ext_resource path="res://screens/gameplay/ui/gameplay_ui_controller.gd" type="Script" id=14]
 [ext_resource path="res://screens/gameplay/ui/build_panel/assets/warehouse_icon.png" type="Texture" id=15]
@@ -41,22 +39,6 @@ script = ExtResource( 5 )
 current = true
 zoom = Vector2( 0.25, 0.25 )
 script = ExtResource( 7 )
-
-[node name="Map" type="Node2D" parent="."]
-script = ExtResource( 12 )
-
-[node name="Water" type="Polygon2D" parent="Map"]
-position = Vector2( -931, -477 )
-color = Color( 0.733333, 0.729412, 0.694118, 1 )
-polygon = PoolVector2Array( 0, 0, 1920, 0, 1920, 1080, 0, 1080 )
-
-[node name="TileMap" type="TileMap" parent="Map"]
-tile_set = ExtResource( 3 )
-cell_size = Vector2( 16, 16 )
-cell_quadrant_size = 8
-collision_layer = 2
-format = 1
-tile_data = PoolIntArray( -327682, 26, 0, -327681, 10, 0, -393216, 7, 0, -393215, 7, 0, -393214, 7, 0, -393213, 13, 0, -393212, 14, 0, -262149, 3, 0, -262148, 7, 0, -262147, 7, 0, -262146, 7, 0, -262145, 7, 0, -327680, 7, 0, -327679, 29, 0, -327678, 7, 0, -327677, 7, 0, -327676, 7, 0, -327675, 21, 0, -196615, 26, 0, -196614, 10, 0, -196613, 7, 0, -196612, 7, 0, -196611, 7, 0, -196610, 7, 0, -196609, 7, 0, -262144, 7, 0, -262143, 7, 0, -262142, 7, 0, -262141, 7, 0, -262140, 7, 0, -262139, 7, 0, -262138, 21, 0, -131081, 3, 0, -131080, 7, 0, -131079, 7, 0, -131078, 7, 0, -131077, 28, 0, -131076, 7, 0, -131075, 7, 0, -131074, 7, 0, -131073, 7, 0, -196608, 7, 0, -196607, 7, 0, -196606, 7, 0, -196605, 7, 0, -196604, 7, 0, -196603, 7, 0, -196602, 7, 0, -196601, 13, 0, -65545, 7, 0, -65544, 7, 0, -65543, 7, 0, -65542, 7, 0, -65541, 7, 0, -65540, 7, 0, -65539, 7, 0, -65538, 7, 0, -65537, 7, 0, -131072, 7, 0, -131071, 7, 0, -131070, 7, 0, -131069, 39, 0, -131068, 28, 0, -131067, 7, 0, -131066, 7, 0, -131065, 7, 0, -131064, 31, 0, -10, 3, 0, -9, 7, 0, -8, 7, 0, -7, 7, 0, -6, 7, 0, -5, 7, 0, -4, 7, 0, -3, 7, 0, -2, 7, 0, -1, 7, 0, -65536, 7, 0, -65535, 7, 0, -65534, 7, 0, -65533, 7, 0, -65532, 28, 0, -65531, 41, 0, -65530, 29, 0, -65529, 7, 0, -65528, 13, 0, 65526, 7, 0, 65527, 28, 0, 65528, 7, 0, 65529, 7, 0, 65530, 7, 0, 65531, 7, 0, 65532, 7, 0, 65533, 29, 0, 65534, 7, 0, 65535, 7, 0, 0, 7, 0, 1, 7, 0, 2, 7, 0, 3, 7, 0, 4, 39, 0, 5, 39, 0, 6, 29, 0, 7, 7, 0, 8, 7, 0, 9, 14, 0, 131062, 7, 0, 131063, 29, 0, 131064, 32, 0, 131065, 7, 0, 131066, 7, 0, 131067, 7, 0, 131068, 7, 0, 131069, 7, 0, 131070, 7, 0, 131071, 7, 0, 65536, 7, 0, 65537, 7, 0, 65538, 29, 0, 65539, 39, 0, 65540, 40, 0, 65541, 41, 0, 65542, 40, 0, 65543, 28, 0, 65544, 7, 0, 65545, 7, 0, 196598, 9, 0, 196599, 7, 0, 196600, 7, 0, 196601, 7, 0, 196602, 7, 0, 196603, 7, 0, 196604, 7, 0, 196605, 7, 0, 196606, 7, 0, 196607, 7, 0, 131072, 7, 0, 131073, 7, 0, 131074, 7, 0, 131075, 7, 0, 131076, 39, 0, 131077, 40, 0, 131078, 35, 0, 131079, 7, 0, 131080, 32, 0, 131081, 7, 0, 262134, 16, 0, 262135, 20, 0, 262136, 11, 0, 262137, 40, 0, 262138, 36, 0, 262139, 7, 0, 262140, 7, 0, 262141, 7, 0, 262142, 7, 0, 262143, 7, 0, 196608, 7, 0, 196609, 7, 0, 196610, 7, 0, 196611, 7, 0, 196612, 18, 0, 196613, 20, 0, 196614, 7, 0, 196615, 7, 0, 196616, 7, 0, 196617, 7, 0, 327670, 31, 0, 327673, 41, 0, 327674, 34, 0, 327675, 38, 0, 327676, 36, 0, 327677, 34, 0, 327678, 35, 0, 327679, 7, 0, 262144, 7, 0, 262145, 29, 0, 262146, 7, 0, 262147, 18, 0, 262149, 3, 0, 262150, 7, 0, 262151, 7, 0, 262152, 15, 0, 262153, 18, 0, 393209, 22, 0, 393210, 40, 0, 393211, 39, 0, 393212, 41, 0, 393213, 40, 0, 393214, 7, 0, 393215, 7, 0, 327680, 7, 0, 327681, 7, 0, 327682, 7, 0, 327683, 7, 0, 327684, 7, 0, 327685, 33, 0, 327686, 29, 0, 327687, 7, 0, 327688, 27, 0, 327689, 30, 0, 458745, 8, 0, 458746, 20, 0, 458747, 20, 0, 458748, 20, 0, 458749, 20, 0, 458750, 11, 0, 458751, 9, 0, 393216, 7, 0, 393217, 7, 0, 393218, 28, 0, 393219, 7, 0, 393220, 7, 0, 393221, 7, 0, 393222, 7, 0, 393223, 4, 0, 524280, 30, 0, 524282, 31, 0, 524283, 30, 0, 524287, 16, 0, 458752, 11, 0, 458753, 9, 0, 458754, 7, 0, 458755, 7, 0, 458756, 4, 0, 458757, 20, 0, 458758, 20, 0, 458759, 23, 0, 524289, 16, 0, 524290, 20, 0, 524291, 20, 0, 524292, 23, 0 )
 
 [node name="MapNodeController" type="Node2D" parent="."]
 script = ExtResource( 4 )

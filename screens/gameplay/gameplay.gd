@@ -7,7 +7,6 @@ onready var menu = $Menu
 onready var mapNodeController: MapNodeController = $MapNodeController
 onready var cartController: CartController = $CartController
 onready var uiController: GameplayUIController = $UI
-onready var map: Map = $Map
 
 export var showMenuOnStartup = false
 var isInteracting = false
@@ -148,9 +147,8 @@ func on_interact_drag() -> void:
   # Placing Objects
   elif mapNodeController.is_placing_new_object():
     shouldHideUI = true
-    mapNodeController.objectBeingPlaced.position = map.get_tile_position_in_world(mpos)
-    mapNodeController.canPlaceObject = map.is_tile_buildable(mpos)
-    if mapNodeController.canPlaceObject && mapNodeController.objectBeingPlaced is Area2D && mapNodeController.objectBeingPlaced.get_overlapping_areas().size() > 0:
+    mapNodeController.objectBeingPlaced.position = mpos
+    if mapNodeController.objectBeingPlaced is Area2D && mapNodeController.objectBeingPlaced.get_overlapping_areas().size() > 0:
         mapNodeController.canPlaceObject = false
   # Dragging Routes
   else:
