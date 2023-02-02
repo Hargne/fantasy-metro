@@ -1,12 +1,17 @@
 extends Node2D
 class_name MapNodeController
 
+var rng
 var objectBeingPlaced: Node
 var canPlaceObject = false
 var typeOfObjectBeingPlaced
 var warehouseNodePrefab = preload("res://screens/gameplay/game_objects/map_node/warehouse_node/warehouse_node.tscn")
+var planetNodePrefab = preload("res://screens/gameplay/game_objects/map_node/planet_node/planet_node.tscn")
 var Route = load("res://screens/gameplay/game_objects/route/route.class.gd")
 # Connections / Routes
+var planets = []
+
+
 var routes = []
 var activeRoute: Route
 var routeColors: Array = [
@@ -52,8 +57,25 @@ func _process(_delta):
       objectBeingPlaced.modulate.a = 0.5
 
 #################################################################
-# BUILDINGS/RESOURCES
+# PLANETS
 #################################################################      
+
+func get_all_planet_types() -> Array:
+  return [GameplayEnums.PlanetType.WATER, GameplayEnums.PlanetType.LAVA, GameplayEnums.PlanetType.JUNGLE, GameplayEnums.PlanetType.ACID]
+
+func add_planet(planetType, randomPosition: bool = true) -> PlanetNode:
+  var planet = planetNodePrefab.instance()
+  planet.planetType = planetType
+  var sprite: Sprite = planet.get_node('Sprite')
+  sprite.texture = load("res://screens/gameplay/game_objects/map_node/assets/" + planet.get_texture_for_planet_type())
+
+  add_child(planet)
+  planets.append(planet)
+
+  #TODO: MAKE POSITION DECISION SMART
+  planet.position = Vector2(rng.randi_range(-100, 100), rng.randi_range(-100, 100))
+  
+  return planet  
 
 func get_village_nodes() -> Array:
   var nodes = []
@@ -184,6 +206,13 @@ func spawn_connection(from: MapNode, to: MapNode, route: Route) -> Connection:
   connection.width = 2
   connection.lineColor = routeColors[route.routeIndex]
   connectionContainer.add_child(connection)
+
+  if ApplicationManager.showConnectionIDs:
+    var lbl: Label = Label.new()
+    lbl.set_position(connection.get_center_point())
+    lbl.text = str(connection.connectionID)
+    connection.add_child(lbl)
+
   Utils.connect_signal(connection, "on_demolish", self, "demolish_connection")
   return connection  
 

@@ -29,6 +29,7 @@ var _defaultCollisionLayer = 2147483647
 
 func _ready():
   rng.randomize()
+  mapNodeController.rng = rng
   setup_demand_increment_timer()
   # Connect Build Panel
   Utils.connect_signal(uiController.buildPanel, "started_dragging_object", self, "on_new_object_drag_start")
@@ -81,6 +82,13 @@ func start_new_game() -> void:
   for i in amountOfRoutes:
     _createdRoutes.append(mapNodeController.create_route())
   uiController.buildPanel.set_route_options(_createdRoutes)
+
+  var planetTypes = mapNodeController.get_all_planet_types()
+  planetTypes.shuffle()
+
+  for n in 3:
+    mapNodeController.add_planet(planetTypes[n])
+
   # Unpause and start
   unpause_game()
   menu.hide()

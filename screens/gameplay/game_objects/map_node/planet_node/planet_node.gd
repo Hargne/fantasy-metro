@@ -4,9 +4,20 @@ func get_class(): return "PlanetNode"
 
 onready var travellers = $TravellerList
 export var maxTravellers = 6
+export var planetType = GameplayEnums.PlanetType.WATER
 
-func _draw():
-  draw_circle(position, 16, Color("#0000ff"))
+func get_texture_for_planet_type() -> String:
+  match planetType:
+    GameplayEnums.PlanetType.WATER:
+      return 'blueplanet.png'
+    GameplayEnums.PlanetType.JUNGLE:
+      return 'greenplanet.png'
+    GameplayEnums.PlanetType.LAVA:
+      return 'redplanet.png'
+    GameplayEnums.PlanetType.ACID:
+      return 'purpleplanet.png' 
+
+  return 'blueplanet.png'                 
 
 func get_connection_point() -> Vector2:
   return Vector2(position.x, position.y)
