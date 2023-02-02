@@ -69,6 +69,11 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://screens/gameplay/ui/panel_button/panel_button.gd"
 }, {
+"base": "MapNode",
+"class": "PlanetNode",
+"language": "GDScript",
+"path": "res://screens/gameplay/game_objects/map_node/planet_node/planet_node.gd"
+}, {
 "base": "VBoxContainer",
 "class": "PopupList",
 "language": "GDScript",
@@ -107,6 +112,7 @@ _global_script_class_icons={
 "MapNode": "",
 "MapNodeController": "",
 "PanelButton": "",
+"PlanetNode": "",
 "PopupList": "",
 "ResourceNode": "",
 "Route": "",

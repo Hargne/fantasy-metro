@@ -25,9 +25,8 @@ var connectionPrefab = preload("res://screens/gameplay/game_objects/route/connec
 var dragNewConnectionVisual: Line2D
 
 # SFX
-onready var placeRouteSFX = $PlaceRouteSFX
 onready var placeBuildingSFX = $PlaceBuildingSFX
-onready var demolishSFX = $DemolishSFX
+onready var demolishRouteSFX = $DemolishSFX
 
 signal on_increase_stock(item, amount)
 signal on_decrease_stock(item, amount)
@@ -190,7 +189,7 @@ func spawn_connection(from: MapNode, to: MapNode, route: Route) -> Connection:
 
 func demolish_connection(connection: Connection) -> void:
   delete_connection(connection)  
-  demolishSFX.play()
+  demolishRouteSFX.play()
 
 func delete_connection(connection: Connection) -> void:
   if is_instance_valid(connection):
@@ -250,8 +249,8 @@ func start_dragging_new_route(startNode: MapNode) -> void:
 
 func update_drag_new_route(currentMousePosition: Vector2) -> void:
   if is_dragging_new_connection():
-    for node in get_map_nodes():
-      var connectionPoint = node.get_connection_point()
+    for mapNode in get_map_nodes():
+      var connectionPoint = mapNode.get_connection_point()
       if connectionPoint.distance_to(currentMousePosition) < (get_viewport().size.x * .005):
         # Evaluate the existing connections with all the new drawn points
         var segmentArray = []
@@ -263,7 +262,7 @@ func update_drag_new_route(currentMousePosition: Vector2) -> void:
         if activeRoute.is_segment_list_valid_as_route(segmentArray):
           newRoutePoints.append(connectionPoint)
           dragNewConnectionVisual.points = newRoutePoints
-          placeRouteSFX.play()
+          mapNode.on_connect()
     # Update the last point of the new route visuals, which should follow the cursor position
     if dragNewConnectionVisual.points.size() == newRoutePoints.size():
       dragNewConnectionVisual.add_point(currentMousePosition)
