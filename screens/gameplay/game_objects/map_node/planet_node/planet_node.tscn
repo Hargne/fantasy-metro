@@ -7,6 +7,7 @@
 radius = 16.0
 
 [node name="PlanetNode" type="Area2D"]
+scale = Vector2( 0.1, 0.1 )
 script = ExtResource( 1 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
@@ -15,3 +16,5 @@ shape = SubResource( 1 )
 [node name="Travellers" parent="." instance=ExtResource( 3 )]
 margin_top = -80.0
 margin_bottom = 56.0
+
+[node name="Sprite" type="Sprite" parent="."]

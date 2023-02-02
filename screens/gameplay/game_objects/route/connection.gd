@@ -3,6 +3,7 @@ class_name Connection
 
 signal on_demolish(connection)
 
+var connectionID = 0
 var width: float
 var route = null
 var mapNodes = []
