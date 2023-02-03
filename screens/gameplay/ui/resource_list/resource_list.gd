@@ -6,7 +6,7 @@ var resources = []
 onready var centerContainer = $CenterContainer
 onready var gridContainer = $CenterContainer/PanelContainer/GridContainer
 var textureBasePath = "res://screens/gameplay/ui/resource_list/assets"
-var iconSize = 230
+var iconSize = 26
 
 var icons = []
 
