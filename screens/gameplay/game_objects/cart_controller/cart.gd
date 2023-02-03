@@ -1,7 +1,7 @@
 extends Area2D
 class_name Cart
 
-onready var storedResources = $ResourceList
+onready var travellers = $ResourceList
 onready var actionPrompt = $ActionPrompt
 onready var routeLine = $RouteLine
 
@@ -39,15 +39,15 @@ func _process(_delta):
       move_cart_to_destination()      
 
 func has_capacity() -> bool:
-  return storedResources.resources.size() < capacity
+  return travellers.resources.size() < capacity
 
-func add_resource(resourceType) -> void:
+func add_traveller(alienType) -> void:
   if has_capacity():
-    storedResources.add_resource(resourceType)
+    travellers.add_resource(alienType)
 
-func remove_resource(resourceType) -> void:
-  if storedResources.resources.size() > 0:
-    storedResources.remove_resource(resourceType)
+func remove_traveller(alienType) -> void:
+  if travellers.resources.size() > 0:
+    travellers.remove_resource(alienType)
 
 func place_on_connection(connection: Connection) -> void:
   # first, normalize the placement so it is on the line
@@ -83,7 +83,7 @@ func move_cart_to_destination() -> void:
 func cart_is_at_destination() -> void:  
   if currentStatus == CartStatus.EN_ROUTE:
     currentStatus = CartStatus.JUST_ARRIVED
-    position = destinationPt # make sure it is set to exact spot since the destination is triggered at .05 pixels
+    position = destinationPt # make sure it is set to exact spot since the destination is triggered at <= .05 pixels
     stepTimeStamp = Time.get_ticks_msec()
   else:
     var t = Time.get_ticks_msec()
@@ -107,57 +107,25 @@ func do_destination_action() -> void:
 func do_just_arrived_action(destinationNode) -> void:
   # show arrival graphics, smoke from cart stopping, etc... or just slow cart down  
   # the if statements below allow us to skip uneeded steps right away
-  if destinationNode is VillageNode:
-    if storedResources.resources.size() > 0 && destinationNode.has_demands():
+  if destinationNode is PlanetNode:
+    if travellers.resources.size() > 0 && travellers.contains_resource(destinationNode.planetType):
       currentStatus = CartStatus.UNLOADING
-    else: 
-      currentStatus = CartStatus.EXITING
-  elif destinationNode is ResourceNode:
-    if has_capacity():      
-      currentStatus = CartStatus.LOADING
+    elif destinationNode.travellers.resources.size() > 0:
+      currentStatus = CartStatus.LOADING # TODO: ONLY PICK UP PASSENGERS ON OUR ROUTE
     else:
-      currentStatus = CartStatus.EXITING
-  elif destinationNode is WarehouseNode:
-    if storedResources.resources.size() > 0 && destinationNode.has_capacity():
-      currentStatus = CartStatus.UNLOADING
-    elif destinationNode.has_stock() && has_capacity():    
-      currentStatus = CartStatus.LOADING    
-    else:
-      currentStatus = CartStatus.EXITING
+      currentStatus = CartStatus.EXITING 
 
 func do_unloading_action(destinationNode) -> void:  
-  var unloadedResourceType
+  var unloadedResourceType = false
 
-  if destinationNode is VillageNode:
-    for resource in storedResources.resources:
-      if "resourceType" in resource && destinationNode.demands_resource(resource.resourceType):
-        unloadedResourceType = resource.resourceType          
-        storedResources.remove_resource(unloadedResourceType, false)        
-        destinationNode.demandedResources.remove_resource(unloadedResourceType, false)
+  if destinationNode is PlanetNode:
+    for traveller in travellers.resources:
+      if destinationNode.planetType == traveller.resourceType:
+        unloadedResourceType = traveller.resourceType          
+        travellers.remove_resource(unloadedResourceType, false)        
+        destinationNode.travellers.remove_resource(unloadedResourceType, false)
         # show little icon moving from cart to village      
-        break  
-  elif destinationNode is WarehouseNode:
-    # the warehouse node takes ANYTHING up to capacity;
-    # however, don't drop anything that we still need further on the route
-
-    var demandedResourcesOnRoute = currentConnection.route.get_demands_along_route(currentConnection, currentConnection.get_point_from_map_node(destinationNode), true)
-
-    if destinationNode.has_capacity():
-      for resource in storedResources.resources:
-        if "resourceType" in resource:
-          if demandedResourcesOnRoute.has(resource.resourceType):
-            continue # don't drop this resource
-
-          unloadedResourceType = resource.resourceType  
-          storedResources.remove_resource(unloadedResourceType, false) 
-
-          # show little icon moving from cart to warehouse
-
-          # NOTE: some resource types get upgraded at this stage, and the resource type that was unloaded is NOT the same
-          # as the resource that the warehouse will hold (like mana ore -> mana crystals)
-          destinationNode.add_resource(unloadedResourceType)
-
-          break        
+        break       
 
   if !unloadedResourceType:
     currentStatus = CartStatus.LOADING
@@ -170,17 +138,12 @@ func do_loading_action(destinationNode) -> void:
   if has_capacity():
     var demandedResourcesOnRoute = currentConnection.route.get_demands_along_route(currentConnection, currentConnection.get_point_from_map_node(destinationNode), false)
 
-    if destinationNode is ResourceNode:
-      if demandedResourcesOnRoute.has(destinationNode.resourceType):
-        loadedResourceType = destinationNode.resourceType
-        # show little icon moving from resource to cart
-        storedResources.add_resource(loadedResourceType)
-    elif destinationNode is WarehouseNode:
+    if destinationNode is PlanetNode:
       if demandedResourcesOnRoute.size() > 0:
         # remove all the resources we already have, so we don't add them again
         # note: we have to do this because we add 1 resource per loading action cycle (500 ms)
-        for storedResource in storedResources.resources:
-          var demandedRscIdx = demandedResourcesOnRoute.find(storedResource.resourceType)
+        for traveller in travellers.resources:
+          var demandedRscIdx = demandedResourcesOnRoute.find(traveller.resourceType)
           demandedResourcesOnRoute.remove(demandedRscIdx)
 
         for demandedResource in demandedResourcesOnRoute:
@@ -188,19 +151,19 @@ func do_loading_action(destinationNode) -> void:
             if "resourceType" in resource && resource.resourceType == demandedResource:
               # show little icon moving from warehouse to cart
               loadedResourceType = resource.resourceType
-              destinationNode.storedResources.remove_resource(loadedResourceType)
-              storedResources.add_resource(loadedResourceType)
+              destinationNode.travellers.remove_resource(loadedResourceType)
+              travellers.add_resource(loadedResourceType)
               break
 
           if loadedResourceType:
             break
       else:
-        for resource in destinationNode.storedResources.resources:
+        for resource in destinationNode.travellers.resources:
           if "resourceType" in resource:
             # show little icon moving from warehouse to cart
             loadedResourceType = resource.resourceType
-            destinationNode.storedResources.remove_resource(loadedResourceType)
-            storedResources.add_resource(loadedResourceType)
+            destinationNode.travellers.remove_resource(loadedResourceType)
+            travellers.add_resource(loadedResourceType)
             break
 
   if !loadedResourceType:

@@ -23,9 +23,8 @@ func get_demands_along_route(startConnection, startDestinationPt, lookBothDirect
   var orderedMapNodes = get_ordered_map_nodes(startConnection, startDestinationPt)
   
   for mapNode in orderedMapNodes:
-    if mapNode is VillageNode:
-      for demandedResource in mapNode.demandedResources.resources:
-        demands.append(demandedResource.resourceType)
+    if mapNode is PlanetNode:
+      demands.append(GameplayEnums.Resource.values()[mapNode.planetType])        
 
   if lookBothDirections:
     # look backwards from destination pt (we do this second so upcoming demands have higher priority
@@ -33,9 +32,8 @@ func get_demands_along_route(startConnection, startDestinationPt, lookBothDirect
     orderedMapNodes = get_ordered_map_nodes(startConnection, startConnection.get_other_point(startDestinationPt), true)
 
     for mapNode in orderedMapNodes:
-      if mapNode is VillageNode:
-        for demandedResource in mapNode.demandedResources.resources:
-          demands.append(demandedResource.resourceType)
+      if mapNode is PlanetNode:
+        demands.append(GameplayEnums.Resource.values()[mapNode.planetType]) 
 
   return demands
 
