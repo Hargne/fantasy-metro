@@ -2,19 +2,19 @@ extends MapNode
 class_name PlanetNode
 func get_class(): return "PlanetNode"
 
-onready var travellers = $TravellerList
+onready var travellers = $ResourceList
 export var maxTravellers = 6
-export var planetType = GameplayEnums.PlanetType.WATER
+export var planetType = GameplayEnums.PlanetType.BLUE
 
 func get_texture_for_planet_type() -> String:
   match planetType:
-    GameplayEnums.PlanetType.WATER:
+    GameplayEnums.PlanetType.BLUE:
       return 'blueplanet.png'
-    GameplayEnums.PlanetType.JUNGLE:
+    GameplayEnums.PlanetType.GREEN:
       return 'greenplanet.png'
-    GameplayEnums.PlanetType.LAVA:
+    GameplayEnums.PlanetType.RED:
       return 'redplanet.png'
-    GameplayEnums.PlanetType.ACID:
+    GameplayEnums.PlanetType.PURPLE:
       return 'purpleplanet.png' 
 
   return 'blueplanet.png'                 

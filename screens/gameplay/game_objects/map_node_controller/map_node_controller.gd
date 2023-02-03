@@ -60,10 +60,7 @@ func _process(_delta):
 # PLANETS
 #################################################################      
 
-func get_all_planet_types() -> Array:
-  return [GameplayEnums.PlanetType.WATER, GameplayEnums.PlanetType.LAVA, GameplayEnums.PlanetType.JUNGLE, GameplayEnums.PlanetType.ACID]
-
-func add_planet(planetType, randomPosition: bool = true) -> PlanetNode:
+func add_planet(planetType, x: float = -1, y: float = -1) -> PlanetNode:
   var planet = planetNodePrefab.instance()
   planet.planetType = planetType
   var sprite: Sprite = planet.get_node('Sprite')
@@ -72,10 +69,42 @@ func add_planet(planetType, randomPosition: bool = true) -> PlanetNode:
   add_child(planet)
   planets.append(planet)
 
+  var randomPosition = x == -1 && y == -1
+
   #TODO: MAKE POSITION DECISION SMART
-  planet.position = Vector2(rng.randi_range(-100, 100), rng.randi_range(-100, 100))
+  var valid = false
+  while !valid:
+    valid = true  
+
+    if randomPosition:
+      var pos = Vector2(rng.randi_range(-200, 200), rng.randi_range(-75, 75))    
+
+      for existingPlanet in planets:
+        var dist = pos.distance_to(existingPlanet.position)
+        if dist < 75:
+          valid = false
+
+      if valid:
+        planet.position = pos
+        break   
+    else:   
+      planet.position = Vector2(x, y)
   
   return planet  
+
+func get_planet_nodes() -> Array:
+  var nodes = []
+  for child in get_children():
+    if child is PlanetNode:
+      nodes.append(child)
+  return nodes
+
+func does_planet_type_exist(planetType) -> bool:
+  for child in get_children():
+    if child is PlanetNode:
+      if child.planetType == planetType:
+        return true
+  return false
 
 func get_village_nodes() -> Array:
   var nodes = []
@@ -102,7 +131,7 @@ func get_map_nodes() -> Array:
   var nodes = []
 
   for child in get_children():
-    if child is WarehouseNode || child is VillageNode || child is ResourceNode:
+    if child is PlanetNode:
       nodes.append(child)
   return nodes  
 
@@ -201,6 +230,8 @@ func finish_drawing_new_route_nodes(route: Route) -> void:
 func spawn_connection(from: MapNode, to: MapNode, route: Route) -> Connection:
   var connection = connectionPrefab.instance()
   connection.route = route
+  connection.connectionID = ApplicationManager.connectionID
+  ApplicationManager.connectionID += 1
   connection.mapNodes = [from, to]
   connection.segments = [from.get_connection_point(), to.get_connection_point()]
   connection.width = 2
@@ -268,9 +299,9 @@ func start_dragging_new_route(startNode: MapNode) -> void:
     dragNewConnectionVisual.antialiased = true
     dragNewConnectionVisual.begin_cap_mode = Line2D.LINE_CAP_ROUND
     dragNewConnectionVisual.end_cap_mode = Line2D.LINE_CAP_ROUND 
-    if dragNewConnectionVisual.default_color != activeRoute.color:
-      dragNewConnectionVisual.default_color = activeRoute.color    
     newRouteConnectionContainer.add_child(dragNewConnectionVisual) 
+  if dragNewConnectionVisual.default_color != activeRoute.color:
+    dragNewConnectionVisual.default_color = activeRoute.color        
   if newRoutePoints.size() == 0:    
     newRouteConnectionContainer.show()
     newRoutePoints.append(startPoint)

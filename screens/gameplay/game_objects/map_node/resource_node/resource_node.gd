@@ -3,7 +3,7 @@ class_name ResourceNode
 func get_class(): return "ResourceNode"
 
 onready var resourceTypeVisualsContainer = $Types
-export(GameplayEnums.Resource) var resourceType = GameplayEnums.Resource.WATER
+export(GameplayEnums.Resource) var resourceType = GameplayEnums.Resource.BLUE_ALIEN
 
 func _ready():
   setup_visuals()

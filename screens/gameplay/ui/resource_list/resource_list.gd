@@ -21,24 +21,28 @@ func add_resource(resourceType) -> void:
   if resources.size() >= maxResources - 1:
     printerr("Max resource amount reached")
     return
-  var icon = TextureRect.new()
+  var icon = Sprite.new()
   gridContainer.add_child(icon)
-  icon.rect_size = Vector2(iconSize, iconSize)
+  icon.scale = Vector2(.5, .5)
+  #icon.rect_size = Vector2(iconSize, iconSize)
   icons.append(icon)
 
   # Grab texture
   var textureFile
   match resourceType:
-    GameplayEnums.Resource.STONE:
-      textureFile = "stone_icon.tres"
-    GameplayEnums.Resource.WATER:
-      textureFile = "water_icon.tres"
-    GameplayEnums.Resource.WOOD:
-      textureFile = "wood_icon.tres"
+    GameplayEnums.Resource.BLUE_ALIEN:
+      textureFile = "bluealien.png"
+    GameplayEnums.Resource.RED_ALIEN:
+      textureFile = "redalien.png"
+    GameplayEnums.Resource.GREEN_ALIEN:
+      textureFile = "greenalien.png"
+    GameplayEnums.Resource.PURPLE_ALIEN:
+      textureFile = "purplealien.png"
   # Make sure that the file exist
   if !textureFile:
     printerr("Invalid resource type: " + resourceType)
     return
+
   icon.texture = load(textureBasePath + "/" + textureFile)
   resources.append({ "node": icon, "resourceType": resourceType })
 

@@ -83,11 +83,14 @@ func start_new_game() -> void:
     _createdRoutes.append(mapNodeController.create_route())
   uiController.buildPanel.set_route_options(_createdRoutes)
 
-  var planetTypes = mapNodeController.get_all_planet_types()
+  var planetTypes = GameplayEnums.PlanetType.values()
   planetTypes.shuffle()
 
   for n in 3:
     mapNodeController.add_planet(planetTypes[n])
+
+  planetTypes.shuffle()
+  mapNodeController.add_planet(planetTypes[0])
 
   # Unpause and start
   unpause_game()
@@ -245,11 +248,39 @@ func start_demand_increment_timer(time: int) -> void:
   demandIncrementTimer.start()
   
 func on_demand_increment_timer_timeout() -> void:
-  var villageNodes = mapNodeController.get_village_nodes()
-  if villageNodes.size() > 0:
-    for villageNode in villageNodes:
-      if villageNode.can_add_resource_demand():
-        var demandedResource = GameplayEnums.Resource.values()[rng.randi() % GameplayEnums.Resource.size()]
-        villageNode.add_resource_demand(demandedResource)
+  var newTravellerIsPossible = false
+  var addedNewTraveller = false
+
+  var planetNodes = mapNodeController.get_planet_nodes()
+  var planetTypes = GameplayEnums.PlanetType.values()
+  var alienTypes = GameplayEnums.Resource.values()
+
+  if planetNodes.size() > 0:
+    for planetNode in planetNodes:
+      if planetNode.can_add_traveller():
+        newTravellerIsPossible = true
+
+        if rng.randi_range(0, 99) < 50: # for now, only adding 50% of the time per planet
+          var foundValidAlienType = false
+
+          while !foundValidAlienType:
+            foundValidAlienType = true
+            var pidx = rng.randi_range(0, planetTypes.size() - 1)
+            
+            var pt = planetTypes[pidx]
+
+            if pt == planetNode.planetType || !mapNodeController.does_planet_type_exist(pt):
+              foundValidAlienType = false
+
+            if foundValidAlienType:
+              var waitingTraveller = alienTypes[pidx]
+              planetNode.add_traveller(waitingTraveller)
+              addedNewTraveller = true
+
+  # we keep trying until we get at least 1 passenger somewhere
+  if newTravellerIsPossible && !addedNewTraveller:
+    on_demand_increment_timer_timeout()
+    return
+
   # Restart the timer
   start_demand_increment_timer(secondsBetweenDemandIncrement)
