@@ -3,11 +3,11 @@
 [ext_resource path="res://screens/gameplay/ui/resource_list/resource_list.gd" type="Script" id=1]
 
 [sub_resource type="StyleBoxFlat" id=1]
-bg_color = Color( 1, 1, 1, 0.784314 )
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
+bg_color = Color( 0, 0, 0, 0.784314 )
+corner_radius_top_left = 50
+corner_radius_top_right = 50
+corner_radius_bottom_right = 50
+corner_radius_bottom_left = 50
 shadow_size = 1
 shadow_offset = Vector2( 0, 1 )
 
@@ -36,4 +36,6 @@ custom_styles/panel = SubResource( 1 )
 
 [node name="GridContainer" type="GridContainer" parent="CenterContainer/PanelContainer"]
 mouse_filter = 2
+custom_constants/vseparation = 10
+custom_constants/hseparation = 10
 columns = 3

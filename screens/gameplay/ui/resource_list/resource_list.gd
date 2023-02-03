@@ -6,7 +6,7 @@ var resources = []
 onready var centerContainer = $CenterContainer
 onready var gridContainer = $CenterContainer/PanelContainer/GridContainer
 var textureBasePath = "res://screens/gameplay/ui/resource_list/assets"
-var iconSize = 16
+var iconSize = 230
 
 var icons = []
 
@@ -21,10 +21,10 @@ func add_resource(resourceType) -> void:
   if resources.size() >= maxResources - 1:
     printerr("Max resource amount reached")
     return
-  var icon = Sprite.new()
+  var icon = TextureRect.new()
   gridContainer.add_child(icon)
-  icon.scale = Vector2(.5, .5)
-  #icon.rect_size = Vector2(iconSize, iconSize)
+  icon.expand = true
+  icon.rect_min_size = Vector2(iconSize, iconSize)
   icons.append(icon)
 
   # Grab texture
