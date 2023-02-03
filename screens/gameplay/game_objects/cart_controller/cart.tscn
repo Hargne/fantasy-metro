@@ -20,10 +20,11 @@ region_rect = Rect2( 16, 16, 16, 16 )
 shape = SubResource( 1 )
 
 [node name="ResourceList" parent="." instance=ExtResource( 1 )]
-margin_left = -260.0
-margin_top = -190.0
-margin_right = 820.0
-margin_bottom = -54.0
+margin_left = -76.0
+margin_top = -46.0
+margin_right = 232.0
+margin_bottom = 4.0
+rect_min_size = Vector2( 80, 50 )
 
 [node name="ActionPrompt" parent="." instance=ExtResource( 4 )]
 anchor_left = 8.0

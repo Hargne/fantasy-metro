@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/bluealien.png-8f462df36cd4ea879582c81f87cdfcdc.stex"
+path="res://.import/bluetraveller.png-abf9a5a44bc8cb315e27e9d2adc97675.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://screens/gameplay/game_objects/map_node/assets/bluealien.png"
-dest_files=[ "res://.import/bluealien.png-8f462df36cd4ea879582c81f87cdfcdc.stex" ]
+source_file="res://screens/gameplay/ui/resource_list/assets/bluetraveller.png"
+dest_files=[ "res://.import/bluetraveller.png-abf9a5a44bc8cb315e27e9d2adc97675.stex" ]
 
 [params]
 

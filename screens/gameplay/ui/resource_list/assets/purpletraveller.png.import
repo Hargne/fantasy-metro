@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/greenalien.png-7e82f27093ed941be0a7423aeb2493f1.stex"
+path="res://.import/purpletraveller.png-e58fff0bdeebdcb83ab4075dfe68bc77.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://screens/gameplay/ui/resource_list/assets/greenalien.png"
-dest_files=[ "res://.import/greenalien.png-7e82f27093ed941be0a7423aeb2493f1.stex" ]
+source_file="res://screens/gameplay/ui/resource_list/assets/purpletraveller.png"
+dest_files=[ "res://.import/purpletraveller.png-e58fff0bdeebdcb83ab4075dfe68bc77.stex" ]
 
 [params]
 

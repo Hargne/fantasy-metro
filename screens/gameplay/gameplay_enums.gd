@@ -8,11 +8,11 @@ enum PlanetType {
   RED
 }
 
-enum Resource {
-  BLUE_ALIEN,
-  GREEN_ALIEN,
-  PURPLE_ALIEN,
-  RED_ALIEN
+enum TravellerType {
+  BLUE_TRAVELLER,
+  GREEN_TRAVELLER,
+  PURPLE_TRAVELLER,
+  RED_TRAVELLER
 }
 
 enum BuildOption {

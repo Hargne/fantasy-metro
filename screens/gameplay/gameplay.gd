@@ -253,7 +253,7 @@ func on_demand_increment_timer_timeout() -> void:
 
   var planetNodes = mapNodeController.get_planet_nodes()
   var planetTypes = GameplayEnums.PlanetType.values()
-  var alienTypes = GameplayEnums.Resource.values()
+  var travellerTypes = GameplayEnums.TravellerType.values()
 
   if planetNodes.size() > 0:
     for planetNode in planetNodes:
@@ -261,19 +261,19 @@ func on_demand_increment_timer_timeout() -> void:
         newTravellerIsPossible = true
 
         if rng.randi_range(0, 99) < 50: # for now, only adding 50% of the time per planet
-          var foundValidAlienType = false
+          var foundValidTravellerType = false
 
-          while !foundValidAlienType:
-            foundValidAlienType = true
+          while !foundValidTravellerType:
+            foundValidTravellerType = true
             var pidx = rng.randi_range(0, planetTypes.size() - 1)
             
             var pt = planetTypes[pidx]
 
             if pt == planetNode.planetType || !mapNodeController.does_planet_type_exist(pt):
-              foundValidAlienType = false
+              foundValidTravellerType = false
 
-            if foundValidAlienType:
-              var waitingTraveller = alienTypes[pidx]
+            if foundValidTravellerType:
+              var waitingTraveller = travellerTypes[pidx]
               planetNode.add_traveller(waitingTraveller)
               addedNewTraveller = true
 

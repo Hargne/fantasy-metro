@@ -41,13 +41,13 @@ func _process(_delta):
 func has_capacity() -> bool:
   return travellers.resources.size() < capacity
 
-func add_traveller(alienType) -> void:
+func add_traveller(travellerType) -> void:
   if has_capacity():
-    travellers.add_resource(alienType)
+    travellers.add_resource(travellerType)
 
-func remove_traveller(alienType) -> void:
+func remove_traveller(travellerType) -> void:
   if travellers.resources.size() > 0:
-    travellers.remove_resource(alienType)
+    travellers.remove_resource(travellerType)
 
 func place_on_connection(connection: Connection) -> void:
   # first, normalize the placement so it is on the line
@@ -136,10 +136,10 @@ func do_loading_action(destinationNode) -> void:
   var loadedResourceType  
 
   if has_capacity():
-    var demandedResourcesOnRoute = currentConnection.route.get_demands_along_route(currentConnection, currentConnection.get_point_from_map_node(destinationNode), false)
-
+    var demandedResourcesOnRoute = currentConnection.route.get_demands_along_route(currentConnection, currentConnection.get_point_from_map_node(destinationNode), false, false)
+    #print(demandedResourcesOnRoute)
     if destinationNode is PlanetNode:
-      if demandedResourcesOnRoute.size() > 0:
+      if demandedResourcesOnRoute.size() > 0:        
         # remove all the resources we already have, so we don't add them again
         # note: we have to do this because we add 1 resource per loading action cycle (500 ms)
         for traveller in travellers.resources:
@@ -147,7 +147,7 @@ func do_loading_action(destinationNode) -> void:
           demandedResourcesOnRoute.remove(demandedRscIdx)
 
         for demandedResource in demandedResourcesOnRoute:
-          for resource in destinationNode.storedResources.resources:
+          for resource in destinationNode.travellers.resources:
             if "resourceType" in resource && resource.resourceType == demandedResource:
               # show little icon moving from warehouse to cart
               loadedResourceType = resource.resourceType

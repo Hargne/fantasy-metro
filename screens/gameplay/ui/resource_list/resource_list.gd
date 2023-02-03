@@ -30,14 +30,14 @@ func add_resource(resourceType) -> void:
   # Grab texture
   var textureFile
   match resourceType:
-    GameplayEnums.Resource.BLUE_ALIEN:
-      textureFile = "bluealien.png"
-    GameplayEnums.Resource.RED_ALIEN:
-      textureFile = "redalien.png"
-    GameplayEnums.Resource.GREEN_ALIEN:
-      textureFile = "greenalien.png"
-    GameplayEnums.Resource.PURPLE_ALIEN:
-      textureFile = "purplealien.png"
+    GameplayEnums.TravellerType.BLUE_TRAVELLER:
+      textureFile = "bluetraveller.png"
+    GameplayEnums.TravellerType.RED_TRAVELLER:
+      textureFile = "redtraveller.png"
+    GameplayEnums.TravellerType.GREEN_TRAVELLER:
+      textureFile = "greentraveller.png"
+    GameplayEnums.TravellerType.PURPLE_TRAVELLER:
+      textureFile = "purpletraveller.png"
   # Make sure that the file exist
   if !textureFile:
     printerr("Invalid resource type: " + resourceType)
