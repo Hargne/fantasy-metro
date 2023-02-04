@@ -3,8 +3,40 @@ class_name PlanetNode
 func get_class(): return "PlanetNode"
 
 onready var travellerList = $TravellerList
+onready var happinessContainer = $CenterContainer/HappinessContainer
 export var maxTravellers = 6
 export var planetType = GameplayEnums.PlanetType.BLUE
+var happiness: float = 0
+var planetLevel = 0
+var heartSize = 26
+var textureBasePath = "res://screens/gameplay/game_objects/map_node/assets"
+
+var travellerPatience = 20 # a traveller waiting 20 seconds will cost 1 full happiness point
+
+func _process(delta):
+  var hDelta = (travellerList.travellers.size() * delta) / travellerPatience
+
+  if hDelta != 0:
+    happiness -= hDelta
+    update_happiness_factors()
+
+func update_happiness_factors() -> void:
+  var newLevel = round(happiness / 5)
+
+  if newLevel != planetLevel:
+    planetLevel = newLevel
+    for c in happinessContainer.get_children():
+      happinessContainer.remove_child(c)
+      c.queue_free()
+    
+    if planetLevel != 0:
+      for n in range(0,planetLevel, 1 if planetLevel > 0 else -1):
+        var heart = TextureRect.new()              
+        heart.texture = load(textureBasePath + ('/cartoonheart.png' if planetLevel > 0 else '/redexclamationiconbutton.png'))
+        heart.expand = true
+        heart.rect_min_size = Vector2(heartSize, heartSize)
+        happinessContainer.add_child(heart)
+
 
 func get_texture_for_planet_type() -> String:
   match planetType:

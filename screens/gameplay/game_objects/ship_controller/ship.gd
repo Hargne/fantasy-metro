@@ -124,6 +124,8 @@ func do_unloading_action(destinationNode) -> void:
         unloadedTravellerType = traveller.travellerType          
         travellerList.remove_traveller(unloadedTravellerType, false)        
         destinationNode.travellerList.remove_traveller(unloadedTravellerType, false)
+        destinationNode.happiness += 5.0
+        destinationNode.update_happiness_factors()
         # show little icon moving from ship to planet
         break       
 
