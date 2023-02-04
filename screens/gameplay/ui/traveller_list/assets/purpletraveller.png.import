@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/redtraveller.png-326b4bc577c9c9bd11e1a20680a335e9.stex"
+path="res://.import/purpletraveller.png-46cd403ef3f085e294d577e5185d1198.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://screens/gameplay/ui/resource_list/assets/redtraveller.png"
-dest_files=[ "res://.import/redtraveller.png-326b4bc577c9c9bd11e1a20680a335e9.stex" ]
+source_file="res://screens/gameplay/ui/traveller_list/assets/purpletraveller.png"
+dest_files=[ "res://.import/purpletraveller.png-46cd403ef3f085e294d577e5185d1198.stex" ]
 
 [params]
 

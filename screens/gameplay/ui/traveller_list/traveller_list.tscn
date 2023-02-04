@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=2]
 
-[ext_resource path="res://screens/gameplay/ui/resource_list/resource_list.gd" type="Script" id=1]
+[ext_resource path="res://screens/gameplay/ui/traveller_list/traveller_list.gd" type="Script" id=1]
 
 [sub_resource type="StyleBoxFlat" id=1]
 bg_color = Color( 0, 0, 0, 0.784314 )
@@ -11,7 +11,7 @@ corner_radius_bottom_left = 50
 shadow_size = 1
 shadow_offset = Vector2( 0, 1 )
 
-[node name="ResourceList" type="VBoxContainer"]
+[node name="TravellerList" type="VBoxContainer"]
 margin_left = -25.0
 margin_top = -75.0
 margin_right = 75.0

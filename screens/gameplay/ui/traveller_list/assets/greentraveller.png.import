@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/greentraveller.png-edf93b2982c222f609c944d0d35670b8.stex"
+path="res://.import/greentraveller.png-c53c420fa8c5581e88316162cf8d5853.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://screens/gameplay/ui/resource_list/assets/greentraveller.png"
-dest_files=[ "res://.import/greentraveller.png-edf93b2982c222f609c944d0d35670b8.stex" ]
+source_file="res://screens/gameplay/ui/traveller_list/assets/greentraveller.png"
+dest_files=[ "res://.import/greentraveller.png-c53c420fa8c5581e88316162cf8d5853.stex" ]
 
 [params]
 

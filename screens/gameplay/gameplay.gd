@@ -5,7 +5,7 @@ var rng = RandomNumberGenerator.new()
 # Refs
 onready var menu = $Menu
 onready var mapNodeController: MapNodeController = $MapNodeController
-onready var cartController: CartController = $CartController
+onready var shipController: ShipController = $ShipController
 onready var uiController: GameplayUIController = $UI
 
 export var showMenuOnStartup = false
@@ -23,7 +23,7 @@ var typeOfObjectBeingPlaced
 var buildStock = {
   GameplayEnums.BuildOption.WAREHOUSE: 1,
   GameplayEnums.BuildOption.ROUTE: 3,
-  GameplayEnums.BuildOption.CART: 2,
+  GameplayEnums.BuildOption.SHIP: 2,
 }
 var _defaultCollisionLayer = 2147483647
 
@@ -37,8 +37,8 @@ func _ready():
   # Connect Map Node Controller events
   Utils.connect_signal(mapNodeController, "on_increase_stock", self, "increase_stock_item")
   Utils.connect_signal(mapNodeController, "on_decrease_stock", self, "decrease_stock_item")
-  Utils.connect_signal(cartController, "on_increase_stock", self, "increase_stock_item")
-  Utils.connect_signal(cartController, "on_decrease_stock", self, "decrease_stock_item")  
+  Utils.connect_signal(shipController, "on_increase_stock", self, "increase_stock_item")
+  Utils.connect_signal(shipController, "on_decrease_stock", self, "decrease_stock_item")  
   # Allow for nodes to get initialized
   yield(get_tree().create_timer(0.1), "timeout")
   uiController.buildPanel.update_stock(buildStock)
@@ -114,12 +114,12 @@ func get_object_at_cursor_location() -> Node:
   return null
 
 func on_interact_click_handler() -> void:
-  if interactTarget is Cart:
-    cartController.blur_all_carts(interactTarget)
-    interactTarget.cart_clicked()
+  if interactTarget is Ship:
+    shipController.blur_all_ships(interactTarget)
+    interactTarget.ship_clicked()
     return
   else:
-    cartController.blur_all_carts()
+    shipController.blur_all_ships()
 
   var clickedConnection = mapNodeController.get_connection_from_point(interactPosition)
   if clickedConnection:
@@ -131,29 +131,29 @@ func on_interact_click_handler() -> void:
 
 # Gets called when the player starts dragging an object from the build panel
 func on_new_object_drag_start(objectToBeSpawned) -> void:
-  cartController.blur_all_carts()
+  shipController.blur_all_ships()
   
   # Check if there's enough in stock
   if buildStock[objectToBeSpawned] > 0:
     typeOfObjectBeingPlaced = objectToBeSpawned
-    if objectToBeSpawned == GameplayEnums.BuildOption.CART:
-      cartController.initiate_place_new_object(objectToBeSpawned, get_global_mouse_position())
+    if objectToBeSpawned == GameplayEnums.BuildOption.SHIP:
+      shipController.initiate_place_new_object(objectToBeSpawned, get_global_mouse_position())
     else:
       mapNodeController.initiate_place_new_object(objectToBeSpawned, get_global_mouse_position())      
 
 func on_interact_drag() -> void:
   var mpos = get_global_mouse_position()
   var shouldHideUI = false
-  # Placing Carts
-  if typeOfObjectBeingPlaced == GameplayEnums.BuildOption.CART && cartController.objectBeingPlaced:
+  # Placing Ships
+  if typeOfObjectBeingPlaced == GameplayEnums.BuildOption.SHIP && shipController.objectBeingPlaced:
     shouldHideUI = true
-    cartController.objectBeingPlaced.position = mpos
+    shipController.objectBeingPlaced.position = mpos
     var connection = mapNodeController.get_connection_from_point(mpos)
     if connection && !connection.is_highlighted():
       connection.highlight()
-      cartController.canPlaceObject = true			
-    elif !connection && cartController.canPlaceObject:
-      cartController.canPlaceObject = false
+      shipController.canPlaceObject = true			
+    elif !connection && shipController.canPlaceObject:
+      shipController.canPlaceObject = false
       mapNodeController.blur_all_connections()
   # Placing Objects
   elif mapNodeController.is_placing_new_object():
@@ -178,13 +178,13 @@ func on_interact_drag_end() -> void:
   if !uiController.buildPanel.isVisible:
     uiController.buildPanel.display()
 
-  if typeOfObjectBeingPlaced == GameplayEnums.BuildOption.CART:
-    var connection = mapNodeController.get_connection_from_point(cartController.objectBeingPlaced.position)		
+  if typeOfObjectBeingPlaced == GameplayEnums.BuildOption.SHIP:
+    var connection = mapNodeController.get_connection_from_point(shipController.objectBeingPlaced.position)		
     if connection:
-      if cartController.end_place_new_object(connection):
-        decrease_stock_item(GameplayEnums.BuildOption.CART)
+      if shipController.end_place_new_object(connection):
+        decrease_stock_item(GameplayEnums.BuildOption.SHIP)
     else:    
-      cartController.end_place_new_object(null)
+      shipController.end_place_new_object(null)
     mapNodeController.blur_all_connections()
   else:
     # Routes

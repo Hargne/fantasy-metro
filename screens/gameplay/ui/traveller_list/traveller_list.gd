@@ -1,11 +1,11 @@
 extends VBoxContainer
 
-export var maxResources = 99
+export var maxTravellers = 99
 export var columns = 6
-var resources = []
+var travellers = []
 onready var centerContainer = $CenterContainer
 onready var gridContainer = $CenterContainer/PanelContainer/GridContainer
-var textureBasePath = "res://screens/gameplay/ui/resource_list/assets"
+var textureBasePath = "res://screens/gameplay/ui/traveller_list/assets"
 var iconSize = 26
 
 var icons = []
@@ -17,9 +17,9 @@ func _ready():
   rect_position.x = size / -4
   centerContainer.rect_min_size.x = size
 
-func add_resource(resourceType) -> void:
-  if resources.size() >= maxResources - 1:
-    printerr("Max resource amount reached")
+func add_traveller(travellerType) -> void:
+  if travellers.size() >= maxTravellers - 1:
+    printerr("Max travellers amount reached")
     return
   var icon = TextureRect.new()
   gridContainer.add_child(icon)
@@ -29,7 +29,7 @@ func add_resource(resourceType) -> void:
 
   # Grab texture
   var textureFile
-  match resourceType:
+  match travellerType:
     GameplayEnums.TravellerType.BLUE_TRAVELLER:
       textureFile = "bluetraveller.png"
     GameplayEnums.TravellerType.RED_TRAVELLER:
@@ -40,31 +40,31 @@ func add_resource(resourceType) -> void:
       textureFile = "purpletraveller.png"
   # Make sure that the file exist
   if !textureFile:
-    printerr("Invalid resource type: " + resourceType)
+    printerr("Invalid travellers type: " + travellerType)
     return
 
   icon.texture = load(textureBasePath + "/" + textureFile)
-  resources.append({ "node": icon, "resourceType": resourceType })
+  travellers.append({ "node": icon, "travellerType": travellerType })
 
-func remove_resource(resourceType, removeAll: bool = true) -> void:
-  for resource in resources:
-    if "resourceType" in resource && resource.resourceType == resourceType:
+func remove_traveller(travellerType, removeAll: bool = true) -> void:
+  for traveller in travellers:
+    if "travellerType" in traveller && traveller.travellerType == travellerType:
       # Remove the icon node
-      if "node" in resource && is_instance_valid(resource.node):
-        resource.node.queue_free()
-      resources.erase(resource)
+      if "node" in traveller && is_instance_valid(traveller.node):
+        traveller.node.queue_free()
+      travellers.erase(traveller)
       if !removeAll:
         return
       
 func clear() -> void:
-  resources.clear()
+  travellers.clear()
   for c in gridContainer.get_children():
     gridContainer.remove_child(c)
     c.queue_free()
 
-func contains_resource(resourceType) -> bool:
-  for resource in resources:
-    if "resourceType" in resource && resource.resourceType == resourceType:
+func contains_traveller(travellerType) -> bool:
+  for traveller in travellers:
+    if "travellerType" in traveller && traveller.travellerType == travellerType:
       return true
 
   return false

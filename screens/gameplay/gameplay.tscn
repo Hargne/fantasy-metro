@@ -8,7 +8,7 @@
 [ext_resource path="res://screens/gameplay/ui/build_panel/assets/route_icon.png" type="Texture" id=9]
 [ext_resource path="res://sfx/thud.wav" type="AudioStream" id=10]
 [ext_resource path="res://screens/gameplay/ui/build_panel/build_panel.gd" type="Script" id=11]
-[ext_resource path="res://screens/gameplay/game_objects/cart_controller/cart_controller.gd" type="Script" id=13]
+[ext_resource path="res://screens/gameplay/game_objects/ship_controller/ship_controller.gd" type="Script" id=13]
 [ext_resource path="res://screens/gameplay/ui/gameplay_ui_controller.gd" type="Script" id=14]
 [ext_resource path="res://screens/gameplay/ui/build_panel/assets/warehouse_icon.png" type="Texture" id=15]
 [ext_resource path="res://sfx/crack.wav" type="AudioStream" id=17]
@@ -50,13 +50,13 @@ stream = ExtResource( 6 )
 [node name="DemolishSFX" type="AudioStreamPlayer2D" parent="MapNodeController"]
 stream = ExtResource( 17 )
 
-[node name="CartController" type="Node2D" parent="."]
+[node name="ShipController" type="Node2D" parent="."]
 script = ExtResource( 13 )
 
-[node name="PlaceCartSFX" type="AudioStreamPlayer2D" parent="CartController"]
+[node name="PlaceShipSFX" type="AudioStreamPlayer2D" parent="ShipController"]
 stream = ExtResource( 17 )
 
-[node name="DemolishSFX" type="AudioStreamPlayer2D" parent="CartController"]
+[node name="DemolishSFX" type="AudioStreamPlayer2D" parent="ShipController"]
 stream = ExtResource( 17 )
 
 [node name="UI" type="CanvasLayer" parent="."]
@@ -138,12 +138,12 @@ backgroundColor = Color( 0.4, 0.4, 0.4, 0 )
 icon = ExtResource( 15 )
 tooltiptext = "Warehouse"
 
-[node name="CART" parent="UI/VBoxContainer/BuildPanel/HBoxContainer/Left/VBoxContainer/BuildOptions" instance=ExtResource( 21 )]
+[node name="SHIP" parent="UI/VBoxContainer/BuildPanel/HBoxContainer/Left/VBoxContainer/BuildOptions" instance=ExtResource( 21 )]
 margin_top = 110.0
 margin_bottom = 210.0
 backgroundColor = Color( 0.4, 0.4, 0.4, 0 )
 icon = ExtResource( 19 )
-tooltiptext = "Cart"
+tooltiptext = "Ship"
 
 [node name="BUILD" parent="UI/VBoxContainer/BuildPanel/HBoxContainer/Left/VBoxContainer" instance=ExtResource( 21 )]
 margin_top = 230.0

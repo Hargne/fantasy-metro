@@ -19,16 +19,6 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://screens/gameplay/ui/build_panel/build_panel.gd"
 }, {
-"base": "Area2D",
-"class": "Cart",
-"language": "GDScript",
-"path": "res://screens/gameplay/game_objects/cart_controller/cart.gd"
-}, {
-"base": "Node2D",
-"class": "CartController",
-"language": "GDScript",
-"path": "res://screens/gameplay/game_objects/cart_controller/cart_controller.gd"
-}, {
 "base": "Node2D",
 "class": "Connection",
 "language": "GDScript",
@@ -74,31 +64,24 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://screens/gameplay/ui/popup_list/popup_list.gd"
 }, {
-"base": "MapNode",
-"class": "ResourceNode",
-"language": "GDScript",
-"path": "res://screens/gameplay/game_objects/map_node/resource_node/resource_node.gd"
-}, {
 "base": "Reference",
 "class": "Route",
 "language": "GDScript",
 "path": "res://screens/gameplay/game_objects/route/route.class.gd"
 }, {
-"base": "MapNode",
-"class": "VillageNode",
+"base": "Area2D",
+"class": "Ship",
 "language": "GDScript",
-"path": "res://screens/gameplay/game_objects/map_node/village_node/village_node.gd"
+"path": "res://screens/gameplay/game_objects/ship_controller/ship.gd"
 }, {
-"base": "MapNode",
-"class": "WarehouseNode",
+"base": "Node2D",
+"class": "ShipController",
 "language": "GDScript",
-"path": "res://screens/gameplay/game_objects/map_node/warehouse_node/warehouse_node.gd"
+"path": "res://screens/gameplay/game_objects/ship_controller/ship_controller.gd"
 } ]
 _global_script_class_icons={
 "ActionPrompt": "",
 "BuildPanel": "",
-"Cart": "",
-"CartController": "",
 "Connection": "",
 "Gameplay": "",
 "GameplayEnums": "",
@@ -108,10 +91,9 @@ _global_script_class_icons={
 "PanelButton": "",
 "PlanetNode": "",
 "PopupList": "",
-"ResourceNode": "",
 "Route": "",
-"VillageNode": "",
-"WarehouseNode": ""
+"Ship": "",
+"ShipController": ""
 }
 
 [application]

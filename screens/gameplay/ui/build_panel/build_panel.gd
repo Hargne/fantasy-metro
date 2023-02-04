@@ -10,7 +10,7 @@ onready var routesButton = $HBoxContainer/Left/VBoxContainer2/ROUTE
 onready var routeList: PopupList = $HBoxContainer/Left/VBoxContainer2/RouteSelector
 onready var buildMenuButton = $HBoxContainer/Left/VBoxContainer/BUILD
 onready var buildList: PopupList = $HBoxContainer/Left/VBoxContainer/BuildOptions
-onready var cartButton = $HBoxContainer/Left/VBoxContainer/BuildOptions/CART
+onready var shipButton = $HBoxContainer/Left/VBoxContainer/BuildOptions/SHIP
 onready var warehouseButton = $HBoxContainer/Left/VBoxContainer/BuildOptions/WAREHOUSE
 
 var panelButtonPrefab = preload("res://screens/gameplay/ui/panel_button/panel_button.tscn")
@@ -25,7 +25,7 @@ func _ready():
   Utils.connect_signal(buildMenuButton.button, "button_down", self, "toggle_submenu", [SubMenu.BUILD])
   Utils.connect_signal(routesButton.button, "button_down", self, "toggle_submenu", [SubMenu.ROUTE])
   Utils.connect_signal(warehouseButton.button, "button_down", self, "initiate_dragging_object", [GameplayEnums.BuildOption.WAREHOUSE])
-  Utils.connect_signal(cartButton.button, "button_down", self, "initiate_dragging_object", [GameplayEnums.BuildOption.CART])
+  Utils.connect_signal(shipButton.button, "button_down", self, "initiate_dragging_object", [GameplayEnums.BuildOption.SHIP])
 
 func _process(delta):
   transition_handler(delta)
@@ -44,8 +44,8 @@ func display() -> void:
 
 func get_button_by_type(buildOptionType) -> PanelButton:
   match buildOptionType:
-    GameplayEnums.BuildOption.CART:
-      return cartButton
+    GameplayEnums.BuildOption.SHIP:
+      return shipButton
     GameplayEnums.BuildOption.WAREHOUSE:
       return warehouseButton
   return null
@@ -65,7 +65,7 @@ func set_build_option_amount(buildOption, amount) -> void:
   if btn:
     btn.set_stock_amount(amount)
 
-# Stock should consist of a BuildOption as key coupled with a value: { BuildOption.CART: 1 }
+# Stock should consist of a BuildOption as key coupled with a value: { BuildOption.SHIP: 1 }
 func update_stock(stock) -> void:
   for buildOption in stock.keys():
     show_build_option(buildOption)

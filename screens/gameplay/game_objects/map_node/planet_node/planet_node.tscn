@@ -2,7 +2,7 @@
 
 [ext_resource path="res://screens/gameplay/game_objects/map_node/planet_node/planet_node.gd" type="Script" id=1]
 [ext_resource path="res://screens/gameplay/game_objects/map_node/assets/blueplanet.png" type="Texture" id=2]
-[ext_resource path="res://screens/gameplay/ui/resource_list/resource_list.tscn" type="PackedScene" id=3]
+[ext_resource path="res://screens/gameplay/ui/traveller_list/traveller_list.tscn" type="PackedScene" id=3]
 
 [sub_resource type="CircleShape2D" id=1]
 radius = 12.0
@@ -17,6 +17,6 @@ texture = ExtResource( 2 )
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource( 1 )
 
-[node name="ResourceList" parent="." instance=ExtResource( 3 )]
+[node name="TravellerList" parent="." instance=ExtResource( 3 )]
 margin_top = -85.0
 margin_bottom = 51.0

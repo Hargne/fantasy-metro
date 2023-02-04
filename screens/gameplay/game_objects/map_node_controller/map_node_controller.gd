@@ -5,13 +5,10 @@ var rng
 var objectBeingPlaced: Node
 var canPlaceObject = false
 var typeOfObjectBeingPlaced
-var warehouseNodePrefab = preload("res://screens/gameplay/game_objects/map_node/warehouse_node/warehouse_node.tscn")
 var planetNodePrefab = preload("res://screens/gameplay/game_objects/map_node/planet_node/planet_node.tscn")
 var Route = load("res://screens/gameplay/game_objects/route/route.class.gd")
 # Connections / Routes
 var planets = []
-
-
 var routes = []
 var activeRoute: Route
 var routeColors: Array = [
@@ -106,27 +103,6 @@ func does_planet_type_exist(planetType) -> bool:
         return true
   return false
 
-func get_village_nodes() -> Array:
-  var nodes = []
-  for child in get_children():
-    if child is VillageNode:
-      nodes.append(child)
-  return nodes
-
-func get_resource_nodes() -> Array:
-  var nodes = []
-  for child in get_children():
-    if child is ResourceNode:
-      nodes.append(child)
-  return nodes
-
-func get_warehouse_nodes() -> Array:
-  var nodes = []
-  for child in get_children():
-    if child is WarehouseNode:
-      nodes.append(child)
-  return nodes  
-
 func get_map_nodes() -> Array:
   var nodes = []
 
@@ -145,17 +121,17 @@ func get_map_node_from_point(point) -> MapNode:
 
 func initiate_place_new_object(objectTypeToBePlaced, startPosition: Vector2) -> void:
   typeOfObjectBeingPlaced = objectTypeToBePlaced
-  match objectTypeToBePlaced:
-    GameplayEnums.BuildOption.WAREHOUSE:
-      objectBeingPlaced = warehouseNodePrefab.instance()
-      add_child(objectBeingPlaced)
+ # match objectTypeToBePlaced:
+  #  GameplayEnums.BuildOption.WAREHOUSE:
+   #   objectBeingPlaced = warehouseNodePrefab.instance()
+  #    add_child(objectBeingPlaced)
   if objectBeingPlaced:   
     objectBeingPlaced.position = startPosition   
     
 
 func end_place_new_object() -> void:
-  if canPlaceObject:
-    if typeOfObjectBeingPlaced == GameplayEnums.BuildOption.WAREHOUSE:
+  if canPlaceObject && false: # disabling this for now, but keeping the code for future when we have new objects to place
+    if typeOfObjectBeingPlaced == 1:
       var conn = get_connection_from_point(get_global_mouse_position())      
       if conn != null:
         # we are going to split the connection into 2

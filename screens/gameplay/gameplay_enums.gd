@@ -18,5 +18,5 @@ enum TravellerType {
 enum BuildOption {
   WAREHOUSE,
   ROUTE,
-  CART
+  SHIP
 }

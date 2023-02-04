@@ -12,12 +12,12 @@ func get_all_connections_for_map_node(mapNode) -> Array:
 
   return matchingConnections
 
-# gets demands for cart as if cart just pulled into the starting destination point and will continue forward from there
-func get_demands_along_route(startConnection, startDestinationPt, includeStartDestination: bool = true, lookBothDirections: bool = false) -> Array:
-  var demands = []
+# gets planet types on route as if ship just pulled into the starting destination point and will continue forward from there
+func get_planet_types_along_route(startConnection, startDestinationPt, includeStartDestination: bool = true, lookBothDirections: bool = false) -> Array:
+  var planetTypes = []
 
   if connections.size() == 0:
-    return demands  
+    return planetTypes  
 
   # look forwards from destination pt
   var orderedMapNodes = get_ordered_map_nodes(startConnection, startDestinationPt)
@@ -28,7 +28,7 @@ func get_demands_along_route(startConnection, startDestinationPt, includeStartDe
     if mapNode is PlanetNode:
       if !includeStartDestination && mapNode.get_connection_point() == startDestinationPt:
         continue
-      demands.append(GameplayEnums.TravellerType.values()[mapNode.planetType])        
+      planetTypes.append(mapNode.planetType)        
 
   if lookBothDirections:
     # look backwards from destination pt (we do this second so upcoming demands have higher priority
@@ -39,9 +39,9 @@ func get_demands_along_route(startConnection, startDestinationPt, includeStartDe
       if mapNode is PlanetNode:
         if !includeStartDestination && mapNode.get_connection_point() == startDestinationPt:
           continue
-        demands.append(GameplayEnums.TravellerType.values()[mapNode.planetType]) 
+        planetTypes.append(mapNode.planetType)        
 
-  return demands
+  return planetTypes
 
 func get_ordered_map_nodes(startConnection, startPt, includeStartNodeInList: bool = false) -> Array:
   var orderedMapNodes = []
